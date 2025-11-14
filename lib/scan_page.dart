@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
+import 'gradient_border_button.dart';
+import 'gradient_icon.dart';
 import 'constants.dart';
 
 class ScanPage extends StatefulWidget {
@@ -73,14 +75,7 @@ class ScanPageState extends State<ScanPage> {
                       begin: Alignment.bottomRight,
                       end: Alignment.topLeft,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        offset: const Offset(4, 4),
-                        blurRadius: 10.0,
-                        spreadRadius: 2.0,
-                      )
-                    ]
+                    boxShadow: [AppDesign.defaultBoxShadow],
                   ),
                   child: SizedBox(
                     child: FutureBuilder<void>(
@@ -106,43 +101,60 @@ class ScanPageState extends State<ScanPage> {
             const Spacer(),
 
             Container(
-              padding: const EdgeInsets.only(bottom: 30.0, top: 15.0) ,
+              padding: const EdgeInsets.only(bottom: 30.0, top: 20.0) ,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0)
-                ),
-                boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      offset: const Offset(4, 4),
-                      blurRadius: 10.0,
-                      spreadRadius: 2.0,
-                  ),
-                ]
+                borderRadius: AppDesign.bottomBarBorderRadius,
+                boxShadow: [AppDesign.defaultBoxShadow],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
+                  SizedBox(
+                    width: 120.0,
+                    height: 50.0,
+                    child: GradientBorderButton(
+                      onPressed: () async {
 
-                    },
-                    child: Icon(
-                      Icons.upload,
-                      size: 24.0,
-                      semanticLabel: "Upload a picture",
+                      },
+                      gradient: LinearGradient(colors: [
+                          AppDesign.primaryGradientStart,
+                          AppDesign.primaryGradientEnd
+                        ]),
+                      boxShadow: [AppDesign.defaultBoxShadow],
+                      borderRadius: AppDesign.sBtnBorderRadius,
+                      child: GradientIcon(
+                        icon: Icons.camera_alt,
+                        size: AppDesign.sBtnIconSize,
+                        gradient: LinearGradient(colors: [
+                          AppDesign.primaryGradientStart,
+                          AppDesign.primaryGradientEnd
+                        ]),
+                      ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
 
-                    },
-                    child: Icon(
-                      Icons.camera,
-                      size: 24.0,
-                      semanticLabel: "Take picture",
+                  SizedBox(
+                    width: 120.0,
+                    height: 50.0,
+                    child: GradientBorderButton(
+                      onPressed: () async {
+
+                      },
+                      gradient: LinearGradient(colors: [
+                          AppDesign.primaryGradientStart,
+                          AppDesign.primaryGradientEnd
+                        ]),
+                      boxShadow: [AppDesign.defaultBoxShadow],
+                      borderRadius: AppDesign.sBtnBorderRadius,
+                      child: GradientIcon(
+                        icon: Icons.upload,
+                        size: AppDesign.sBtnIconSize,
+                        gradient: LinearGradient(colors: [
+                          AppDesign.primaryGradientStart,
+                          AppDesign.primaryGradientEnd
+                        ]),
+                      ),
                     ),
                   ),
                 ],
