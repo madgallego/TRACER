@@ -3,21 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-import 'gradient_border_button.dart';
-import 'gradient_icon.dart';
-import 'constants.dart';
+import '../widgets/gradient_border_button.dart';
+import '../widgets/gradient_icon.dart';
+import '../utils/constants.dart';
 
-class ScanPage extends StatefulWidget {
-  const ScanPage({super.key, required this.camera});
+class ScanScreen extends StatefulWidget {
+  const ScanScreen({super.key, required this.camera});
 
   final CameraDescription camera;
 
   @override
-  ScanPageState createState() => ScanPageState();
+  ScanScreenState createState() => ScanScreenState();
 }
 
 
-class ScanPageState extends State<ScanPage> {
+class ScanScreenState extends State<ScanScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
