@@ -61,12 +61,13 @@ class ScanScreenState extends State<ScanScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: AppDesign.camTopPadding),
+            SafeArea(
               child: Center(
                 child: Container(
-                  width: AppDesign.camWidth,
-                  height: AppDesign.camHeight,
+                  constraints: BoxConstraints(
+                    maxWidth: AppDesign.camMaxWidth,
+                    maxHeight: AppDesign.camMaxHeight,
+                  ),
                   padding: const EdgeInsets.all(AppDesign.camBorderThickness),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
@@ -75,7 +76,7 @@ class ScanScreenState extends State<ScanScreen> {
                       begin: Alignment.bottomRight,
                       end: Alignment.topLeft,
                     ),
-                    boxShadow: [AppDesign.defaultBoxShadow],
+                    boxShadow: AppDesign.defaultBoxShadows,
                   ),
                   child: SizedBox(
                     child: FutureBuilder<void>(
@@ -101,30 +102,29 @@ class ScanScreenState extends State<ScanScreen> {
             const Spacer(),
 
             Container(
-              padding: const EdgeInsets.only(bottom: 30.0, top: 20.0) ,
+              padding: const EdgeInsets.only(bottom: 20.0, top: 15.0) ,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: AppDesign.bottomBarBorderRadius,
-                boxShadow: [AppDesign.defaultBoxShadow],
+                boxShadow: AppDesign.defaultBoxShadows,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 120.0,
+                    width: 60.0,
                     height: 50.0,
-                    child: GradientBorderButton(
-                      onPressed: () async {
+                    child: ElevatedButton(
+                      onPressed: () {
 
                       },
-                      gradient: LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd
-                        ]),
-                      boxShadow: [AppDesign.defaultBoxShadow],
-                      borderRadius: AppDesign.sBtnBorderRadius,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        overlayColor: Colors.black,
+                        padding: EdgeInsets.zero,
+                      ),
                       child: GradientIcon(
-                        icon: Icons.camera_alt,
+                        icon: Icons.arrow_back,
                         size: AppDesign.sBtnIconSize,
                         gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -145,8 +145,31 @@ class ScanScreenState extends State<ScanScreen> {
                           AppDesign.primaryGradientStart,
                           AppDesign.primaryGradientEnd
                         ]),
-                      boxShadow: [AppDesign.defaultBoxShadow],
+                      boxShadow: AppDesign.defaultBoxShadows,
                       borderRadius: AppDesign.sBtnBorderRadius,
+                      child: GradientIcon(
+                        icon: Icons.camera_alt,
+                        size: AppDesign.sBtnIconSize,
+                        gradient: LinearGradient(colors: [
+                          AppDesign.primaryGradientStart,
+                          AppDesign.primaryGradientEnd
+                        ]),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(
+                    width: 60.0,
+                    height: 50.0,
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        overlayColor: Colors.black,
+                        padding: EdgeInsets.zero,
+                      ),
                       child: GradientIcon(
                         icon: Icons.upload,
                         size: AppDesign.sBtnIconSize,

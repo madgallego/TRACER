@@ -4,12 +4,10 @@ abstract class AppDesign {
   // --- Camera Preview Constants ---
 
   // Sizes
-  static const double camWidth = 330.0;
-  static const double camHeight = 500.0;
+  static const double camMaxWidth = 400.0;
+  static const double camMaxHeight = 700.0;
   static const double camBorderThickness = 7.0;
   static const double camTopPadding = 70.0;
-  static const double scanButtonBottomSpacing = 40.0;
-
 
   // Border Radii
   static const double camOuterBorderRadius = 25.0;
@@ -21,12 +19,20 @@ abstract class AppDesign {
 
 
   // --- General Design Constants ---
-  static final defaultBoxShadow = BoxShadow(
-      color: Colors.black.withValues(alpha: 0.4),
-      offset: Offset(4, 4),
-      blurRadius: 10.0,
-      spreadRadius: 2.0,
-  );
+  static final defaultBoxShadows = [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.14),
+      offset: const Offset(0, 2),
+      blurRadius: 2.0,
+      spreadRadius: 0.0,
+    ),
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.12),
+      offset: const Offset(0, 1),
+      blurRadius: 5.0,
+      spreadRadius: 0.0,
+    )
+  ];
 
   static final BorderRadius bottomBarBorderRadius = BorderRadius.only(
     topLeft: Radius.circular(20.0),
