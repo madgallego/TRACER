@@ -124,7 +124,7 @@ class ScanScreenState extends State<ScanScreen> {
                         padding: EdgeInsets.zero,
                       ),
                       child: GradientIcon(
-                        icon: Icons.arrow_back,
+                        icon: Icons.close,
                         size: AppDesign.sBtnIconSize,
                         gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -145,7 +145,6 @@ class ScanScreenState extends State<ScanScreen> {
                           AppDesign.primaryGradientStart,
                           AppDesign.primaryGradientEnd
                         ]),
-                      boxShadow: AppDesign.defaultBoxShadows,
                       borderRadius: AppDesign.sBtnBorderRadius,
                       child: GradientIcon(
                         icon: Icons.camera_alt,
