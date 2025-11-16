@@ -39,29 +39,32 @@ class ScanScreenState extends State<ScanScreen> {
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    // Size of the gesture hint / navbar at the bottom of the screen
+    final double bottomInset = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SafeArea(
+            Flexible(
               child: Center(
                 child: Container(
                   constraints: BoxConstraints(
@@ -99,10 +102,14 @@ class ScanScreenState extends State<ScanScreen> {
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(
+              height: 10.0,
+            ),
 
             Container(
-              padding: const EdgeInsets.only(bottom: 20.0, top: 15.0) ,
+              // Factor in gesture hint / navbar space
+              height: 70.0 + bottomInset,
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0 + bottomInset, right: 10.0, left: 10.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: AppDesign.bottomBarBorderRadius,
@@ -113,7 +120,7 @@ class ScanScreenState extends State<ScanScreen> {
                 children: [
                   SizedBox(
                     width: 60.0,
-                    height: 50.0,
+                    height: 45.0,
                     child: ElevatedButton(
                       onPressed: () {
 
@@ -135,7 +142,7 @@ class ScanScreenState extends State<ScanScreen> {
                   ),
 
                   SizedBox(
-                    width: 120.0,
+                    width: 140.0,
                     height: 50.0,
                     child: GradientBorderButton(
                       onPressed: () async {
@@ -161,7 +168,7 @@ class ScanScreenState extends State<ScanScreen> {
 
                   SizedBox(
                     width: 60.0,
-                    height: 50.0,
+                    height: 45.0,
                     child: ElevatedButton(
                       onPressed: () {
 
@@ -186,7 +193,7 @@ class ScanScreenState extends State<ScanScreen> {
             )
           ],
         ),
-      )
+      ),
     );
   }
 }
