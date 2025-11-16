@@ -46,4 +46,9 @@ abstract class AppDesign {
   static final double sBtnIconSize = 24.0;
   static final double mBtnIconSize = 36.0; // currently unused and might change
   static final double lBtnIconSize = 48.0; // currently unused and might change
+
+  // Gradient widgets loading animations
+  static final Duration loadingRotationDuration = Duration(milliseconds: 700);
+  static final Curve loadingEasing = Curves.easeOutQuart;
+
 }

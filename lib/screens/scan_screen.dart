@@ -139,7 +139,9 @@ class ScanScreenState extends State<ScanScreen> {
                     height: 50.0,
                     child: GradientBorderButton(
                       onPressed: () async {
-
+                        await Future.delayed(Duration(seconds: 3), () {
+                          print("3 seconds have passed");
+                        });
                       },
                       gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,

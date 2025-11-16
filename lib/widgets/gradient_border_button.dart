@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'dart:math' as math;
+
+import 'package:tracer/utils/constants.dart';
+import 'package:tracer/utils/process_state.dart';
 
 class GradientBorderButton extends StatefulWidget {
-  final VoidCallback onPressed;
+  final Future<void> Function() onPressed;
   final Widget child;
   final double borderWidth;
   final LinearGradient gradient;
@@ -22,8 +27,12 @@ class GradientBorderButton extends StatefulWidget {
   State<GradientBorderButton> createState() => _GradientBorderButtonState();
 }
 
-class _GradientBorderButtonState extends State<GradientBorderButton> {
+class _GradientBorderButtonState extends State<GradientBorderButton>
+    with SingleTickerProviderStateMixin {
   bool _isPressed = false;
+
+  late AnimationController _rotationController;
+  late Animation<double> _animation;
 
   BorderRadius _calculateInnerRadius(BorderRadius outerRadius) {
     Radius topLeft = Radius.elliptical(
@@ -51,6 +60,45 @@ class _GradientBorderButtonState extends State<GradientBorderButton> {
     );
   }
 
+  // Future<void> _handlePress() async {
+
+  //   if (processState.isLoading) return;
+  //   processState.setLoading(true);
+  //   _rotationController.repeat();
+
+  //   try {
+  //     await widget.onPressed();
+  //   } catch (e) {
+  //     debugPrint("Process failed: $e");
+  //   } finally {
+  //     processState.setLoading(false);
+  //     _rotationController.stop();
+  //   }
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    _rotationController = AnimationController(
+      vsync: this,
+      duration: AppDesign.loadingRotationDuration,
+    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 2 * math.pi,
+    ).animate(CurvedAnimation(
+      parent: _rotationController,
+      curve: AppDesign.loadingEasing
+      )
+    );
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final outerRadius = widget.borderRadius;
@@ -59,60 +107,88 @@ class _GradientBorderButtonState extends State<GradientBorderButton> {
     final double targetBlur = _isPressed ? 5.0 : 2.0;
     final double targetOffset = _isPressed ? 1.0 : 2.0;
 
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 100),
-      curve: Curves.easeOut,
-      decoration: BoxDecoration(
-        gradient: widget.gradient,
-        borderRadius: outerRadius ?? BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.14),
-            offset: Offset(0, targetOffset),
-            blurRadius: targetBlur,
-            spreadRadius: 0
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            offset: const Offset(0, 1),
-            blurRadius: 5.0,
-            spreadRadius: 0.0,
-          )
-        ]
-      ),
-      padding: EdgeInsets.all(widget.borderWidth),
+    return ChangeNotifierProvider(
+      create: (context) => ProcessState(),
+      builder: (context, child) {
+        final processState = context.watch<ProcessState>();
 
-      // Ink well implements ripple effect on tap, as well as tap detection
-      // Material allows ink well to paint this effect
-      child: Material(
-        color: widget.innerColor,
-        borderRadius: outerRadius != null
-          ? _calculateInnerRadius(outerRadius)
-          : BorderRadius.circular(10.0 - widget.borderWidth),
-        child: InkWell(
-          onTap: widget.onPressed,
+        return AnimatedBuilder(
+          animation: _rotationController,
+          builder: (context, child) {
 
-          onHighlightChanged: (isHighlighting) {
-            setState(() {
-              _isPressed = isHighlighting;
-            });
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: widget.gradient.colors,
+                  transform: GradientRotation(_animation.value),
+                ),
+                borderRadius: outerRadius ?? BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.14),
+                    offset: Offset(0, targetOffset),
+                    blurRadius: targetBlur,
+                    spreadRadius: 0
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.12),
+                    offset: const Offset(0, 1),
+                    blurRadius: 5.0,
+                    spreadRadius: 0.0,
+                  )
+                ]
+              ),
+              padding: EdgeInsets.all(widget.borderWidth),
+              child: child,
+            );
           },
+          // Ink well implements ripple effect on tap, as well as tap detection
+          // Material allows ink well to paint this effect
+          child: Material(
+            color: widget.innerColor,
+            borderRadius: outerRadius != null
+              ? _calculateInnerRadius(outerRadius)
+              : BorderRadius.circular(10.0 - widget.borderWidth),
+            child: InkWell(
+              onTap: () async {
+                if (processState.isLoading) return;
 
-          borderRadius: outerRadius != null
-            ? _calculateInnerRadius(outerRadius)
-            : BorderRadius.circular(10.0 - widget.borderWidth),
+                processState.setLoading(true);
+                _rotationController.repeat();
 
-          child: Container(
-            decoration: BoxDecoration(
+                try {
+                  await widget.onPressed();
+                } catch (e) {
+                  debugPrint("Process failed: $e");
+                } finally {
+                  processState.setLoading(false);
+                  _rotationController.reset();
+                }
+              },
+
+              onHighlightChanged: (isHighlighting) {
+                setState(() {
+                  _isPressed = isHighlighting;
+                });
+              },
+
               borderRadius: outerRadius != null
                 ? _calculateInnerRadius(outerRadius)
                 : BorderRadius.circular(10.0 - widget.borderWidth),
+
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: outerRadius != null
+                    ? _calculateInnerRadius(outerRadius)
+                    : BorderRadius.circular(10.0 - widget.borderWidth),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Center(child: widget.child),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Center(child: widget.child),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
