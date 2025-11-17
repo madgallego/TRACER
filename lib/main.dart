@@ -1,12 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'env.dart';
+import 'utils/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Screens
-import 'scan_page.dart';
-import 'login_page.dart';
+import 'screens/scan_screen.dart';
+import 'screens/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: const LoginPage(),
+      home: LoginScreen(),
     );
   }
 }
