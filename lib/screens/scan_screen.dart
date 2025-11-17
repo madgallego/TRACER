@@ -61,43 +61,39 @@ class ScanScreenState extends State<ScanScreen> {
       child: SafeArea(
         bottom: false,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Flexible(
-              child: Center(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: AppDesign.camMaxWidth,
-                    maxHeight: AppDesign.camMaxHeight,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: AppDesign.camMaxWidth,
+                  maxHeight: AppDesign.camMaxHeight,
+                ),
+                padding: const EdgeInsets.all(AppDesign.camBorderThickness),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
+                  gradient: const LinearGradient(
+                    colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  padding: const EdgeInsets.all(AppDesign.camBorderThickness),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
-                    gradient: const LinearGradient(
-                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                      begin: Alignment.bottomRight,
-                      end: Alignment.topLeft,
-                    ),
-                    boxShadow: AppDesign.defaultBoxShadows,
-                  ),
-                  child: SizedBox(
-                    child: FutureBuilder<void>(
-                      future: _initializeControllerFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          // If the Future is complete, display the preview.
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
-                            child: CameraPreview(_controller)
-                          );
-                        } else {
-                          // Otherwise, display a loading indicator.
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                      }
-                    ),
-                  ),
+                  boxShadow: AppDesign.defaultBoxShadows,
+                ),
+                child: FutureBuilder<void>(
+                  future: _initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      // If the Future is complete, display the preview.
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
+                        child: CameraPreview(_controller)
+                      );
+                    } else {
+                      // Otherwise, display a loading indicator.
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }
                 ),
               ),
             ),
