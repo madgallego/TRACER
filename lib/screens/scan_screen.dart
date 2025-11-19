@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:tracer/screens/scan_confirmation_screen.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -104,7 +105,7 @@ class ScanScreenState extends State<ScanScreen> {
 
             Container(
               // Factor in gesture hint / navbar space
-              height: 70.0 + bottomInset,
+              height: 90.0 + bottomInset,
               padding: EdgeInsets.only(top: 10.0, bottom: 10.0 + bottomInset, right: 10.0, left: 10.0),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -115,10 +116,10 @@ class ScanScreenState extends State<ScanScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 60.0,
-                    height: 45.0,
+                    width: AppDesign.camBtnWidth,
+                    height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -138,13 +139,34 @@ class ScanScreenState extends State<ScanScreen> {
                   ),
 
                   SizedBox(
-                    width: 140.0,
-                    height: 50.0,
+                    width: AppDesign.camBtnWidth + 80.0,
+                    height: AppDesign.camBtnHeight + 5.0,
                     child: GradientBorderButton(
                       onPressed: () async {
-                        await Future.delayed(Duration(seconds: 3), () {
-                          print("3 seconds have passed");
-                        });
+                        try {
+                          await _initializeControllerFuture;
+
+                          final image = await _controller.takePicture();
+
+                          await _controller.pausePreview();
+
+                          if (!context.mounted) return;
+
+                          // If the picture was taken, display it on a new screen.
+                          await Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => ScanConfirmationScreen(
+                                imagePath: image.path,
+                              ),
+                            ),
+                          );
+
+                          if (_controller.value.isInitialized) {
+                            await _controller.resumePreview();
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
                       },
                       gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -152,7 +174,7 @@ class ScanScreenState extends State<ScanScreen> {
                         ]),
                       borderRadius: AppDesign.sBtnBorderRadius,
                       child: GradientIcon(
-                        icon: Icons.camera_alt,
+                        icon: Icons.camera_rounded,
                         size: AppDesign.sBtnIconSize,
                         gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -163,10 +185,10 @@ class ScanScreenState extends State<ScanScreen> {
                   ),
 
                   SizedBox(
-                    width: 60.0,
-                    height: 45.0,
+                    width: AppDesign.camBtnWidth,
+                    height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
 
                       },
                       style: ElevatedButton.styleFrom(
