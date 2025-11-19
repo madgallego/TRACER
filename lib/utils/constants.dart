@@ -13,12 +13,12 @@ abstract class AppDesign {
   static const double camOuterBorderRadius = 25.0;
   static const double camInnerBorderRadius = camOuterBorderRadius - camBorderThickness;
 
-  // Colors
-  static const Color primaryGradientStart = Color(0xff67f5fa);
-  static const Color primaryGradientEnd = Color(0xffffe161);
-
+  // Button Bar
+  static const double camBtnWidth = 60.0;
+  static const double camBtnHeight = 50.0;
 
   // --- General Design Constants ---
+
   static final defaultBoxShadows = [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.14),
@@ -33,6 +33,17 @@ abstract class AppDesign {
       spreadRadius: 0.0,
     )
   ];
+
+  // Color pallete
+  static const Color appBlue = Color(0xff67f5fa);
+  static const Color appYellow = Color(0xff67f5fa);
+  static const Color appPaleCyan = Color(0xff67f5fa);
+  static const Color appOffblack = Color(0xff302e34);
+  // static const Color white = Color(0xffffffff); just use Colors.white
+
+  // Gradient Colors
+  static const Color primaryGradientStart = Color(0xff67f5fa);
+  static const Color primaryGradientEnd = Color(0xffffe161);
 
   static final BorderRadius bottomBarBorderRadius = BorderRadius.only(
     topLeft: Radius.circular(20.0),
@@ -49,6 +60,6 @@ abstract class AppDesign {
 
   // Gradient widgets loading animations
   static final Duration loadingRotationDuration = Duration(milliseconds: 700);
-  static final Curve loadingEasing = Curves.easeOutQuart;
+  static final Curve loadingRotationEasing = Curves.easeOutQuart;
 
 }
