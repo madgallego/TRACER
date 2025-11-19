@@ -39,7 +39,7 @@ class _GradientIconState extends State<GradientIcon>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
       parent: _rotationController,
-      curve: AppDesign.loadingEasing
+      curve: AppDesign.loadingRotationEasing
       )
     );
   }
