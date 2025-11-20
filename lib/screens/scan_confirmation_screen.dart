@@ -17,19 +17,38 @@ class ScanConfirmationScreen extends StatefulWidget {
 class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
     with TickerProviderStateMixin {
 
+  late AnimationController _imageAnimationController;
   late AnimationController _initialAnimationController;
   late AnimationController _finalAnimationController;
+
+  late Animation<double> _imageFadeInAnimation;
   late Animation<double> _fadeOutAnimation;
   late Animation<double> _fadeInAnimation;
   late Animation<double> _resizeAnimation;
+  late Animation<double> _translationAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    _initialAnimationController = AnimationController(
+    _imageAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
+    );
+
+    _imageFadeInAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _imageAnimationController,
+        curve: Curves.easeOut,
+      )
+    );
+
+    _initialAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
     );
 
     _fadeOutAnimation = Tween(
@@ -37,14 +56,29 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
       end: 0.0,
     ).animate(_initialAnimationController,);
 
+    _translationAnimation = Tween(
+      begin: 0.0,
+      end: 150.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _initialAnimationController,
+        curve: Curves.easeInBack,
+      )
+    );
+
     _resizeAnimation = Tween(
       begin: AppDesign.camBtnWidth + 60.0,
       end: AppDesign.camBtnWidth + 100.0,
-    ).animate(_initialAnimationController);
+    ).animate(
+      CurvedAnimation(
+        parent: _initialAnimationController,
+        curve: Curves.easeInOutBack,
+      )
+    );
 
     _finalAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
     );
 
     _fadeInAnimation = Tween(
@@ -74,56 +108,72 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: AppDesign.camMaxWidth,
-                    maxHeight: AppDesign.camMaxHeight,
-                  ),
-                  padding: const EdgeInsets.all(AppDesign.camBorderThickness),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
-                    gradient: const LinearGradient(
-                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([
+              _initialAnimationController,
+              _finalAnimationController,
+              _imageAnimationController,
+            ]),
+            builder: (context, child) {
+              if (_initialAnimationController.isCompleted) {
+                _finalAnimationController.forward();
+              }
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: AppDesign.camMaxWidth,
+                        maxHeight: AppDesign.camMaxHeight,
+                      ),
+                      padding: const EdgeInsets.all(AppDesign.camBorderThickness),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
+                        gradient: const LinearGradient(
+                          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: AppDesign.defaultBoxShadows,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
+                        child: Image.file(
+                          File(widget.imagePath),
+                          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                            if (frame != null) {
+                              _imageAnimationController.forward();
+                            }
+
+                            return AspectRatio(
+                              aspectRatio: 9.0/16.0,
+                              child: Opacity(
+                                opacity: _imageFadeInAnimation.value,
+                                child: child,
+                              ),
+                            );
+                          },
+                        )
+                      ),
                     ),
-                    boxShadow: AppDesign.defaultBoxShadows,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
-                    child: Image.file(File(widget.imagePath))
+
+                  const SizedBox(
+                    height: 10.0,
                   ),
-                ),
-              ),
 
-              const SizedBox(
-                height: 10.0,
-              ),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0),
-                child: AnimatedBuilder(
-                  animation: Listenable.merge([
-                    _initialAnimationController,
-                    _finalAnimationController
-                  ]),
-                  builder: (context, child) {
-                    if (_initialAnimationController.isCompleted) {
-                      _finalAnimationController.forward();
-                    }
-
-                    return Row(
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Visibility(
-                          visible: _fadeOutAnimation.value != 0.0,
-                          child: Opacity(
-                            opacity: _fadeOutAnimation.value,
+                        Transform.translate(
+                          offset: Offset(-_translationAnimation.value, 0),
+                          child: Visibility(
+                            visible: !_translationAnimation.isCompleted,
                             child: SizedBox(
                               width: AppDesign.camBtnWidth,
                               height: AppDesign.camBtnHeight,
@@ -185,10 +235,10 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                           ),
                         ),
 
-                        Visibility(
-                          visible: _fadeOutAnimation.value != 0.0,
-                          child: Opacity(
-                            opacity: _fadeOutAnimation.value,
+                        Transform.translate(
+                          offset: Offset(_translationAnimation.value, 0),
+                          child: Visibility(
+                            visible: !_translationAnimation.isCompleted,
                             child: SizedBox(
                               width: AppDesign.camBtnWidth,
                               height: AppDesign.camBtnHeight,
@@ -211,11 +261,11 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                           ),
                         ),
                       ],
-                    );
-                  }
-                ),
-              ),
-            ],
+                    ),
+                  ),
+                ],
+              );
+            }
           ),
         )
       ),
