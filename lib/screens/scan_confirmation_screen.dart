@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:tracer/screens/data_verification_screen.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -202,6 +203,12 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                           child: GradientBorderButton(
                             onPressed: () async {
                               _initialAnimationController.forward();
+
+                              await Navigator.of(context).pushReplacement(
+                                MaterialPageRoute<void>(
+                                  builder: (context) => DataVerificationScreen()
+                                )
+                              );
                             },
                             gradient: LinearGradient(colors: [
                                 AppDesign.primaryGradientStart,
