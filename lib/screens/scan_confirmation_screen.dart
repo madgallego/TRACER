@@ -204,6 +204,10 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                             onPressed: () async {
                               _initialAnimationController.forward();
 
+                              await Future.delayed(const Duration(seconds: 2));
+
+                              if (!context.mounted) return;
+
                               await Navigator.of(context).pushReplacement(
                                 MaterialPageRoute<void>(
                                   builder: (context) => DataVerificationScreen()
