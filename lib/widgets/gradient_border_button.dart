@@ -88,7 +88,7 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
       parent: _rotationController,
-      curve: AppDesign.loadingEasing
+      curve: AppDesign.loadingRotationEasing
       )
     );
   }

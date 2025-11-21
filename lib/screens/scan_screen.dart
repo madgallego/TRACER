@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:tracer/screens/scan_confirmation_screen.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -39,70 +40,73 @@ class ScanScreenState extends State<ScanScreen> {
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    // Size of the gesture hint / navbar at the bottom of the screen
+    final double bottomInset = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SafeArea(
-              child: Center(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: AppDesign.camMaxWidth,
-                    maxHeight: AppDesign.camMaxHeight,
+            Flexible(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: AppDesign.camMaxWidth,
+                  maxHeight: AppDesign.camMaxHeight,
+                ),
+                padding: const EdgeInsets.all(AppDesign.camBorderThickness),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
+                  gradient: const LinearGradient(
+                    colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  padding: const EdgeInsets.all(AppDesign.camBorderThickness),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
-                    gradient: const LinearGradient(
-                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                      begin: Alignment.bottomRight,
-                      end: Alignment.topLeft,
-                    ),
-                    boxShadow: AppDesign.defaultBoxShadows,
-                  ),
-                  child: SizedBox(
-                    child: FutureBuilder<void>(
-                      future: _initializeControllerFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          // If the Future is complete, display the preview.
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
-                            child: CameraPreview(_controller)
-                          );
-                        } else {
-                          // Otherwise, display a loading indicator.
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                      }
-                    ),
-                  ),
+                  boxShadow: AppDesign.defaultBoxShadows,
+                ),
+                child: FutureBuilder<void>(
+                  future: _initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      // If the Future is complete, display the preview.
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
+                        child: CameraPreview(_controller)
+                      );
+                    } else {
+                      // Otherwise, display a loading indicator.
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }
                 ),
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(
+              height: 10.0,
+            ),
 
             Container(
-              padding: const EdgeInsets.only(bottom: 20.0, top: 15.0) ,
+              // Factor in gesture hint / navbar space
+              height: 90.0 + bottomInset,
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0 + bottomInset, right: 10.0, left: 10.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: AppDesign.bottomBarBorderRadius,
@@ -112,10 +116,10 @@ class ScanScreenState extends State<ScanScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 60.0,
-                    height: 50.0,
+                    width: AppDesign.camBtnWidth,
+                    height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -135,13 +139,34 @@ class ScanScreenState extends State<ScanScreen> {
                   ),
 
                   SizedBox(
-                    width: 120.0,
-                    height: 50.0,
+                    width: AppDesign.camBtnWidth + 80.0,
+                    height: AppDesign.camBtnHeight + 5.0,
                     child: GradientBorderButton(
                       onPressed: () async {
-                        await Future.delayed(Duration(seconds: 3), () {
-                          print("3 seconds have passed");
-                        });
+                        try {
+                          await _initializeControllerFuture;
+
+                          final image = await _controller.takePicture();
+
+                          await _controller.pausePreview();
+
+                          if (!context.mounted) return;
+
+                          // If the picture was taken, display it on a new screen.
+                          await Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => ScanConfirmationScreen(
+                                imagePath: image.path,
+                              ),
+                            ),
+                          );
+
+                          if (_controller.value.isInitialized) {
+                            await _controller.resumePreview();
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
                       },
                       gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -149,7 +174,7 @@ class ScanScreenState extends State<ScanScreen> {
                         ]),
                       borderRadius: AppDesign.sBtnBorderRadius,
                       child: GradientIcon(
-                        icon: Icons.camera_alt,
+                        icon: Icons.camera_rounded,
                         size: AppDesign.sBtnIconSize,
                         gradient: LinearGradient(colors: [
                           AppDesign.primaryGradientStart,
@@ -160,10 +185,10 @@ class ScanScreenState extends State<ScanScreen> {
                   ),
 
                   SizedBox(
-                    width: 60.0,
-                    height: 50.0,
+                    width: AppDesign.camBtnWidth,
+                    height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -186,7 +211,7 @@ class ScanScreenState extends State<ScanScreen> {
             )
           ],
         ),
-      )
+      ),
     );
   }
 }

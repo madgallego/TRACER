@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/utils/process_state.dart';
-import 'package:tracer/widgets/gradient_border_button.dart';
 
 class GradientIcon extends StatefulWidget {
   final IconData icon;
@@ -42,7 +39,7 @@ class _GradientIconState extends State<GradientIcon>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
       parent: _rotationController,
-      curve: AppDesign.loadingEasing
+      curve: AppDesign.loadingRotationEasing
       )
     );
   }
