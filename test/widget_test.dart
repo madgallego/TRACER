@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,7 +14,14 @@ import 'package:tracer/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // Provide a minimal CameraDescription for the test (no real camera used).
+    final camera = CameraDescription(
+      name: 'test',
+      lensDirection: CameraLensDirection.back,
+      sensorOrientation: 0,
+    );
+
+    await tester.pumpWidget(MyApp(camera: camera));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
