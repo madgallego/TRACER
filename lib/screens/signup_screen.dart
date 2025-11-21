@@ -4,18 +4,19 @@ import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
 
-import 'signup_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   // Variables for managing form state 
   bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   // Methods for handling login logic
 
@@ -163,7 +164,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              // Sign in button
+                              // Confirm Password field
+                              const SizedBox(height: 12),
+                              TextField(
+                                style: const TextStyle(color: Colors.black),
+                                obscureText: !_confirmPasswordVisible,
+                                decoration: InputDecoration(
+                                  hintText: 'Confirm Password',
+                                  hintStyle: TextStyle(color: Colors.black45),
+                                  filled: true,
+                                  fillColor: Colors.grey.withOpacity(0.1),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  prefixIcon: GradientIcon(
+                                    icon: Icons.lock,
+                                    size: AppDesign.sBtnIconSize,
+                                    gradient: LinearGradient(colors: [
+                                      AppDesign.primaryGradientStart,
+                                      AppDesign.primaryGradientEnd
+                                    ]), 
+                                  ),
+                                  suffixIcon: GradientIcon(
+                                    icon: _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                    size: AppDesign.sBtnIconSize,
+                                    gradient: LinearGradient(colors: [
+                                      AppDesign.primaryGradientStart,
+                                      AppDesign.primaryGradientEnd
+                                    ]),
+                                    // TODO: Wrap in GestureDetector to handle taps OR create a GradientIconButton widget, update _confirmPasswordVisible state
+                                  ),
+                                ),
+                              ),
+                              // Sign up button
                               const SizedBox(height: 16),
                               SizedBox(
                                 width: 2000.0,
@@ -178,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ]),
                                   borderRadius: AppDesign.sBtnBorderRadius,
                                   child: const Text(
-                                    'Log In',
+                                    'Sign Up',
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -193,14 +227,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   const Text(
-                                    "Don't have an account? ",
+                                    "Already have an account? ",
                                     style: TextStyle(color: Colors.black45),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const SignupScreen()),
+                                        MaterialPageRoute(builder: (context) => const LoginScreen()),
                                       );
                                     },
                                     style: TextButton.styleFrom(
@@ -209,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: Text(
-                                      'Sign Up now',
+                                      'Log In now',
                                       style: TextStyle(
                                         color: AppDesign.primaryGradientEnd,
                                         fontWeight: FontWeight.bold,

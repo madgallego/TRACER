@@ -1,31 +1,103 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'dart:math' as math;
-
 import 'package:tracer/utils/constants.dart';
-import 'package:tracer/utils/process_state.dart';
+import 'dart:math' as math;
 
 class GradientBorderText extends StatefulWidget {
   final String text;
   final TextStyle textStyle;
-  final double borderWidth;
   final LinearGradient gradient;
-  final BorderRadius? borderRadius;
-  final Color innerColor;
+  final double strokeWidth;
 
   const GradientBorderText({
     super.key,
     required this.text,
     required this.textStyle,
-    this.borderWidth = 3.0,
     required this.gradient,
-    this.borderRadius,
-    this.innerColor = Colors.white,
+    this.strokeWidth = 2.0,
   });
 
   @override
   State<GradientBorderText> createState() => _GradientBorderTextState();
-  
+}
+
+class _GradientBorderTextState extends State<GradientBorderText>
+    with SingleTickerProviderStateMixin {
+
+  late final AnimationController _rotationController;
+  late final Animation<double> _rotation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _rotationController = AnimationController(
+      vsync: this,
+      duration: AppDesign.loadingRotationDuration,
+    );
+
+    _rotation = Tween<double>(
+      begin: 0.0,
+      end: 2 * math.pi,
+    ).animate(CurvedAnimation(
+      parent: _rotationController,
+      curve: AppDesign.loadingEasing,
+    ));
+
+    // Always rotate
+    _rotationController.repeat();
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _rotationController,
+      builder: (context, _) {
+        final rotatedGradient = LinearGradient(
+          colors: widget.gradient.colors,
+          stops: widget.gradient.stops,
+          begin: widget.gradient.begin,
+          end: widget.gradient.end,
+          transform: GradientRotation(_rotation.value),
+        );
+
+        return Stack(
+          children: [
+            Text(
+              widget.text,
+              style: widget.textStyle.copyWith(
+                foreground: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = widget.strokeWidth
+                  ..strokeJoin = StrokeJoin.round
+                  ..strokeCap = StrokeCap.round
+                  ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 0.5)
+                  ..shader = rotatedGradient.createShader(_shaderRect()),
+              ),
+            ),
+
+            Text(
+              widget.text,
+              style: widget.textStyle,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Rect _shaderRect() {
+    final fontSize = widget.textStyle.fontSize ?? 20;
+    return Rect.fromLTWH(
+      0,
+      0,
+      fontSize * widget.text.length * 0.60,
+      fontSize * 1.2,
+    );
+  }
 }
