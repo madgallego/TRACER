@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tracer/screens/scan_confirmation_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -21,6 +22,17 @@ class ScanScreen extends StatefulWidget {
 class ScanScreenState extends State<ScanScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+
+  final _picker = ImagePicker();
+  File? _image;
+
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      _image = File(pickedImage.path);
+    }
+  }
 
   @override
   void initState() {
@@ -189,7 +201,33 @@ class ScanScreenState extends State<ScanScreen> {
                     height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
                       onPressed: () async {
+                        await _controller.pausePreview();
 
+                        await _openImagePicker();
+
+                        if (_image == null) {
+                          if (_controller.value.isInitialized) {
+                            await _controller.resumePreview();
+                          }
+                          return;
+                        }
+
+                        if (!context.mounted) return;
+
+                        // If the picture a picture was chosen, display it on the new screen
+                        await Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) => ScanConfirmationScreen(
+                              imagePath: _image!.path,
+                            ),
+                          ),
+                        );
+
+                        _image = null;
+
+                        if (_controller.value.isInitialized) {
+                          await _controller.resumePreview();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

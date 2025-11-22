@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:tracer/screens/data_verification_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -28,9 +29,22 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   late Animation<double> _resizeAnimation;
   late Animation<double> _translationAnimation;
 
+  final _picker = ImagePicker();
+  late File _image;
+
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      _image = File(pickedImage.path);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _image = File(widget.imagePath);
 
     _imageAnimationController = AnimationController(
       vsync: this,
@@ -108,7 +122,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
           child: AnimatedBuilder(
             animation: Listenable.merge([
               _initialAnimationController,
@@ -143,19 +157,25 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
                         child: Image.file(
-                          File(widget.imagePath),
+                          _image,
                           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                             if (frame != null) {
                               _imageAnimationController.forward();
-                            }
 
-                            return AspectRatio(
-                              aspectRatio: 9.0/16.0,
-                              child: Opacity(
+                              return Opacity(
                                 opacity: _imageFadeInAnimation.value,
                                 child: child,
-                              ),
-                            );
+                              );
+                            } else {
+                              // Default to a 9:16 aspect ratio when picture isn't loaded yet
+                              return AspectRatio(
+                                aspectRatio: 9.0/16.0,
+                                child: Opacity(
+                                  opacity: _imageFadeInAnimation.value,
+                                  child: child,
+                                ),
+                              );
+                            }
                           },
                         )
                       ),
@@ -180,7 +200,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               height: AppDesign.camBtnHeight,
                               child: ElevatedButton(
                                 onPressed: () {
-
+                                  Navigator.of(context).pop();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
@@ -203,8 +223,6 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                           child: GradientBorderButton(
                             onPressed: () async {
                               _initialAnimationController.forward();
-
-                              await Future.delayed(const Duration(seconds: 2));
 
                               if (!context.mounted) return;
 
@@ -254,8 +272,9 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               width: AppDesign.camBtnWidth,
                               height: AppDesign.camBtnHeight,
                               child: ElevatedButton(
-                                onPressed: () {
-
+                                onPressed: () async {
+                                  await _openImagePicker();
+                                  setState(() {});
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
