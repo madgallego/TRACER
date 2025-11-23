@@ -232,10 +232,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                      );
+                                      Navigator.pop(context);
                                     },
                                     style: TextButton.styleFrom(
                                       padding: EdgeInsets.zero,
