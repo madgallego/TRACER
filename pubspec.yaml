@@ -100,3 +100,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: Affection
+      fonts:
+        - asset: lib/fonts/affection_ldr.ttf
+        - asset: lib/fonts/insane_affection_ldr.ttf
