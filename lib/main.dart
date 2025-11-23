@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tracer/screens/home_screen.dart';
 
 import 'utils/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: HomeScreen(camera: camera),
       //home: ScanScreen(camera: camera),
     );
   }

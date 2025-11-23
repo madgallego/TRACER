@@ -1,7 +1,16 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tracer/screens/scan_screen.dart';
+// import 'package:tracer/screens/settings_screen.dart';
+import 'package:tracer/utils/constants.dart';
+import 'package:tracer/widgets/gradient_border_button.dart';
+import 'package:tracer/widgets/gradient_border_text.dart';
+import 'package:tracer/widgets/gradient_icon.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.camera});
+
+  final CameraDescription camera;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -71,187 +80,201 @@ class _HomeScreenState extends State<HomeScreen>
               Color(0xFF62D2F5), // Light blue
               Color(0xFFFFFE6A), // Light Yellow
             ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
           ),
         ),
         child: SafeArea(
+          bottom: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
-            child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child){
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children:[
-                      const SizedBox(height: 35),
-                    
-  
-                    //header logo
-                    Opacity(
-                      opacity: _fadeLogo.value,
-                      child: Transform.scale(
-                        scale: _scaleLogo.value,
-                        child: Text(
-                          "TRACER",
-                          style: TextStyle(
-                            fontSize: 46,
-                            fontWeight: FontWeight.bold,
-                            foreground: Paint()
-                              ..shader = const LinearGradient(
-                                colors: [
-                                  Color(0xFF9CF3FF),
-                                  Color(0xFFEFFFA3),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(const Rect.fromLTWH(0, 0, 200, 80))
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-  
-                    //main buttons
-                    Transform.translate(
-                      offset: Offset(0, _translateButtons.value),
-                      child: Opacity(
-                        opacity: _fadeButtons.value,
-                        child: Column(
-                          children: [
-  
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                _HomeRoundedButton(
-                                  icon: Icons.folder_open,
-                                  title: "Records",
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/records');
-                                  },
+            padding: const EdgeInsets.only(top: 60.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0)
+                )
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 60),
+
+                          //header logo
+                          Opacity(
+                            opacity: _fadeLogo.value,
+                            child: Transform.scale(
+                              scale: _scaleLogo.value,
+                              child: GradientBorderText(
+                                text: "TRACER",
+                                textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 46,
+                                  fontFamily: 'Affection',
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              _HomeRoundedButton(
-                                icon: Icons.settings,
-                                title: "Settings",
-                                onTap: (){
-                                  Navigator.pushNamed(context, "/settings");
-                                },
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppDesign.primaryGradientStart,
+                                    AppDesign.primaryGradientEnd
+                                  ]
+                                )
                               ),
-                              ],
                             ),
+                          ),
+                          const SizedBox(height: 40),
 
-                          const SizedBox(height: 25),
-                          
-                            _ScannerButton(
-                              onTap:(){
-                                Navigator.pushNamed(context, "/scanner");
-                              },
+                          // main buttons
+                          Transform.translate(
+                            offset: Offset(0, _translateButtons.value),
+                            child: Opacity(
+                              opacity: _fadeButtons.value,
+                              child: Column(
+                                children: [
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _HomeRoundedButton(
+                                        gradientIcon: GradientIcon(
+                                          icon: Icons.folder_open,
+                                          size: 24.0,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppDesign.primaryGradientStart,
+                                              AppDesign.primaryGradientEnd,
+                                            ]
+                                          )
+                                        ),
+                                        title: "Records",
+                                        onTap: () {
+                                          // TODO: navigate to records screen
+                                        },
+                                      ),
+                                      _HomeRoundedButton(
+                                        gradientIcon: GradientIcon(
+                                          icon: Icons.settings,
+                                          size: 24.0,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppDesign.primaryGradientStart,
+                                              AppDesign.primaryGradientEnd,
+                                            ]
+                                          )
+                                        ),
+                                        title: "Settings",
+                                        onTap: () async {
+                                          // await Navigator.of(context).push(
+                                          //   // MaterialPageRoute(builder: (context) => SettingsScreen())
+                                          // );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 25),
+
+                                  GradientBorderButton(
+                                    onPressed: () async {
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) => ScanScreen(
+                                          camera: widget.camera
+                                        ))
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        GradientIcon(
+                                          icon: Icons.camera_alt_outlined,
+                                          size: 48.0,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppDesign.primaryGradientStart,
+                                              AppDesign.primaryGradientEnd,
+                                            ]
+                                          ),
+                                        ),
+                                        const Text("Scanner")
+                                      ]
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 75),
+
+                                  _LinkTile(
+                                    title: "About this App",
+                                    onTap: (){
+                                      Navigator.pushNamed(context, "/howto");
+                                    },
+                                  )
+
+                                ],
+                              ),
                             ),
-
-                            const SizedBox(height: 25),
-
-                            _LinkTile(
-                              title: "About this App",
-                              onTap: (){
-                                Navigator.pushNamed(context, "/howto");
-                              },
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
-                    ],
-                  );
-                },
+                          ),
+                        ],
+                      );
+                    },
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
-    
-  
   }
 }
 
 //Button widgets
 class _HomeRoundedButton extends StatelessWidget{
-  final IconData icon;
+  final GradientIcon gradientIcon;
   final String title;
   final VoidCallback onTap;
 
   const _HomeRoundedButton({
-    required this.icon,
+    required this.gradientIcon,
     required this.title,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context){
-    return InkWell(
+    return Material(
+      color: Colors.white,
       borderRadius: BorderRadius.circular(22),
-      onTap: onTap,
-      child: Container(
-        width: 145,
-        height: 90,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              spreadRadius: 1,
-              offset: const Offset(2,2),
-            )
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.black54),
-            const SizedBox(height: 8),
-            Text(title, style: const TextStyle(fontSize: 14)),
-          ],
+      shadowColor: Colors.black,
+      elevation: 1.0,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: onTap,
+        child: SizedBox(
+          width: 145,
+          height: 90,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              gradientIcon,
+              const SizedBox(height: 8),
+              Text(title, style: const TextStyle(fontSize: 14)),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-class _ScannerButton extends StatelessWidget{
-  final VoidCallback onTap;
 
-  const _ScannerButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context){
-    return InkWell(
-      borderRadius: BorderRadius.circular(22),
-      onTap: onTap,
-      child: Container(
-        height: 95,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(19),
-        ),
-          child: const Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.camera_alt_outlined, color: Colors.black54),
-                SizedBox(width: 6),
-                Text(
-                  "Scanner",
-                  style: TextStyle(fontSize: 16),
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-  }
-}
 class _LinkTile extends StatelessWidget{
   final String title;
   final VoidCallback onTap;
@@ -263,11 +286,12 @@ class _LinkTile extends StatelessWidget{
   });
 
   @override
-  
+
   Widget build(BuildContext context){
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
+      elevation: 1.0,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
