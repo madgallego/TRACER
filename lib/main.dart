@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Screens
 import 'screens/scan_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +52,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: ScanScreen(camera: camera),
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
+      //home: ScanScreen(camera: camera),
     );
   }
 }
