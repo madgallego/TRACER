@@ -103,5 +103,8 @@ flutter:
   fonts:
     - family: Affection
       fonts:
-        - asset: lib/fonts/affection_ldr.ttf
-        - asset: lib/fonts/insane_affection_ldr.ttf
+        - asset: assets/fonts/affection_ldr.ttf
+        - asset: assets/fonts/insane_affection_ldr.ttf
+    - family: AROneSans
+      fonts:
+        - asset: assets/fonts/AROneSans.ttf
