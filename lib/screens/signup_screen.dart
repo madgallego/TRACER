@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracer/auth/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -18,7 +19,47 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
+  // Auth service and controllers
+  final authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   // Methods for handling login logic
+  void signup() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    // Check if passwords match
+    if (password != confirmPassword) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Passwords do not match')),
+        );
+      }
+      return;
+    }
+
+    // Attempt to sign up the user
+    try {
+      await authService.signUp(email, password);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up successful! Please verify your email and proceed to log in.')),
+        );
+        Navigator.pop(context);
+      }
+    // Handle sign up errors
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign up failed: $e')),
+        );
+      }
+    }
+  }
 
   // User interface
   @override
@@ -110,6 +151,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               // Email field
                               const SizedBox(height: 12),
                               TextField(
+                                controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
@@ -134,6 +176,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               // Password field
                               const SizedBox(height: 12),
                               TextField(
+                                controller: _passwordController,
                                 style: const TextStyle(color: Colors.black),
                                 obscureText: !_passwordVisible,
                                 decoration: InputDecoration(
@@ -167,6 +210,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               // Confirm Password field
                               const SizedBox(height: 12),
                               TextField(
+                                controller: _confirmPasswordController,
                                 style: const TextStyle(color: Colors.black),
                                 obscureText: !_confirmPasswordVisible,
                                 decoration: InputDecoration(
@@ -204,7 +248,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 height: 50.0,
                                 child: GradientBorderButton(
                                   onPressed: () async {
-                                    // TODO: implement login logic
+                                    signup();
                                   },
                                   gradient: LinearGradient(colors: [
                                       AppDesign.primaryGradientStart,

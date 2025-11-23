@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracer/auth/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -17,7 +18,28 @@ class _LoginScreenState extends State<LoginScreen> {
   // Variables for managing form state 
   bool _passwordVisible = false;
 
+  // Auth service and controllers
+  final authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   // Methods for handling login logic
+  void login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Attempt to log in the user
+    try {
+      await authService.signIn(email, password);
+    // Handle login errors
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: $e')),
+        );
+      }
+    }
+  }
 
   // User interface
   @override
@@ -109,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // Email field
                               const SizedBox(height: 12),
                               TextField(
+                                controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
@@ -133,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // Password field
                               const SizedBox(height: 12),
                               TextField(
+                                controller: _passwordController,
                                 style: const TextStyle(color: Colors.black),
                                 obscureText: !_passwordVisible,
                                 decoration: InputDecoration(
@@ -170,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 50.0,
                                 child: GradientBorderButton(
                                   onPressed: () async {
-                                    // TODO: implement login logic
+                                    login();
                                   },
                                   gradient: LinearGradient(colors: [
                                       AppDesign.primaryGradientStart,
