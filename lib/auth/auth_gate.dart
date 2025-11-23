@@ -1,5 +1,5 @@
 // This listens to the authentication state and redirects the user to the respective screen based on their authentication status.
-// Authenticated => login_screen, Unauthenticated => signup_screen
+// Authenticated => home_screen, Unauthenticated => login_screen
 
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
