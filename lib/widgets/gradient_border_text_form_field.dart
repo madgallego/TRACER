@@ -5,10 +5,13 @@ class GradientTextFormField extends StatefulWidget {
   final String? hintText;
   final LinearGradient activeGradient;
   final BorderRadius? borderRadius;
+  final String? prefixText;
   final Widget? suffixIcon;
 
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
+  final VoidCallback? onTap;
+  final bool readOnly;
 
   const GradientTextFormField({
     super.key,
@@ -16,9 +19,12 @@ class GradientTextFormField extends StatefulWidget {
     this.hintText,
     required this.activeGradient,
     this.borderRadius,
+    this.prefixText,
     this.suffixIcon,
     this.validator,
     this.onSaved,
+    this.onTap,
+    this.readOnly = false,
   });
 
   @override
@@ -81,6 +87,13 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
 
           validator: widget.validator,
           onSaved: widget.onSaved,
+          onTap: widget.onTap,
+          readOnly: widget.readOnly,
+
+          style: TextStyle(
+            fontFamily: "AROneSans",
+            fontSize: 13.0,
+          ),
 
           decoration: InputDecoration(
             hintText: widget.hintText,
@@ -88,6 +101,12 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
             errorStyle: const TextStyle(height: 0),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             isDense: true,
+
+            prefixText: widget.prefixText,
+            prefixStyle: TextStyle(
+              fontFamily: "AROneSans",
+              fontSize: 13.0
+            ),
             suffixIcon: widget.suffixIcon,
           ),
         ),

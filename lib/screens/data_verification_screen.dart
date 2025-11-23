@@ -33,6 +33,32 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+  final initialDate = DateTime.now();
+
+  final DateTime? pickedDate =
+    await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light(),
+          child: child!,
+        );
+      }
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _transactDayController.text = pickedDate.day.toString().padLeft(2, '0');
+        _transactMonthController.text = pickedDate.month.toString().padLeft(2, '0');
+        _transactYearController.text = pickedDate.year.toString();
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -47,6 +73,9 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Size of the gesture hint / navbar at the bottom of the screen
+    final double bottomInset = MediaQuery.of(context).padding.bottom;
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -66,17 +95,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
             ),
           ),
           child: SafeArea(
+            bottom: false,
             child: Padding(
               padding: const EdgeInsets.only(top: 30.0),
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-                  ),
+              child: Container(
+                padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                ),
+                child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: bottomInset),
                     child: Form(
                       child: Column(
                         spacing: 20.0,
@@ -102,7 +132,9 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   Text(
                                     "Retake photo",
                                     style: TextStyle(
-                                      color: AppDesign.appOffblack
+                                      color: AppDesign.appOffblack,
+                                      fontFamily: "AROneSans",
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   )
                                 ]
@@ -111,10 +143,12 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                           ),
 
                           Text(
-                            "Please confirm the details are correct.",
+                            "Please confirm the details are correct",
                             style: TextStyle(
-                              fontSize: 12.0,
-                              color: AppDesign.appOffblack
+                              fontSize: 14.0,
+                              color: AppDesign.appOffblack,
+                              fontFamily: "AROneSans",
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
 
@@ -127,20 +161,29 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                               borderRadius: BorderRadius.circular(30.0)
                             ),
                             child: Column(
+                              spacing: 5.0,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   "Student Details",
                                   style: TextStyle(
                                     color: AppDesign.appOffblack,
-                                    fontSize: 14.0,
+                                    fontSize: 18.0,
+                                    fontFamily: "AROneSans",
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Divider(
                                   color: Colors.grey
                                 ),
                                 Text(
-                                  "First Name"
+                                  "First Name",
+                                  style: TextStyle(
+                                    color: AppDesign.appOffblack,
+                                    fontSize: 12.0,
+                                    fontFamily: "AROneSans",
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 GradientTextFormField(
                                   controller: _stuFirstNameController,
@@ -160,12 +203,23 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                 ),
 
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Expanded(
                                       flex: 3,
                                       child: Column(
+                                        spacing: 5.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Middle Initial"),
+                                          Text(
+                                            "Middle Initial",
+                                            style: TextStyle(
+                                              color: AppDesign.appOffblack,
+                                              fontSize: 12.0,
+                                              fontFamily: "AROneSans",
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                           GradientTextFormField(
                                             controller: _stuMiddleInitialController,
                                             borderRadius: BorderRadius.circular(30.0),
@@ -193,9 +247,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                     Expanded(
                                       flex: 7,
                                       child: Column(
+                                        spacing: 5.0,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Last Name"),
+                                          Text(
+                                            "Last Name",
+                                            style: TextStyle(
+                                              color: AppDesign.appOffblack,
+                                              fontSize: 12.0,
+                                              fontFamily: "AROneSans",
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                           GradientTextFormField(
                                             controller: _stuLastNameController,
                                             borderRadius: BorderRadius.circular(30.0),
@@ -218,7 +281,15 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ],
                                 ),
 
-                                Text("Student No."),
+                                Text(
+                                  "Student No.",
+                                  style: TextStyle(
+                                    color: AppDesign.appOffblack,
+                                    fontSize: 12.0,
+                                    fontFamily: "AROneSans",
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 GradientTextFormField(
                                   controller: _stuNumController,
                                   borderRadius: BorderRadius.circular(30.0),
@@ -239,6 +310,157 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                             ),
                           ),
 
+                          Container(
+                            width: double.maxFinite,
+                            padding: EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              color: AppDesign.appPaleCyan,
+                              boxShadow: AppDesign.defaultBoxShadows,
+                              borderRadius: BorderRadius.circular(30.0)
+                            ),
+                            child: Column(
+                              spacing: 5.0,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Transaction Details",
+                                  style: TextStyle(
+                                    color: AppDesign.appOffblack,
+                                    fontSize: 18.0,
+                                    fontFamily: "AROneSans",
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Divider(
+                                  color: Colors.grey
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        spacing: 5.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Month",
+                                            style: TextStyle(
+                                              color: AppDesign.appOffblack,
+                                              fontSize: 12.0,
+                                              fontFamily: "AROneSans",
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          GradientTextFormField(
+                                            controller: _transactMonthController,
+                                            readOnly: true,
+                                            onTap: () async {
+                                              await _selectDate(context);
+                                            },
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            activeGradient: LinearGradient(
+                                              colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
+                                            ),
+                                            suffixIcon: GradientIcon(
+                                              icon: Icons.arrow_drop_down,
+                                              size: 24.0,
+                                              gradient: LinearGradient(
+                                                colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                                                begin: Alignment.bottomLeft,
+                                                end: Alignment.topRight,
+                                              )
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        spacing: 5.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Day",
+                                            style: TextStyle(
+                                              color: AppDesign.appOffblack,
+                                              fontSize: 12.0,
+                                              fontFamily: "AROneSans",
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          GradientTextFormField(
+                                            controller: _transactDayController,
+                                            readOnly: true,
+                                            onTap: () async {
+                                              await _selectDate(context);
+                                            },
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            activeGradient: LinearGradient(
+                                              colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
+                                            ),
+                                            suffixIcon: GradientIcon(
+                                              icon: Icons.arrow_drop_down,
+                                              size: 24.0,
+                                              gradient: LinearGradient(
+                                                colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                                                begin: Alignment.bottomLeft,
+                                                end: Alignment.topRight,
+                                              )
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Column(
+                                        spacing: 5.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Year",
+                                            style: TextStyle(
+                                              color: AppDesign.appOffblack,
+                                              fontSize: 12.0,
+                                              fontFamily: "AROneSans",
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          GradientTextFormField(
+                                            controller: _transactYearController,
+                                            readOnly: true,
+                                            onTap: () async {
+                                              await _selectDate(context);
+                                            },
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            activeGradient: LinearGradient(
+                                              colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
+                                            ),
+                                            suffixIcon: GradientIcon(
+                                              icon: Icons.arrow_drop_down,
+                                              size: 24.0,
+                                              gradient: LinearGradient(
+                                                colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                                                begin: Alignment.bottomLeft,
+                                                end: Alignment.topRight,
+                                              )
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+
+                              ],
+                            ),
+
+                          ),
+
                           // TODO: more containers here!
 
                           GradientBorderButton(
@@ -249,7 +471,14 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                             gradient: LinearGradient(
                               colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
                             ),
-                            child: Text("Upload to Database"),
+                            child: Text(
+                              "Upload to Database",
+                              style: TextStyle(
+                                color: AppDesign.appOffblack,
+                                fontSize: 14.0,
+                                fontFamily: "AROneSans",
+                              ),
+                            ),
                           ),
                         ],
                       ),

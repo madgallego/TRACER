@@ -241,6 +241,8 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                     "Next",
                                     style: TextStyle(
                                       fontSize: 18.0,
+                                      fontFamily: "AROneSans",
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -251,6 +253,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                     "Processing...",
                                     style: TextStyle(
                                       fontSize: 18.0,
+                                      fontFamily: "AROneSans",
                                     ),
                                   ),
                                 )

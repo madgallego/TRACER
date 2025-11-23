@@ -43,8 +43,6 @@ class MyApp extends StatelessWidget {
             padding: EdgeInsets.zero,
           )
         ),
-
-
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
