@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   // Variables for managing form state 
-  bool _passwordVisible = false;
+  final bool _passwordVisible = false;
 
   // Methods for handling login logic
 
