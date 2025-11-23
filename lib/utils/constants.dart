@@ -61,5 +61,4 @@ abstract class AppDesign {
   // Gradient widgets loading animations
   static final Duration loadingRotationDuration = Duration(milliseconds: 700);
   static final Curve loadingRotationEasing = Curves.easeOutQuart;
-
 }
