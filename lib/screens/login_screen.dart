@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   // Methods for handling login logic
-  void login() async {
+  Future<void> login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -176,14 +176,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       AppDesign.primaryGradientEnd
                                     ]), 
                                   ),
-                                  suffixIcon: GradientIcon(
-                                    icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd
-                                    ]),
-                                    // TODO: Wrap in GestureDetector to handle taps OR create a GradientIconButton widget, update _passwordVisible state
+                                  suffixIcon: IconButton(
+                                    icon: GradientIcon(
+                                      icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
@@ -194,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 50.0,
                                 child: GradientBorderButton(
                                   onPressed: () async {
-                                    login();
+                                    await login();
                                   },
                                   gradient: LinearGradient(colors: [
                                       AppDesign.primaryGradientStart,

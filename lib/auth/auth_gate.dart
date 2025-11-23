@@ -15,6 +15,18 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   @override
+  void initState() {
+    super.initState();
+    // Listen for auth state changes to handle email confirmation redirects
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      if (data.event == AuthChangeEvent.signedIn) {
+        // Debug print to confirm the link worked
+        print("User confirmed email and is now signed in!"); 
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       // Listens to authentication state changes

@@ -26,7 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _confirmPasswordController = TextEditingController();
 
   // Methods for handling login logic
-  void signup() async {
+  Future<void> signup() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
@@ -196,14 +196,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                       AppDesign.primaryGradientEnd
                                     ]), 
                                   ),
-                                  suffixIcon: GradientIcon(
-                                    icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd
-                                    ]),
-                                    // TODO: Wrap in GestureDetector to handle taps OR create a GradientIconButton widget, update _passwordVisible state
+                                  suffixIcon: IconButton(
+                                    icon: GradientIcon(
+                                      icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
@@ -230,14 +236,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                       AppDesign.primaryGradientEnd
                                     ]), 
                                   ),
-                                  suffixIcon: GradientIcon(
-                                    icon: _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd
-                                    ]),
-                                    // TODO: Wrap in GestureDetector to handle taps OR create a GradientIconButton widget, update _confirmPasswordVisible state
+                                  suffixIcon: IconButton(
+                                    icon: GradientIcon(
+                                      icon: _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _confirmPasswordVisible = !_confirmPasswordVisible;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
@@ -248,7 +260,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 height: 50.0,
                                 child: GradientBorderButton(
                                   onPressed: () async {
-                                    signup();
+                                    await signup();
                                   },
                                   gradient: LinearGradient(colors: [
                                       AppDesign.primaryGradientStart,

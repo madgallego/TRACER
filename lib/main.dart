@@ -11,21 +11,16 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
   //Supabase setup
   await Supabase.initialize(
     anonKey: Env.supabaseKey,
     url: Env.supabaseUrl,
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
-
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
-
-  await Supabase.initialize(
-    anonKey: Env.supabaseKey,
-    url: Env.supabaseUrl
-  );
 
   runApp(MyApp(camera: firstCamera));
 }
