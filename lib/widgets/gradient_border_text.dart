@@ -40,7 +40,7 @@ class _GradientBorderTextState extends State<GradientBorderText>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
       parent: _rotationController,
-      curve: AppDesign.loadingEasing,
+      curve: AppDesign.loadingRotationEasing,
     ));
 
     // Always rotate
