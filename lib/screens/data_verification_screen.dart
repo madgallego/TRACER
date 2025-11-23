@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
-import 'package:tracer/widgets/gradient_border_text_field.dart';
+import 'package:tracer/widgets/gradient_border_text_form_field.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
 
 import '../utils/constants.dart';
@@ -86,11 +86,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                             onPressed: () async {
                               Navigator.of(context).pop();
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              overlayColor: Colors.black,
-                              padding: EdgeInsets.zero
-                            ),
                             child: Padding(
                               padding: EdgeInsets.only(left: 5.0, right: 15.0),
                               child: Row(

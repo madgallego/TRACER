@@ -202,11 +202,6 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  overlayColor: Colors.black,
-                                  padding: EdgeInsets.zero,
-                                ),
                                 child: Icon(
                                   Icons.close,
                                   size: AppDesign.sBtnIconSize,
@@ -276,11 +271,6 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                   await _openImagePicker();
                                   setState(() {});
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  overlayColor: Colors.black,
-                                  padding: EdgeInsets.zero,
-                                ),
                                 child: Icon(
                                   Icons.upload,
                                   size: AppDesign.sBtnIconSize,

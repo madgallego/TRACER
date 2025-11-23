@@ -134,11 +134,6 @@ class ScanScreenState extends State<ScanScreen> {
                       onPressed: () async {
 
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        overlayColor: Colors.black,
-                        padding: EdgeInsets.zero,
-                      ),
                       child: GradientIcon(
                         icon: Icons.close,
                         size: AppDesign.sBtnIconSize,
@@ -229,11 +224,6 @@ class ScanScreenState extends State<ScanScreen> {
                           await _controller.resumePreview();
                         }
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        overlayColor: Colors.black,
-                        padding: EdgeInsets.zero,
-                      ),
                       child: GradientIcon(
                         icon: Icons.upload,
                         size: AppDesign.sBtnIconSize,
