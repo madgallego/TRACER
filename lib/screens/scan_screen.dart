@@ -137,7 +137,7 @@ class ScanScreenState extends State<ScanScreen> {
                     height: AppDesign.camBtnHeight,
                     child: ElevatedButton(
                       onPressed: () async {
-
+                        Navigator.of(context).pop();
                       },
                       child: GradientIcon(
                         icon: Icons.close,
