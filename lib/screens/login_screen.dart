@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             GradientBorderText(
-                              text: '.TRACER',
+                              text: 'TRACER',
                               strokeWidth: 8,
                               textStyle: const TextStyle(
                                 color: Colors.white,

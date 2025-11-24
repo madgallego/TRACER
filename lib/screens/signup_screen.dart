@@ -125,7 +125,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             const SizedBox(height: 10),
                             GradientBorderText(
-                              text: '.TRACER',
+                              text: 'TRACER',
                               strokeWidth: 8,
                               textStyle: const TextStyle(
                                 color: Colors.white,
