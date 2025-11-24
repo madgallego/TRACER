@@ -7,6 +7,7 @@ class GradientBorderText extends StatefulWidget {
   final TextStyle textStyle;
   final LinearGradient gradient;
   final double strokeWidth;
+  final List<Shadow>? shadows;
 
   const GradientBorderText({
     super.key,
@@ -14,6 +15,7 @@ class GradientBorderText extends StatefulWidget {
     required this.textStyle,
     required this.gradient,
     this.strokeWidth = 2.0,
+    this.shadows,
   });
 
   @override
@@ -71,6 +73,7 @@ class _GradientBorderTextState extends State<GradientBorderText>
             Text(
               widget.text,
               style: widget.textStyle.copyWith(
+                shadows: widget.shadows,
                 foreground: Paint()
                   ..style = PaintingStyle.stroke
                   ..strokeWidth = widget.strokeWidth
