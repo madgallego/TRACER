@@ -95,9 +95,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   AppDesign.primaryGradientEnd
                                 ],
                               ),
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: Offset(0, 10.0),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 10),
                             GradientBorderText(
-                              text: 'TRACER',
+                              text: '.TRACER',
                               strokeWidth: 8,
                               textStyle: const TextStyle(
                                 color: Colors.white,
@@ -111,6 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   AppDesign.primaryGradientEnd
                                 ],
                               ),
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: Offset(0, 10.0), 
+                                ),
+                              ],
                             ),
                           ]
                         ),
