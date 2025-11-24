@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class GradientTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String? hintText;
+  final Color fillColor;
   final LinearGradient activeGradient;
   final BorderRadius? borderRadius;
   final String? prefixText;
@@ -17,6 +18,7 @@ class GradientTextFormField extends StatefulWidget {
     super.key,
     required this.controller,
     this.hintText,
+    this.fillColor = Colors.white,
     required this.activeGradient,
     this.borderRadius,
     this.prefixText,
@@ -63,7 +65,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
       curve: Curves.easeOut,
 
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: widget.fillColor,
         gradient: currentGradient,
         border: Border.all(
           // Fallback color when not focused
@@ -77,7 +79,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
 
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.fillColor,
           borderRadius: widget.borderRadius
         ),
 

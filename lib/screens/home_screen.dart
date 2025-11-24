@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracer/screens/scan_screen.dart';
-// import 'package:tracer/screens/settings_screen.dart';
+import 'package:tracer/screens/settings_screen.dart';
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text.dart';
@@ -173,9 +173,9 @@ class _HomeScreenState extends State<HomeScreen>
                                         ),
                                         title: "Settings",
                                         onTap: () async {
-                                          // await Navigator.of(context).push(
-                                          //   // MaterialPageRoute(builder: (context) => SettingsScreen())
-                                          // );
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (context) => SettingsScreen())
+                                          );
                                         },
                                       ),
                                     ],
@@ -208,7 +208,15 @@ class _HomeScreenState extends State<HomeScreen>
                                             ]
                                           ),
                                         ),
-                                        const Text("Scanner")
+                                        const Text(
+                                          "Scanner",
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: AppDesign.appOffblack,
+                                            fontFamily: "AROneSans",
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
                                       ]
                                     ),
                                   ),
@@ -269,7 +277,15 @@ class _HomeRoundedButton extends StatelessWidget{
             children: [
               gradientIcon,
               const SizedBox(height: 8),
-              Text(title, style: const TextStyle(fontSize: 14)),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: AppDesign.appOffblack,
+                  fontFamily: "AROneSans",
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -303,7 +319,17 @@ class _LinkTile extends StatelessWidget{
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
               children:[
-                Expanded(child: Text(title)),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: AppDesign.appOffblack,
+                      fontFamily: "AROneSans",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ),
                 const Icon(Icons.open_in_new, size: 18),
               ]
           ),
