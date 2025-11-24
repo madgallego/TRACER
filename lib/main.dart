@@ -1,14 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:tracer/screens/settings_screen.dart';
+import 'package:tracer/screens/home_screen.dart';
 
 import 'utils/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Screens
-import 'screens/scan_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/signup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,9 +52,8 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
-      home: SettingsScreen(),
-      // home: LoginScreen(),
-      // home: ScanScreen(camera: camera),
+      home: HomeScreen(camera: camera),
+      //home: ScanScreen(camera: camera),
     );
   }
 }
