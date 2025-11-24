@@ -15,8 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Variables for managing form state 
-  final bool _passwordVisible = false;
+  // Variables for managing form state
+  bool _passwordVisible = false;
 
   // Auth service and controllers
   final authService = AuthService();
@@ -43,10 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
             // Gradient border for the snackbar with pop up animation
             content: TweenAnimationBuilder<double>(
               // Animation
-              tween: Tween(begin: 0.0, end: 1.0), 
+              tween: Tween(begin: 0.0, end: 1.0),
               duration: const Duration(milliseconds: 700),
               curve: Curves.elasticOut, // Pop up effect
-              
+
               builder: (context, value, child) {
                 // Apply the animation value to the scale
                 return Transform.scale(
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 padding: const EdgeInsets.all(4),
-              
+
                 // Text displaying the error message
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-      
+
             // Main content
             SafeArea(
               child: Center(
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Shadow(
                                   blurRadius: 10.0,
                                   color: Colors.black.withOpacity(0.5),
-                                  offset: Offset(0, 10.0), 
+                                  offset: Offset(0, 10.0),
                                 ),
                               ],
                             ),
@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           gradient: LinearGradient(colors: [
                                             AppDesign.primaryGradientStart,
                                             AppDesign.primaryGradientEnd
-                                          ]), 
+                                          ]),
                                         ),
                                       ),
                                     ),
@@ -243,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           gradient: LinearGradient(colors: [
                                             AppDesign.primaryGradientStart,
                                             AppDesign.primaryGradientEnd
-                                          ]), 
+                                          ]),
                                         ),
                                         suffixIcon: IconButton(
                                           icon: GradientIcon(

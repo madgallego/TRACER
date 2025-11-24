@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tracer/screens/scan_screen.dart';
 // import 'package:tracer/screens/settings_screen.dart';
@@ -8,9 +7,7 @@ import 'package:tracer/widgets/gradient_border_text.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.camera});
-
-  final CameraDescription camera;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -122,7 +119,15 @@ class _HomeScreenState extends State<HomeScreen>
                                     AppDesign.primaryGradientStart,
                                     AppDesign.primaryGradientEnd
                                   ]
-                                )
+                                ),
+                                strokeWidth: 12.0,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 10.0,
+                                    color: Colors.black.withOpacity(0.5),
+                                    offset: Offset(0, 10.0),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -181,9 +186,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   GradientBorderButton(
                                     onPressed: () async {
                                       await Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => ScanScreen(
-                                          camera: widget.camera
-                                        ))
+                                        MaterialPageRoute(builder: (context) => ScanScreen())
                                       );
                                     },
                                     borderRadius: BorderRadius.circular(30.0),

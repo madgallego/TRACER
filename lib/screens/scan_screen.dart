@@ -9,9 +9,7 @@ import '../widgets/gradient_icon.dart';
 import '../utils/constants.dart';
 
 class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key, required this.camera});
-
-  final CameraDescription camera;
+  const ScanScreen({super.key});
 
   @override
   ScanScreenState createState() => ScanScreenState();
@@ -20,14 +18,14 @@ class ScanScreen extends StatefulWidget {
 
 class ScanScreenState extends State<ScanScreen> {
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  late CameraDescription camera;
+  late Future<void> _cameraSetupFuture = Future.value();
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> _initCamera() async {
+    camera = (await availableCameras())[0];
 
     _controller = CameraController(
-      widget.camera,
+      camera,
       ResolutionPreset.ultraHigh,
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid  // reqd for google ml kit
@@ -35,7 +33,14 @@ class ScanScreenState extends State<ScanScreen> {
               : ImageFormatGroup.bgra8888
     );
 
-    _initializeControllerFuture = _controller.initialize();
+    final Future<void> initControllerFuture =  _controller.initialize();
+    await initControllerFuture;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _cameraSetupFuture = _initCamera();
   }
 
   @override
@@ -82,7 +87,7 @@ class ScanScreenState extends State<ScanScreen> {
                   boxShadow: AppDesign.defaultBoxShadows,
                 ),
                 child: FutureBuilder<void>(
-                  future: _initializeControllerFuture,
+                  future: _cameraSetupFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // If the Future is complete, display the preview.
@@ -144,7 +149,7 @@ class ScanScreenState extends State<ScanScreen> {
                     child: GradientBorderButton(
                       onPressed: () async {
                         try {
-                          await _initializeControllerFuture;
+                          await _cameraSetupFuture;
 
                           final image = await _controller.takePicture();
 
