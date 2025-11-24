@@ -1,23 +1,27 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tracer/screens/home_screen.dart';
+import 'package:tracer/auth/auth_gate.dart';
 
 import 'utils/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Screens
+import 'screens/scan_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cameras = await availableCameras();
-  final firstCamera = cameras.first;
-
+  //Supabase setup
   await Supabase.initialize(
     anonKey: Env.supabaseKey,
-    url: Env.supabaseUrl
+    url: Env.supabaseUrl,
   );
+
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
 
   runApp(MyApp(camera: firstCamera));
 }
@@ -52,7 +56,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(camera: camera),
+      home: const AuthGate(),
       //home: ScanScreen(camera: camera),
     );
   }
