@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               textStyle: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
-                                fontFamily: 'Affection',
+                                fontFamily: 'Iceland',
                                 fontWeight: FontWeight.w600,
                               ),
                               gradient: LinearGradient(
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               textStyle: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 48,
-                                fontFamily: 'Affection',
+                                fontFamily: 'Iceland',
                                 fontWeight: FontWeight.w700,
                               ),
                               gradient: LinearGradient(

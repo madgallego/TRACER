@@ -101,10 +101,9 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
   fonts:
-    - family: Affection
+    - family: Iceland
       fonts:
-        - asset: assets/fonts/affection_ldr.ttf
-        - asset: assets/fonts/insane_affection_ldr.ttf
+        - asset: assets/fonts/Iceland.ttf
     - family: AROneSans
       fonts:
         - asset: assets/fonts/AROneSans.ttf
