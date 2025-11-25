@@ -4,16 +4,19 @@ import 'package:tracer/widgets/gradient_border_text_form_field.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
 
 import '../utils/constants.dart';
+import 'package:tracer/models/transaction.dart';
 
 class DataVerificationScreen extends StatefulWidget {
-  const DataVerificationScreen({super.key});
+  DataVerificationScreen({super.key, required this.transaction});
+
+  Transaction transaction;
 
   @override
   DataVerificationScreenState createState() => DataVerificationScreenState();
 }
 
 class DataVerificationScreenState extends State<DataVerificationScreen> {
-  // Controllers for const Text form fields
+  // Controllers for text form fields
   TextEditingController _stuFirstNameController = TextEditingController();
   TextEditingController _stuMiddleInitialController = TextEditingController();
   TextEditingController _stuLastNameController = TextEditingController();
@@ -24,14 +27,25 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   TextEditingController _transactAmountController = TextEditingController();
   TextEditingController _transactAmountWordsController = TextEditingController();
   TextEditingController _transactPurposeController = TextEditingController();
-  TextEditingController _transactReceiptNumController = TextEditingController();
   TextEditingController _foFirstNameController = TextEditingController();
   TextEditingController _foMiddleInitialController = TextEditingController();
   TextEditingController _foLastNameController = TextEditingController();
 
 
   void _setFieldInitialValues() {
-
+    _stuFirstNameController.text = widget.transaction.stuFirstName ?? "";
+    _stuMiddleInitialController.text = widget.transaction.stuMiddleInitial ?? "";
+    _stuLastNameController.text = widget.transaction.stuLastName ?? "";
+    _stuNumController.text = widget.transaction.stuNum ?? "";
+    _transactMonthController.text = widget.transaction.transactMonth ?? "";
+    _transactDayController.text = widget.transaction.transactDay ?? "";
+    _transactYearController.text = widget.transaction.transactYear ?? "";
+    _transactAmountController.text = widget.transaction.transactAmount ?? "";
+    _transactAmountWordsController.text = widget.transaction.transactAmountWords ?? "";
+    _transactPurposeController.text = widget.transaction.transactPurpose ?? "";
+    _foFirstNameController.text = widget.transaction.foFirstName ?? "";
+    _foMiddleInitialController.text = widget.transaction.foMiddleInitial ?? "";
+    _foLastNameController.text = widget.transaction.foLastName ?? "";
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -62,7 +76,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    _setFieldInitialValues();
     super.initState();
   }
 
@@ -78,7 +92,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     _transactAmountController.dispose();
     _transactAmountWordsController.dispose();
     _transactPurposeController.dispose();
-    _transactReceiptNumController.dispose();
     _foFirstNameController.dispose();
     _foMiddleInitialController.dispose();
     _foLastNameController.dispose();
@@ -543,35 +556,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _transactPurposeController,
-                                    onTap: () async {
-
-                                    },
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    activeGradient: const LinearGradient(
-                                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
-                                    ),
-                                    suffixIcon: GradientIcon(
-                                      icon: Icons.edit_outlined,
-                                      size: 24.0,
-                                      gradient: const LinearGradient(
-                                        colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                                        begin: Alignment.bottomLeft,
-                                        end: Alignment.topRight,
-                                      )
-                                    ),
-                                  ),
-
-                                  const Text(
-                                    "Receipt Number",
-                                    style: TextStyle(
-                                      color: AppDesign.appOffblack,
-                                      fontSize: 12.0,
-                                      fontFamily: "AROneSans",
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  GradientTextFormField(
-                                    controller: _transactReceiptNumController,
                                     onTap: () async {
 
                                     },

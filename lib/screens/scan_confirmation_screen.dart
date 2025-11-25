@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:tracer/models/transaction.dart';
 import 'package:tracer/screens/data_verification_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tracer/services/ocr_service.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -28,6 +31,8 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   late Animation<double> _fadeInAnimation;
   late Animation<double> _resizeAnimation;
   late Animation<double> _translationAnimation;
+
+  final _ocr = OcrService();
 
   final _picker = ImagePicker();
   late File _image;
@@ -105,11 +110,16 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   @override
   void dispose() {
     _initialAnimationController.dispose();
+    _finalAnimationController.dispose();
+    _ocr.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    RecognizedText recognizedText;
+    Transaction transaction = Transaction();
+
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
@@ -219,11 +229,16 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                             onPressed: () async {
                               _initialAnimationController.forward();
 
+                              recognizedText = await _ocr.run(widget.imagePath);
+                              transaction.populateWithOcrMapper(OcrMapperService(), recognizedText);
+
+                              print(recognizedText.text);
+
                               if (!context.mounted) return;
 
                               await Navigator.of(context).pushReplacement(
                                 MaterialPageRoute<void>(
-                                  builder: (context) => DataVerificationScreen()
+                                  builder: (context) => DataVerificationScreen(transaction: transaction)
                                 )
                               );
                             },

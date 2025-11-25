@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image/image.dart' as img;
+import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:tracer/screens/scan_confirmation_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -24,6 +26,25 @@ class ScanScreenState extends State<ScanScreen> {
 
   final _picker = ImagePicker();
   File? _image;
+
+  Future<String> _correctImageOrientation(String imagePath, int rotationAngle) async {
+  final File file = File(imagePath);
+
+  img.Image? originalImage = img.decodeImage(file.readAsBytesSync());
+
+  if (originalImage == null) {
+    throw Exception("Could not decode image for rotation.");
+  }
+
+  if (rotationAngle != 0) {
+    originalImage = img.copyRotate(originalImage, angle: rotationAngle);
+  }
+
+  final correctedBytes = img.encodeJpg(originalImage);
+  await file.writeAsBytes(correctedBytes);
+
+  return file.path;
+}
 
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
@@ -158,7 +179,21 @@ class ScanScreenState extends State<ScanScreen> {
                         try {
                           await _cameraSetupFuture;
 
+                          if (!context.mounted) return;
+
+                          final deviceOrientation = await NativeDeviceOrientationCommunicator().orientation(useSensor: true);
+                          int rotationAngle = 0;
+
+                          if (deviceOrientation == NativeDeviceOrientation.landscapeRight) {
+                            rotationAngle = 90;
+                          } else if (deviceOrientation == NativeDeviceOrientation.landscapeLeft) {
+                            rotationAngle = 270;
+                          } else if (deviceOrientation == NativeDeviceOrientation.portraitDown) {
+                            rotationAngle = 180;
+                          }
+
                           final image = await _controller.takePicture();
+                          final correctedImagePath = await _correctImageOrientation(image.path, rotationAngle);
 
                           await _controller.pausePreview();
 
@@ -168,7 +203,7 @@ class ScanScreenState extends State<ScanScreen> {
                           await Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (context) => ScanConfirmationScreen(
-                                imagePath: image.path,
+                                imagePath: correctedImagePath,
                               ),
                             ),
                           );
@@ -177,7 +212,7 @@ class ScanScreenState extends State<ScanScreen> {
                             await _controller.resumePreview();
                           }
                         } catch (e) {
-                          print(e);
+                          debugPrint(e.toString());
                         }
                       },
                       gradient: LinearGradient(colors: [
