@@ -5,8 +5,6 @@ import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
 
-import 'login_screen.dart';
-
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -15,7 +13,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // Variables for managing form state 
+  // Variables for managing form state
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
@@ -137,7 +135,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
             ),
-      
+
             // Main content
             SafeArea(
               child: Center(
@@ -238,7 +236,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                           gradient: LinearGradient(colors: [
                                             AppDesign.primaryGradientStart,
                                             AppDesign.primaryGradientEnd
-                                          ]), 
+                                          ]),
                                         ),
                                       ),
                                     ),
@@ -263,7 +261,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                           gradient: LinearGradient(colors: [
                                             AppDesign.primaryGradientStart,
                                             AppDesign.primaryGradientEnd
-                                          ]), 
+                                          ]),
                                         ),
                                         suffixIcon: IconButton(
                                           icon: GradientIcon(
@@ -303,7 +301,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                           gradient: LinearGradient(colors: [
                                             AppDesign.primaryGradientStart,
                                             AppDesign.primaryGradientEnd
-                                          ]), 
+                                          ]),
                                         ),
                                         suffixIcon: IconButton(
                                           icon: GradientIcon(
