@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen>
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 30),
 
                           //header logo
                           Opacity(
@@ -110,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 text: "TRACER",
                                 textStyle: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 46,
-                                  fontFamily: 'Affection',
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 90,
+                                  fontFamily: 'Iceland',
+                                  // fontWeight: FontWeight.w700,
                                 ),
                                 gradient: LinearGradient(
                                   colors: [
