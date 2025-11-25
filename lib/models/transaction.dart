@@ -1,6 +1,5 @@
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:tracer/services/ocr_service.dart';
-import 'package:flutter/material.dart';
 
 class Transaction {
   String? stuFirstName;
