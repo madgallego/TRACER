@@ -61,10 +61,10 @@ class _SignupScreenState extends State<SignupScreen> {
             // Gradient border for the snackbar with pop up animation
             content: TweenAnimationBuilder<double>(
               // Animation
-              tween: Tween(begin: 0.0, end: 1.0), 
+              tween: Tween(begin: 0.0, end: 1.0),
               duration: const Duration(milliseconds: 700),
               curve: Curves.elasticOut, // Pop up effect
-              
+
               builder: (context, value, child) {
                 // Apply the animation value to the scale
                 return Transform.scale(
@@ -84,7 +84,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 padding: const EdgeInsets.all(4),
-              
+
                 // Text displaying the error message
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -154,7 +154,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               textStyle: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
-                                fontFamily: 'Affection',
+                                fontFamily: 'Iceland',
                                 fontWeight: FontWeight.w600,
                               ),
                               gradient: LinearGradient(
@@ -177,8 +177,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               strokeWidth: 8,
                               textStyle: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 48,
-                                fontFamily: 'Affection',
+                                fontSize: 70,
+                                fontFamily: 'Iceland',
                                 fontWeight: FontWeight.w700,
                               ),
                               gradient: LinearGradient(

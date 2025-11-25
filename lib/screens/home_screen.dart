@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tracer/screens/scan_screen.dart';
-// import 'package:tracer/screens/settings_screen.dart';
+import 'package:tracer/screens/settings_screen.dart';
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text.dart';
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen>
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 30),
 
                           //header logo
                           Opacity(
@@ -110,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 text: "TRACER",
                                 textStyle: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 46,
-                                  fontFamily: 'Affection',
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 90,
+                                  fontFamily: 'Iceland',
+                                  // fontWeight: FontWeight.w700,
                                 ),
                                 gradient: LinearGradient(
                                   colors: [
@@ -173,9 +173,9 @@ class _HomeScreenState extends State<HomeScreen>
                                         ),
                                         title: "Settings",
                                         onTap: () async {
-                                          // await Navigator.of(context).push(
-                                          //   // MaterialPageRoute(builder: (context) => SettingsScreen())
-                                          // );
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(builder: (context) => SettingsScreen())
+                                          );
                                         },
                                       ),
                                     ],
