@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
+          //TODO: make this a custom widget
           SnackBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
