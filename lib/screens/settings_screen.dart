@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 20.0,
                 children: [
                   Text(
@@ -54,22 +54,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   Placeholder(fallbackHeight: 300.00),
 
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: null, // button is inactive
+                  ElevatedButton(
+                    onPressed: () {
 
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(200, 50),
-                      ),
+                    },
 
-                      child: Text(
-												'Log Out',
-												style: TextStyle(
-                      		fontFamily: "AROneSans",
-                     	 		fontWeight: FontWeight.bold,
-                      		fontSize: 15.0,
-                    		)
-											),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(200, 50),
+                    ),
+
+                    child: Text(
+                      'Log Out',
+                      style: TextStyle(
+                      fontFamily: "AROneSans",
+                      color: AppDesign.appOffblack,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                      )
                     ),
                   ),
                 ],
