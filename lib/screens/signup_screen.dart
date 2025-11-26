@@ -4,6 +4,7 @@ import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
+import '../widgets/gradient_border_snackbar.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,13 +18,13 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
-  // Auth service and controllers
+  // Auth service and controllers instances
   final authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  // Methods for handling login logic
+  // Sign up function
   Future<void> signup() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -33,7 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (password != confirmPassword) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Passwords do not match')),
+          GradientBorderSnackbar(message: 'Passwords do not match. Please try again.')
         );
       }
       return;
@@ -45,7 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign up successful! Please verify your email and proceed to log in.')),
+          GradientBorderSnackbar(message: 'Sign up successful! Please check your email to verify your account and proceed to log in.')
         );
         Navigator.pop(context);
       }
@@ -53,57 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            behavior: SnackBarBehavior.floating,
-
-            // Gradient border for the snackbar with pop up animation
-            content: TweenAnimationBuilder<double>(
-              // Animation
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.elasticOut, // Pop up effect
-
-              builder: (context, value, child) {
-                // Apply the animation value to the scale
-                return Transform.scale(
-                  scale: value,
-                  child: child,
-                );
-              },
-
-              // Outer container with gradient border
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: [ AppDesign.primaryGradientStart,AppDesign.primaryGradientEnd],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(4),
-
-                // Text displaying the error message
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Sign up failed: $e',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center
-                  ),
-                )
-              ),
-            )
-          )
+          GradientBorderSnackbar(message: 'Sign up failed: $e.')
         );
       }
     }

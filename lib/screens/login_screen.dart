@@ -4,6 +4,7 @@ import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
+import '../widgets/gradient_border_snackbar.dart';
 
 import 'signup_screen.dart';
 
@@ -18,75 +19,30 @@ class _LoginScreenState extends State<LoginScreen> {
   // Variables for managing form state
   bool _passwordVisible = false;
 
-  // Auth service and controllers
+  // Auth service and controllers instances
   final authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Methods for handling login logic
+  // Log in function
   Future<void> login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     // Attempt to log in the user
     try {
-      await authService.signIn(email, password);
+      await authService.logIn(email, password);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          GradientBorderSnackbar(message: 'Log in successful!')
+        );
+      }
     // Handle login errors
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          //TODO: make this a custom widget
-          SnackBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            behavior: SnackBarBehavior.floating,
-
-            // Gradient border for the snackbar with pop up animation
-            content: TweenAnimationBuilder<double>(
-              // Animation
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.elasticOut, // Pop up effect
-
-              builder: (context, value, child) {
-                // Apply the animation value to the scale
-                return Transform.scale(
-                  scale: value,
-                  child: child,
-                );
-              },
-
-              // Outer container with gradient border
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: [ AppDesign.primaryGradientStart,AppDesign.primaryGradientEnd],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(4),
-
-                // Text displaying the error message
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Login failed: $e',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center
-                  ),
-                )
-              ),
-            )
-          )
+          GradientBorderSnackbar(message: 'Log in failed: $e.')
         );
       }
     }

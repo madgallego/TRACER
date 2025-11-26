@@ -48,7 +48,6 @@ class _AuthGateState extends State<AuthGate> {
 
         // If there's a valid session, user is authenticated
         if (session != null) {
-          // TODO: Redirect to the home screen after login, made a placeholder home screen for now
           return const HomeScreen();
         } else {
           // No valid session, user is unauthenticated
