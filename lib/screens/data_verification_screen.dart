@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text_form_field.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
@@ -216,6 +218,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _stuFirstNameController,
+                                    inputFormatters: [
+                                      NameFormatter()
+                                    ],
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization: TextCapitalization.words,
                                     borderRadius: BorderRadius.circular(30.0),
                                     activeGradient: const LinearGradient(
                                       colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
@@ -251,6 +258,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _stuMiddleInitialController,
+                                              inputFormatters: [
+                                                NameFormatter()
+                                              ],
+                                              keyboardType: TextInputType.name,
+                                              textCapitalization: TextCapitalization.words,
                                               borderRadius: BorderRadius.circular(30.0),
                                               activeGradient: const LinearGradient(
                                                 colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
@@ -290,6 +302,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _stuLastNameController,
+                                              inputFormatters: [
+                                                NameFormatter()
+                                              ],
+                                              keyboardType: TextInputType.name,
+                                              textCapitalization: TextCapitalization.words,
                                               borderRadius: BorderRadius.circular(30.0),
                                               activeGradient: const LinearGradient(
                                                 colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
@@ -321,6 +338,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _stuNumController,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]-'))
+                                    ],
+                                    keyboardType: TextInputType.number,
                                     borderRadius: BorderRadius.circular(30.0),
                                     activeGradient: const LinearGradient(
                                       colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
@@ -383,6 +404,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _transactMonthController,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter.digitsOnly,
+                                                LengthLimitingTextInputFormatter(2),
+                                              ],
                                               readOnly: true,
                                               onTap: () async {
                                                 await _selectDate(context);
@@ -422,6 +447,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _transactDayController,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter.digitsOnly,
+                                                LengthLimitingTextInputFormatter(2),
+                                              ],
                                               readOnly: true,
                                               onTap: () async {
                                                 await _selectDate(context);
@@ -461,6 +490,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _transactYearController,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter.digitsOnly,
+                                                LengthLimitingTextInputFormatter(2),
+                                              ],
                                               readOnly: true,
                                               onTap: () async {
                                                 await _selectDate(context);
@@ -496,6 +529,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _transactAmountController,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    keyboardType: TextInputType.number,
                                     onTap: () async {
 
                                     },
@@ -503,6 +540,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                     activeGradient: const LinearGradient(
                                       colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
                                     ),
+                                    prefixText: "PHP ",
                                     suffixIcon: GradientIcon(
                                       icon: Icons.edit_outlined,
                                       size: 24.0,
@@ -556,6 +594,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _transactPurposeController,
+                                    textCapitalization: TextCapitalization.words,
                                     onTap: () async {
 
                                     },
@@ -613,6 +652,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _foFirstNameController,
+                                    inputFormatters: [
+                                      NameFormatter()
+                                    ],
+                                    keyboardType: TextInputType.name,
+                                    textCapitalization: TextCapitalization.words,
                                     onTap: () async {
 
                                     },
@@ -650,6 +694,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _foMiddleInitialController,
+                                              inputFormatters: [
+                                                NameFormatter()
+                                              ],
+                                              keyboardType: TextInputType.name,
+                                              textCapitalization: TextCapitalization.words,
                                               onTap: () {
 
                                               },
@@ -688,6 +737,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ),
                                             GradientTextFormField(
                                               controller: _foLastNameController,
+                                              inputFormatters: [
+                                                NameFormatter()
+                                              ],
+                                              keyboardType: TextInputType.name,
+                                              textCapitalization: TextCapitalization.words,
                                               onTap: () {
 
                                               },

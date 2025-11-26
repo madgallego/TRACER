@@ -25,9 +25,8 @@ class OcrMapperService {
     RecognizedText recognizedText,
     String anchorLabel,
     {
-      bool isBelow = false,
-      double horizontalOffset = 0.0,
-      double verticalOffset = 0.0,
+      double horizontalOffsetMultiplier = 0.0,
+      double verticalOffsetMultiplier = 0.0,
       double widthMultiplier = 4.0,
       double heightMultiplier = 1.5,
     }
@@ -42,9 +41,8 @@ class OcrMapperService {
 
     Rect searchRegion = _defineSearchRegion(
       anchorBox,
-      isBelow,
-      horizontalOffset,
-      verticalOffset,
+      horizontalOffsetMultiplier,
+      verticalOffsetMultiplier,
       widthMultiplier,
       heightMultiplier,
     );
@@ -66,37 +64,22 @@ class OcrMapperService {
 
   Rect _defineSearchRegion(
     Rect anchorBox,
-    bool isBelow,
-    double horizontalOffset,
-    double verticalOffset,
+    double horizontalOffsetMultiplier,
+    double verticalOffsetMultiplier,
     double widthMultiplier,
     double heightMultiplier,
   ) {
-    if (isBelow) {
-      final double searchTop = anchorBox.bottom + verticalOffset;
-      final double searchLeft = anchorBox.left + horizontalOffset;
-      final double searchWidth = anchorBox.width * widthMultiplier;
-      final double searchHeight = anchorBox.height * heightMultiplier;
+    final double searchWidth = anchorBox.width * widthMultiplier;
+    final double searchHeight = anchorBox.height * heightMultiplier;
+    final double searchTop = anchorBox.bottom + ((anchorBox.bottom - anchorBox.top) * verticalOffsetMultiplier);
+    final double searchLeft = anchorBox.left + ((anchorBox.right - anchorBox.left) * horizontalOffsetMultiplier);
 
-      return Rect.fromLTWH(
-        searchLeft,
-        searchTop,
-        searchWidth,
-        searchHeight,
-      );
-    } else {
-      final double searchTop = anchorBox.top + verticalOffset;
-      final double searchLeft = anchorBox.right + horizontalOffset;
-      final double searchWidth = anchorBox.width * widthMultiplier;
-      final double searchHeight = anchorBox.height * 1.5; // Account for slight wobble
-
-      return Rect.fromLTWH(
-        searchLeft,
-        searchTop,
-        searchWidth,
-        searchHeight,
-      );
-    }
+    return Rect.fromLTWH(
+      searchLeft,
+      searchTop,
+      searchWidth,
+      searchHeight,
+    );
   }
 
   String _searchRegionForText(RecognizedText recognizedText, Rect searchRegion) {

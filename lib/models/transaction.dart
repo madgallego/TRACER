@@ -23,8 +23,7 @@ class Transaction {
     stuFirstName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Student Details",
-      isBelow: true,
-      verticalOffset: 100.0,
+      verticalOffsetMultiplier: 2.5,
       widthMultiplier: 1.2,
       heightMultiplier: 1.1,
     );
@@ -32,19 +31,17 @@ class Transaction {
     stuMiddleInitial = (await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Student Details",
-      isBelow: true,
-      horizontalOffset: 900.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.5,
+      horizontalOffsetMultiplier: 1.3,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.8,
       heightMultiplier: 1.1,
     ));
 
     stuLastName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Student Details",
-      isBelow: true,
-      horizontalOffset: 1100.0,
-      verticalOffset: 120.0,
+      horizontalOffsetMultiplier: 1.7,
+      verticalOffsetMultiplier: 2.5,
       widthMultiplier: 0.8,
       heightMultiplier: 1.1
     );
@@ -52,9 +49,8 @@ class Transaction {
     stuNum = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Student Details",
-      isBelow: true,
-      horizontalOffset: 1500.0,
-      verticalOffset: 120.0,
+      horizontalOffsetMultiplier: 3.5,
+      verticalOffsetMultiplier: 2.5,
       widthMultiplier: 1.5,
       heightMultiplier: 1.0
     );
@@ -62,56 +58,50 @@ class Transaction {
     transactAmount = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Transaction Details",
-      isBelow: true,
-      verticalOffset: 150.0,
-      widthMultiplier: 1.2,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.9,
       heightMultiplier: 1.3
     );
 
     transactPurpose = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Transaction Details",
-      isBelow: true,
-      verticalOffset: 500.0,
+      verticalOffsetMultiplier: 7.5,
       widthMultiplier: 10.0,
-      heightMultiplier: 1.3,
+      heightMultiplier: 0.8,
     );
 
     transactMonth = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      horizontalOffset: 1700.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.3,
+      horizontalOffsetMultiplier: 1.9,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.5,
       heightMultiplier: 1.0,
     );
 
     transactDay = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      horizontalOffset: 2100.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.3,
+      horizontalOffsetMultiplier: 2.4,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.5,
       heightMultiplier: 1.0,
     );
 
     transactYear = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      horizontalOffset: 2500.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.3,
+      horizontalOffsetMultiplier: 2.7,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.5,
       heightMultiplier: 1.0,
     );
 
     foFirstName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      verticalOffset: 120.0,
+      verticalOffsetMultiplier: 2.5,
       widthMultiplier: 0.7,
       heightMultiplier: 1.0,
     );
@@ -119,20 +109,18 @@ class Transaction {
     foMiddleInitial = (await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      horizontalOffset: 600.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.3,
+      horizontalOffsetMultiplier: 1.0,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.2,
       heightMultiplier: 1.0,
     ));
 
     foLastName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      isBelow: true,
-      horizontalOffset: 1100.0,
-      verticalOffset: 120.0,
-      widthMultiplier: 0.6,
+      horizontalOffsetMultiplier: 1.5,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.5,
       heightMultiplier: 1.0,
     );
   }
