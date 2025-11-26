@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GradientTextFormField extends StatefulWidget {
   final TextEditingController controller;
@@ -13,6 +14,9 @@ class GradientTextFormField extends StatefulWidget {
   final void Function(String?)? onSaved;
   final VoidCallback? onTap;
   final bool readOnly;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
 
   const GradientTextFormField({
     super.key,
@@ -27,6 +31,9 @@ class GradientTextFormField extends StatefulWidget {
     this.onSaved,
     this.onTap,
     this.readOnly = false,
+    this.keyboardType,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override
@@ -91,7 +98,10 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
           onSaved: widget.onSaved,
           onTap: widget.onTap,
           readOnly: widget.readOnly,
+          keyboardType: widget.keyboardType,
+          inputFormatters: widget.inputFormatters,
 
+          textCapitalization: widget.textCapitalization,
           style: TextStyle(
             fontFamily: "AROneSans",
             fontSize: 13.0,
