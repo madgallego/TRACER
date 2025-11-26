@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:tracer/services/db_service.dart';
 import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
@@ -21,19 +22,20 @@ class DataVerificationScreen extends StatefulWidget {
 
 class DataVerificationScreenState extends State<DataVerificationScreen> {
   // Controllers for text form fields
-  TextEditingController _stuFirstNameController = TextEditingController();
-  TextEditingController _stuMiddleInitialController = TextEditingController();
-  TextEditingController _stuLastNameController = TextEditingController();
-  TextEditingController _stuNumController = TextEditingController();
-  TextEditingController _transactMonthController = TextEditingController();
-  TextEditingController _transactDayController = TextEditingController();
-  TextEditingController _transactYearController = TextEditingController();
-  TextEditingController _transactAmountController = TextEditingController();
-  TextEditingController _transactAmountWordsController = TextEditingController();
-  TextEditingController _transactPurposeController = TextEditingController();
-  TextEditingController _foFirstNameController = TextEditingController();
-  TextEditingController _foMiddleInitialController = TextEditingController();
-  TextEditingController _foLastNameController = TextEditingController();
+  final TextEditingController _stuFirstNameController = TextEditingController();
+  final TextEditingController _stuMiddleInitialController = TextEditingController();
+  final TextEditingController _stuLastNameController = TextEditingController();
+  final TextEditingController _stuNumController = TextEditingController();
+  final TextEditingController _receiptNumController = TextEditingController();
+  final TextEditingController _transactMonthController = TextEditingController();
+  final TextEditingController _transactDayController = TextEditingController();
+  final TextEditingController _transactYearController = TextEditingController();
+  final TextEditingController _transactAmountController = TextEditingController();
+  final TextEditingController _transactAmountWordsController = TextEditingController();
+  final TextEditingController _transactPurposeController = TextEditingController();
+  final TextEditingController _foFirstNameController = TextEditingController();
+  final TextEditingController _foMiddleInitialController = TextEditingController();
+  final TextEditingController _foLastNameController = TextEditingController();
 
 
   void _setFieldInitialValues() {
@@ -41,6 +43,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     _stuMiddleInitialController.text = widget.transaction.stuMiddleInitial ?? "";
     _stuLastNameController.text = widget.transaction.stuLastName ?? "";
     _stuNumController.text = widget.transaction.stuNum ?? "";
+    _receiptNumController.text = widget.transaction.receiptNum ?? "";
     _transactMonthController.text = widget.transaction.transactMonth ?? "";
     _transactDayController.text = widget.transaction.transactDay ?? "";
     _transactYearController.text = widget.transaction.transactYear ?? "";
@@ -50,6 +53,24 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     _foFirstNameController.text = widget.transaction.foFirstName ?? "";
     _foMiddleInitialController.text = widget.transaction.foMiddleInitial ?? "";
     _foLastNameController.text = widget.transaction.foLastName ?? "";
+  }
+
+  void _setTransactionFromFields() {
+    widget.transaction.stuFirstName = _stuFirstNameController.text;
+    widget.transaction.stuMiddleInitial = _stuMiddleInitialController.text;
+    widget.transaction.stuLastName = _stuLastNameController.text;
+    widget.transaction.stuNum = _stuNumController.text;
+    widget.transaction.receiptNum = _receiptNumController.text;
+    widget.transaction.transactMonth = _transactMonthController.text;
+    widget.transaction.transactDay = _transactDayController.text;
+    widget.transaction.transactYear = _transactYearController.text;
+    widget.transaction.transactAmount = _transactAmountController.text;
+    widget.transaction.transactAmountWords = _transactAmountWordsController.text;
+    widget.transaction.transactPurpose = _transactPurposeController.text;
+    widget.transaction.foFirstName = _foFirstNameController.text;
+    widget.transaction.foMiddleInitial = _foMiddleInitialController.text;
+    widget.transaction.foLastName = _foLastNameController.text;
+
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -341,7 +362,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   GradientTextFormField(
                                     controller: _stuNumController,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]-'))
+                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                                     ],
                                     keyboardType: TextInputType.number,
                                     borderRadius: BorderRadius.circular(30.0),
@@ -531,6 +552,21 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   ),
                                   GradientTextFormField(
                                     controller: _transactAmountController,
+                                    onChanged: (_) {
+                                      final numWords = int.parse(_transactAmountController.text).toWords();
+
+                                      List<String> wordList = numWords.split(' ');
+
+                                      for (final (index, word) in wordList.indexed) {
+                                        wordList[index] = '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+                                      }
+
+                                      if (wordList.last != "Pesos") {
+                                        wordList.add("Pesos");
+                                      }
+
+                                      _transactAmountWordsController.text = wordList.join(' ');
+                                    },
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly
                                     ],
@@ -597,6 +633,38 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   GradientTextFormField(
                                     controller: _transactPurposeController,
                                     textCapitalization: TextCapitalization.words,
+                                    onTap: () async {
+
+                                    },
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    activeGradient: const LinearGradient(
+                                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
+                                    ),
+                                    suffixIcon: GradientIcon(
+                                      icon: Icons.edit_outlined,
+                                      size: 24.0,
+                                      gradient: const LinearGradient(
+                                        colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                                        begin: Alignment.bottomLeft,
+                                        end: Alignment.topRight,
+                                      )
+                                    ),
+                                  ),
+
+                                  const Text(
+                                    "Receipt Number",
+                                    style: TextStyle(
+                                      color: AppDesign.appOffblack,
+                                      fontSize: 12.0,
+                                      fontFamily: "AROneSans",
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  GradientTextFormField(
+                                    controller: _receiptNumController,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
                                     onTap: () async {
 
                                     },
@@ -772,7 +840,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                             GradientBorderButton(
                               onPressed: () async {
-                                context.read<DbService>().insertTransaction(widget.transaction);
+                                try {
+                                  _setTransactionFromFields();
+
+                                  final List<Map<String, dynamic>> response =
+                                    await context.read<DbService>().insertTransaction(widget.transaction);
+
+                                  if (response.isNotEmpty) {
+                                    debugPrint('Transaction saved successfully! ID: ${response.first['id']}');
+                                  }
+                                } catch (e) {
+                                  debugPrint('Upload Failed $e');
+                                }
                               },
                               borderRadius: BorderRadius.circular(30.0),
                               gradient: const LinearGradient(

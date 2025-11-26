@@ -30,7 +30,7 @@ class DbService {
         "finance_fn": transaction.foFirstName,
         "finance_mi": transaction.foMiddleInitial,
         "finance_ln": transaction.foLastName,
-        "receipt_date": "${transaction.transactYear}-${transaction.transactDay}-${transaction.transactMonth}",
+        "receiptdate": "${transaction.transactYear}-${transaction.transactMonth}-${transaction.transactDay}",
       }
     ).select();
 

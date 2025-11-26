@@ -13,6 +13,7 @@ class GradientTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
   final VoidCallback? onTap;
+  final Function(String)? onChanged;
   final bool readOnly;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
@@ -30,6 +31,7 @@ class GradientTextFormField extends StatefulWidget {
     this.validator,
     this.onSaved,
     this.onTap,
+    this.onChanged,
     this.readOnly = false,
     this.keyboardType,
     this.inputFormatters,
@@ -97,6 +99,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
           validator: widget.validator,
           onSaved: widget.onSaved,
           onTap: widget.onTap,
+          onChanged: widget.onChanged,
           readOnly: widget.readOnly,
           keyboardType: widget.keyboardType,
           inputFormatters: widget.inputFormatters,
