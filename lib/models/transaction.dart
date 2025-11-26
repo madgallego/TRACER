@@ -6,6 +6,7 @@ class Transaction {
   String? stuMiddleInitial;
   String? stuLastName;
   String? stuNum;
+  String? receiptNum;
   String? transactMonth;
   String? transactDay;
   String? transactYear;
@@ -53,6 +54,15 @@ class Transaction {
       verticalOffsetMultiplier: 2.5,
       widthMultiplier: 1.5,
       heightMultiplier: 1.0
+    );
+
+    receiptNum = await ocrMapper.extractHandwrittenField(
+      recognizedText,
+      "Finance Officer",
+      horizontalOffsetMultiplier: 2.4,
+      verticalOffsetMultiplier: 2.5,
+      widthMultiplier: 0.5,
+      heightMultiplier: 1.0,
     );
 
     transactAmount = await ocrMapper.extractHandwrittenField(

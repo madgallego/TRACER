@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tracer/services/db_service.dart';
 import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text_form_field.dart';
@@ -770,7 +772,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                             GradientBorderButton(
                               onPressed: () async {
-
+                                context.read<DbService>().insertTransaction(widget.transaction);
                               },
                               borderRadius: BorderRadius.circular(30.0),
                               gradient: const LinearGradient(
