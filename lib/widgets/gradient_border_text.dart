@@ -34,7 +34,7 @@ class _GradientBorderTextState extends State<GradientBorderText>
 
     _rotationController = AnimationController(
       vsync: this,
-      duration: AppDesign.loadingRotationDuration,
+      duration: Duration(seconds: 4),
     );
 
     _rotation = Tween<double>(
@@ -42,7 +42,7 @@ class _GradientBorderTextState extends State<GradientBorderText>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
       parent: _rotationController,
-      curve: AppDesign.loadingRotationEasing,
+      curve: Curves.linear,
     ));
 
     // Always rotate
