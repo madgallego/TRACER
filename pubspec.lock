@@ -620,10 +620,10 @@ packages:
     dependency: "direct main"
     description:
       name: native_device_orientation
-      sha256: bc0bcccc79752048d2235c10545c5fd554a46035fe0a4a4534d1bb9d8bc85e6c
+      sha256: "39249012f4d80c620ab1b01e3e814e0f71958c34ba9432f0033e5d8dba2d2cc7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   nested:
     dependency: transitive
     description:
