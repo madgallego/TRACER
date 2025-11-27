@@ -61,7 +61,14 @@ class _RecordsScreenState extends State<RecordsScreen> {
       _filteredRecords = _allRecords.where((record) {
         final title = record.transactPurpose?.toLowerCase() ?? '';
         final id = record.receiptNum?.toLowerCase() ?? '';
-        return title.contains(query) || id.contains(query);
+        final foFirstName = record.foFirstName?.toLowerCase() ?? '';
+        final foMiddleInitial = (record.foMiddleInitial?.isNotEmpty == true)
+          ? "${record.foMiddleInitial}.".toLowerCase()
+          : "";
+        final foLastName = record.foLastName?.toLowerCase() ?? '';
+        return title.contains(query) || id.contains(query) ||
+            foFirstName.contains(query) || foMiddleInitial.contains(query) ||
+            foLastName.contains(query);
       }).toList();
     });
   }
@@ -204,71 +211,103 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
   // Widget for each record row
   Widget _buildRecordRow(Transaction record) {
+    // Format date 
     final dateString = "${record.transactMonth}-${record.transactDay}-${record.transactYear}";
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Receipt number
-        SizedBox(
-          width: 90,
-          child: Text(
-            record.receiptNum ?? '---',
-            style: const TextStyle(
-              fontFamily: "AROneSans",
-              fontWeight: FontWeight.bold, 
-              color: Colors.black87,
-              fontSize: 12
-            ),
-          ),
-        ),
-        
-        // Title and date
-        Expanded(
-          flex: 2,
-          child: Column(
+    // Format finance officer's name
+    final fName = record.foFirstName ?? '';
+    final mInitial = record.foMiddleInitial != null ? "${record.foMiddleInitial}. " : "";
+    final lName = record.foLastName ?? '';
+    
+    String foName = "$fName $mInitial$lName".trim();
+    
+    if (foName.isEmpty) foName = 'No Name';
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          // TODO: Navigate to record details screen
+        },
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 1.0),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                record.transactPurpose ?? 'No Purpose',
-                style: const TextStyle(
-                  fontFamily: "AROneSans",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  fontSize: 15,
+              // Receipt number
+              SizedBox(
+                width: 90,
+                child: Text(
+                  record.receiptNum ?? '---',
+                  style: const TextStyle(
+                    fontFamily: "AROneSans",
+                    fontWeight: FontWeight.bold, 
+                    color: Colors.black87,
+                    fontSize: 12
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
-              Text(
-                "Paid $dateString",
-                style: const TextStyle(
-                  fontFamily: "AROneSans", 
-                  fontSize: 12, color: 
-                  Colors.grey, fontWeight: 
-                  FontWeight.w500
+              
+              // Title and date
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      record.transactPurpose ?? 'No Purpose',
+                      style: const TextStyle(
+                        fontFamily: "AROneSans",
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        fontSize: 15,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "Paid $dateString",
+                      style: const TextStyle(
+                        fontFamily: "AROneSans", 
+                        fontSize: 12, color: 
+                        Colors.grey, 
+                        fontWeight: FontWeight.w500
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      foName,
+                      style: const TextStyle(
+                        fontFamily: "AROneSans", 
+                        fontSize: 12, color: 
+                        Colors.grey, 
+                        fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              
+              // Amount
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Php ${record.transactAmount}",
+                    style: const TextStyle(
+                      fontFamily: "AROneSans",
+                      fontWeight: FontWeight.bold, 
+                      color: Colors.black87
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        
-        // Amount
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Php ${record.transactAmount}",
-              style: const TextStyle(
-                fontFamily: "AROneSans",
-                fontWeight: FontWeight.bold, 
-                color: Colors.black87
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tracer/utils/constants.dart';
 import 'dart:math' as math;
 
 class GradientBorderText extends StatefulWidget {
