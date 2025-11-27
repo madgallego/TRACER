@@ -51,6 +51,7 @@ class GradientBorderSnackbar extends SnackBar {
                   style: const TextStyle(
                     color: AppDesign.appOffblack,
                     fontWeight: FontWeight.bold,
+                    fontFamily: "AROneSans"
                   ),
                   textAlign: TextAlign.center,
                 ),

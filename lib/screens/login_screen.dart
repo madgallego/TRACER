@@ -156,10 +156,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 TextField(
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
                                   decoration: InputDecoration(
                                     hintText: 'Email',
-                                    hintStyle: TextStyle(color: Colors.black45),
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     filled: true,
                                     fillColor: Colors.grey.withOpacity(0.1),
                                     border: OutlineInputBorder(
@@ -180,11 +180,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(height: 12),
                                 TextField(
                                   controller: _passwordController,
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
                                   obscureText: !_passwordVisible,
                                   decoration: InputDecoration(
                                     hintText: 'Password',
-                                    hintStyle: TextStyle(color: Colors.black45),
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     filled: true,
                                     fillColor: Colors.grey.withOpacity(0.1),
                                     border: OutlineInputBorder(
@@ -236,6 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
+                                        fontFamily: "AROneSans"
                                       ),
                                     ),
                                   ),
@@ -247,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: [
                                     const Text(
                                       "Don't have an account? ",
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     ),
                                     TextButton(
                                       onPressed: () {
@@ -266,6 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         style: TextStyle(
                                           color: AppDesign.primaryGradientEnd,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: "AROneSans"
                                         ),
                                       )
                                     )
