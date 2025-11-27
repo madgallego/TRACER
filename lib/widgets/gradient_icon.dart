@@ -91,9 +91,9 @@ class _GradientIconState extends State<GradientIcon>
         );
       },
       child: Icon(
-            widget.icon,
-            size: widget.size,
-            color: Colors.white, // White is best for masking
+        widget.icon,
+        size: widget.size,
+        color: Colors.white, // White is best for masking
       ),
     );
   }

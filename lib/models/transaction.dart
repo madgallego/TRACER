@@ -81,7 +81,7 @@ class Transaction {
       "Student Details",
       horizontalOffsetMultiplier: 1.3,
       verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 0.8,
+      widthMultiplier: 0.5,
       heightMultiplier: 1.1,
     ));
 
@@ -97,19 +97,10 @@ class Transaction {
     stuNum = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Student Details",
-      horizontalOffsetMultiplier: 3.5,
+      horizontalOffsetMultiplier: 3.0,
       verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 1.5,
+      widthMultiplier: 4.0,
       heightMultiplier: 1.0
-    );
-
-    receiptNum = await ocrMapper.extractHandwrittenField(
-      recognizedText,
-      "Finance Officer",
-      horizontalOffsetMultiplier: 2.4,
-      verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 0.5,
-      heightMultiplier: 1.0,
     );
 
     transactAmount = await ocrMapper.extractHandwrittenField(
@@ -122,63 +113,72 @@ class Transaction {
 
     transactPurpose = await ocrMapper.extractHandwrittenField(
       recognizedText,
-      "Transaction Details",
-      verticalOffsetMultiplier: 7.5,
+      "Finance Officer",
+      verticalOffsetMultiplier: -3.5,
       widthMultiplier: 10.0,
       heightMultiplier: 0.8,
     );
 
     transactMonth = await ocrMapper.extractHandwrittenField(
       recognizedText,
-      "Finance Officer",
-      horizontalOffsetMultiplier: 1.9,
-      verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 0.5,
-      heightMultiplier: 1.0,
+      "Student Details",
+      horizontalOffsetMultiplier: 3.5,
+      verticalOffsetMultiplier: -3.5,
+      widthMultiplier: 0.3,
+      heightMultiplier: 0.5,
     );
 
     transactDay = await ocrMapper.extractHandwrittenField(
       recognizedText,
-      "Finance Officer",
-      horizontalOffsetMultiplier: 2.4,
-      verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 0.5,
-      heightMultiplier: 1.0,
+      "Student Details",
+      horizontalOffsetMultiplier: 4.0,
+      verticalOffsetMultiplier: -3.5,
+      widthMultiplier: 0.3,
+      heightMultiplier: 0.5,
     );
 
     transactYear = await ocrMapper.extractHandwrittenField(
       recognizedText,
+      "Student Details",
+      horizontalOffsetMultiplier: 4.5,
+      verticalOffsetMultiplier: -3.5,
+      widthMultiplier: 0.3,
+      heightMultiplier: 0.5,
+    );
+
+    receiptNum = await ocrMapper.extractHandwrittenField(
+      recognizedText,
       "Finance Officer",
-      horizontalOffsetMultiplier: 2.7,
-      verticalOffsetMultiplier: 2.5,
-      widthMultiplier: 0.5,
-      heightMultiplier: 1.0,
+      horizontalOffsetMultiplier: 2.4,
+      verticalOffsetMultiplier: 2.3,
+      widthMultiplier: 3.0,
+      heightMultiplier: 3.0,
     );
 
     foFirstName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
-      verticalOffsetMultiplier: 2.5,
+      verticalOffsetMultiplier: 2.3,
       widthMultiplier: 0.7,
-      heightMultiplier: 1.0,
+      heightMultiplier: 0.8,
     );
 
     foMiddleInitial = (await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
       horizontalOffsetMultiplier: 1.0,
-      verticalOffsetMultiplier: 2.5,
+      verticalOffsetMultiplier: 2.3,
       widthMultiplier: 0.2,
-      heightMultiplier: 1.0,
+      heightMultiplier: 0.8,
     ));
 
     foLastName = await ocrMapper.extractHandwrittenField(
       recognizedText,
       "Finance Officer",
       horizontalOffsetMultiplier: 1.5,
-      verticalOffsetMultiplier: 2.5,
+      verticalOffsetMultiplier: 2.3,
       widthMultiplier: 0.5,
-      heightMultiplier: 1.0,
+      heightMultiplier: 0.7,
     );
   }
 }

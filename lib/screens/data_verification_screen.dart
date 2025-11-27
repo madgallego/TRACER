@@ -37,22 +37,72 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   final TextEditingController _foMiddleInitialController = TextEditingController();
   final TextEditingController _foLastNameController = TextEditingController();
 
+  String _formatName(String name) {
+    if (name.isEmpty) return "";
+
+    List<String> nameList = name.split(' ');
+
+    for (final (index, name) in nameList.indexed) {
+      nameList[index] = "${name[0].toUpperCase()}${name.substring(1).toLowerCase()}";
+    }
+
+    return nameList.join(" ");
+  }
+
+  String _formatMI(String mi) {
+    if (mi.isNotEmpty) {
+      return mi[0].toUpperCase();
+    }
+
+    return '';
+  }
+
+  String _formatNum(String number) {
+    List<String> chars = number.split('');
+    StringBuffer buf = StringBuffer('');
+
+    for (final char in chars) {
+      if (char.isValidNumberString()) {
+        buf.write(char);
+      }
+    }
+
+    return buf.toString();
+  }
+
+  String _getAmtWords(String amt) {
+    if (amt.isEmpty) return '';
+
+    final numWords = int.parse(amt).toWords();
+
+    List<String> wordList = numWords.split(' ');
+
+    for (final (index, word) in wordList.indexed) {
+      wordList[index] = '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    }
+
+    if (wordList.last != "Pesos") {
+      wordList.add("Pesos");
+    }
+
+    return wordList.join(' ');
+  }
 
   void _setFieldInitialValues() {
-    _stuFirstNameController.text = widget.transaction.stuFirstName ?? "";
-    _stuMiddleInitialController.text = widget.transaction.stuMiddleInitial ?? "";
-    _stuLastNameController.text = widget.transaction.stuLastName ?? "";
-    _stuNumController.text = widget.transaction.stuNum ?? "";
-    _receiptNumController.text = widget.transaction.receiptNum ?? "";
-    _transactMonthController.text = widget.transaction.transactMonth ?? "";
-    _transactDayController.text = widget.transaction.transactDay ?? "";
-    _transactYearController.text = widget.transaction.transactYear ?? "";
-    _transactAmountController.text = widget.transaction.transactAmount ?? "";
-    _transactAmountWordsController.text = widget.transaction.transactAmountWords ?? "";
+    _stuFirstNameController.text = _formatName(widget.transaction.stuFirstName ?? "");
+    _stuMiddleInitialController.text = _formatMI(widget.transaction.stuMiddleInitial ?? "");
+    _stuLastNameController.text = _formatName(widget.transaction.stuLastName ?? "");
+    _stuNumController.text = _formatNum(widget.transaction.stuNum ?? "");
+    _receiptNumController.text = _formatNum(widget.transaction.receiptNum ?? "");
+    _transactMonthController.text = _formatNum(widget.transaction.transactMonth ?? "");
+    _transactDayController.text = _formatNum(widget.transaction.transactDay ?? "");
+    _transactYearController.text = _formatNum(widget.transaction.transactYear ?? "");
+    _transactAmountController.text = _formatNum(widget.transaction.transactAmount ?? "");
+    _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
     _transactPurposeController.text = widget.transaction.transactPurpose ?? "";
-    _foFirstNameController.text = widget.transaction.foFirstName ?? "";
-    _foMiddleInitialController.text = widget.transaction.foMiddleInitial ?? "";
-    _foLastNameController.text = widget.transaction.foLastName ?? "";
+    _foFirstNameController.text = _formatName(widget.transaction.foFirstName ?? "");
+    _foMiddleInitialController.text = _formatMI(widget.transaction.foMiddleInitial ?? "");
+    _foLastNameController.text = _formatName(widget.transaction.foLastName ?? "");
   }
 
   void _setTransactionFromFields() {
@@ -282,7 +332,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             GradientTextFormField(
                                               controller: _stuMiddleInitialController,
                                               inputFormatters: [
-                                                NameFormatter()
+                                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
+                                                MIFormatter()
                                               ],
                                               keyboardType: TextInputType.name,
                                               textCapitalization: TextCapitalization.words,
@@ -553,19 +604,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                   GradientTextFormField(
                                     controller: _transactAmountController,
                                     onChanged: (_) {
-                                      final numWords = int.parse(_transactAmountController.text).toWords();
-
-                                      List<String> wordList = numWords.split(' ');
-
-                                      for (final (index, word) in wordList.indexed) {
-                                        wordList[index] = '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
-                                      }
-
-                                      if (wordList.last != "Pesos") {
-                                        wordList.add("Pesos");
-                                      }
-
-                                      _transactAmountWordsController.text = wordList.join(' ');
+                                      _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
                                     },
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly
@@ -765,7 +804,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             GradientTextFormField(
                                               controller: _foMiddleInitialController,
                                               inputFormatters: [
-                                                NameFormatter()
+                                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
+                                                MIFormatter()
                                               ],
                                               keyboardType: TextInputType.name,
                                               textCapitalization: TextCapitalization.words,
@@ -848,9 +888,89 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                                   if (response.isNotEmpty) {
                                     debugPrint('Transaction saved successfully! ID: ${response.first['id']}');
+
+                                    if (!context.mounted) return;
+
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return _Popup(
+                                          GradientIcon(
+                                            icon: Icons.check_circle_outline,
+                                            size: 48.0,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                AppDesign.primaryGradientStart,
+                                                AppDesign.primaryGradientEnd,
+                                              ],
+                                            ),
+                                          ),
+                                          "Data saved successfully!\nReceipt was also sent to student's email.",
+                                          GradientBorderButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).pop(); // NOTE: change to named routing
+                                            },
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                AppDesign.primaryGradientStart,
+                                                AppDesign.primaryGradientEnd,
+                                              ],
+                                            ),
+                                            child: Text(
+                                              "Confirm",
+                                              style: TextStyle(
+                                                color: AppDesign.appOffblack,
+                                                fontSize: 12.0,
+                                                fontFamily: "AROneSans",
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    );
                                   }
                                 } catch (e) {
                                   debugPrint('Upload Failed $e');
+
+                                  if (!context.mounted) return;
+
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return _Popup(
+                                        Icon(
+                                          Icons.error,
+                                          size: 48.0,
+                                          color: Colors.red,
+                                        ),
+                                        "Failed to upload the data!\nFailed to generate receipt! :(",
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Ok",
+                                                style: TextStyle(
+                                                  color: AppDesign.appOffblack,
+                                                  fontSize: 14.0,
+                                                  fontFamily: "AROneSans",
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  );
                                 }
                               },
                               borderRadius: BorderRadius.circular(30.0),
@@ -875,6 +995,65 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Popup extends StatelessWidget {
+  const _Popup(
+    this.icon,
+    this.dialog,
+    this.btn,
+  );
+
+  final Widget icon;
+  final String dialog;
+  final Widget btn;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30.0,
+        vertical: 30.0,
+      ),
+      color: Colors.black12,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 20.0,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            spacing: 20.0,
+            children: [
+              icon,
+
+              Text(
+                dialog,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppDesign.appOffblack,
+                  fontSize: 14.0,
+                  fontFamily: "AROneSans",
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none
+                ),
+              ),
+
+              btn,
+            ],
           ),
         ),
       ),
