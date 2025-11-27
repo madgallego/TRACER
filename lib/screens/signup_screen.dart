@@ -105,7 +105,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               gradient: LinearGradient(
                                 colors: [
                                   AppDesign.primaryGradientStart,
-                                  AppDesign.primaryGradientEnd
+                                  AppDesign.primaryGradientEnd,
+                                  AppDesign.primaryGradientStart
                                 ],
                               ),
                               shadows: [
@@ -131,7 +132,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               gradient: LinearGradient(
                                 colors: [
                                   AppDesign.primaryGradientStart,
-                                  AppDesign.primaryGradientEnd
+                                  AppDesign.primaryGradientEnd,
+                                  AppDesign.primaryGradientStart
                                 ],
                               ),
                               shadows: [
@@ -165,10 +167,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                 TextField(
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
                                   decoration: InputDecoration(
                                     hintText: 'Email',
-                                    hintStyle: TextStyle(color: Colors.black45),
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     filled: true,
                                     fillColor: Colors.grey.withOpacity(0.1),
                                     border: OutlineInputBorder(
@@ -189,11 +191,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                 const SizedBox(height: 12),
                                 TextField(
                                   controller: _passwordController,
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
                                   obscureText: !_passwordVisible,
                                   decoration: InputDecoration(
                                     hintText: 'Password',
-                                    hintStyle: TextStyle(color: Colors.black45),
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     filled: true,
                                     fillColor: Colors.grey.withOpacity(0.1),
                                     border: OutlineInputBorder(
@@ -229,11 +231,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                 const SizedBox(height: 12),
                                 TextField(
                                   controller: _confirmPasswordController,
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
                                   obscureText: !_confirmPasswordVisible,
                                   decoration: InputDecoration(
                                     hintText: 'Confirm Password',
-                                    hintStyle: TextStyle(color: Colors.black45),
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     filled: true,
                                     fillColor: Colors.grey.withOpacity(0.1),
                                     border: OutlineInputBorder(
@@ -285,6 +287,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         color: Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
+                                        fontFamily: "AROneSans"
                                       ),
                                     ),
                                   ),
@@ -296,7 +299,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   children: [
                                     const Text(
                                       "Already have an account? ",
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
                                     ),
                                     TextButton(
                                       onPressed: () {
@@ -312,6 +315,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         style: TextStyle(
                                           color: AppDesign.primaryGradientEnd,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: "AROneSans"
                                         ),
                                       )
                                     )
