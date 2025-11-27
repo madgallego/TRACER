@@ -66,9 +66,10 @@ class _RecordsScreenState extends State<RecordsScreen> {
           ? "${record.foMiddleInitial}.".toLowerCase()
           : "";
         final foLastName = record.foLastName?.toLowerCase() ?? '';
+        final foName = "$foFirstName $foMiddleInitial $foLastName".trim();
         return title.contains(query) || id.contains(query) ||
             foFirstName.contains(query) || foMiddleInitial.contains(query) ||
-            foLastName.contains(query);
+            foLastName.contains(query) || foName.contains(query);
       }).toList();
     });
   }
@@ -173,7 +174,60 @@ class _RecordsScreenState extends State<RecordsScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 20),
+
+                        // Column header
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10.0),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 80,
+                                child: Text(
+                                  "Receipt No.",
+                                  style: TextStyle(
+                                    fontFamily: "AROneSans",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 9.0),
+                                  child: Text(
+                                    "Details",
+                                    style: TextStyle(
+                                      fontFamily: "AROneSans",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    "Amount",
+                                    style: TextStyle(
+                                      fontFamily: "AROneSans",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
 
                         // Records list
                         Expanded(
@@ -298,6 +352,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                     "Php ${record.transactAmount}",
                     style: const TextStyle(
                       fontFamily: "AROneSans",
+                      fontSize: 12,
                       fontWeight: FontWeight.bold, 
                       color: Colors.black87
                     ),
