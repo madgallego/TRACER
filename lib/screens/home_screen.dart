@@ -5,6 +5,7 @@ import 'package:tracer/utils/constants.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
+import '../screens/records_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -117,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen>
                                 gradient: LinearGradient(
                                   colors: [
                                     AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd
+                                    AppDesign.primaryGradientEnd,
+                                    AppDesign.primaryGradientStart
                                   ]
                                 ),
                                 strokeWidth: 12.0,
@@ -157,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         ),
                                         title: "Records",
                                         onTap: () {
-                                          // TODO: navigate to records screen
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => RecordsScreen()));
                                         },
                                       ),
                                       _HomeRoundedButton(

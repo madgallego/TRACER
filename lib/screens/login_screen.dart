@@ -94,7 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               gradient: LinearGradient(
                                 colors: [
                                   AppDesign.primaryGradientStart,
-                                  AppDesign.primaryGradientEnd
+                                  AppDesign.primaryGradientEnd,
+                                  AppDesign.primaryGradientStart
                                 ],
                               ),
                               shadows: [
@@ -120,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               gradient: LinearGradient(
                                 colors: [
                                   AppDesign.primaryGradientStart,
-                                  AppDesign.primaryGradientEnd
+                                  AppDesign.primaryGradientEnd,
+                                  AppDesign.primaryGradientStart
                                 ],
                               ),
                               shadows: [
