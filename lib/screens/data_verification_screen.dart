@@ -910,6 +910,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           GradientBorderButton(
                                             onPressed: () async {
                                               Navigator.of(context).pop(); // NOTE: change to named routing
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
                                             },
                                             borderRadius: BorderRadius.circular(30.0),
                                             gradient: LinearGradient(
