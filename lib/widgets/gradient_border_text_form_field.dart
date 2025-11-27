@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GradientTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String? hintText;
+  final Color fillColor;
   final LinearGradient activeGradient;
   final BorderRadius? borderRadius;
   final String? prefixText;
@@ -11,12 +13,17 @@ class GradientTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
   final VoidCallback? onTap;
+  final Function(String)? onChanged;
   final bool readOnly;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
 
   const GradientTextFormField({
     super.key,
     required this.controller,
     this.hintText,
+    this.fillColor = Colors.white,
     required this.activeGradient,
     this.borderRadius,
     this.prefixText,
@@ -24,7 +31,11 @@ class GradientTextFormField extends StatefulWidget {
     this.validator,
     this.onSaved,
     this.onTap,
+    this.onChanged,
     this.readOnly = false,
+    this.keyboardType,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override
@@ -63,7 +74,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
       curve: Curves.easeOut,
 
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: widget.fillColor,
         gradient: currentGradient,
         border: Border.all(
           // Fallback color when not focused
@@ -77,7 +88,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
 
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.fillColor,
           borderRadius: widget.borderRadius
         ),
 
@@ -88,8 +99,12 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
           validator: widget.validator,
           onSaved: widget.onSaved,
           onTap: widget.onTap,
+          onChanged: widget.onChanged,
           readOnly: widget.readOnly,
+          keyboardType: widget.keyboardType,
+          inputFormatters: widget.inputFormatters,
 
+          textCapitalization: widget.textCapitalization,
           style: TextStyle(
             fontFamily: "AROneSans",
             fontSize: 13.0,
