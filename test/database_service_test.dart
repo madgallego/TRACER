@@ -71,3 +71,195 @@ class DatabaseService {
     await _client.from('tracer.students').insert(data);
   }
 }
+
+
+//for generating mocks
+@GenerateMocks([SupabaseClient, SupabaseQueryBuilder])
+import 'database_service_test.mocks.dart';
+
+
+//main unit testing for database
+void main() {
+  late MockSupabaseClient mockSupabaseClient;
+  late MockSupabaseQueryBuilder mockQueryBuilder;
+  late DatabaseService databaseService;
+
+  setUp(() {
+    // Arrange: Initialize mocks and service before each test
+    mockSupabaseClient = MockSupabaseClient();
+    mockQueryBuilder = MockSupabaseQueryBuilder();
+    databaseService = DatabaseService(mockSupabaseClient);
+
+    // Setup mock behavior: when client.from() is called, return the query builder.
+    // When insert() is called on the builder, return a future (simulate success).
+    when(mockSupabaseClient.from(any)).thenReturn(mockQueryBuilder);
+    when(mockQueryBuilder.insert(any)).thenAnswer((_) async => []);
+  });
+
+  group('Transaction Validation Tests', () {
+    test('should upload successfully when transaction data is completely valid', () async {
+      // Arrange
+      final validData = {
+        'receiptNo': 500000090,
+        'studentID': 2023947212217,
+        'amount': 1600,
+        'amountWords': "One Thousand and Six Hundred Pesos",
+        'purpose': "Merch bundle",
+        'finance_FN': "Shana",
+        'finance_MI': "K",
+        'finance_LN': "Urakot",
+        'receiptDate': "2024-08-15"
+      };
+
+      // Act
+      await databaseService.uploadTransaction(validData);
+
+      // Assert
+      verify(mockSupabaseClient.from('tracer.transaction')).called(1);
+      verify(mockQueryBuilder.insert(validData)).called(1);
+    });
+
+    test('should reject transaction with zero or negative amount', () async {
+      // Arrange
+      final invalidData = {
+        'receiptNo': 500000090,
+        'studentID': 2023947212217,
+        'amount': -500, // Invalid
+        'amountWords': "Minus Five Hundred Pesos",
+        'purpose': "Merch bundle",
+        'finance_FN': "Shana",
+        'finance_MI': "K",
+        'finance_LN': "Urakot",
+        'receiptDate': "2024-08-15"
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadTransaction(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'amount must be > 0')),
+      );
+      verifyNever(mockSupabaseClient.from(any)); // Ensure DB is not called
+    });
+
+    test('should reject transaction with empty string fields', () async {
+      // Arrange
+      final invalidData = {
+        'receiptNo': 500000090,
+        'studentID': 2023947212217,
+        'amount': 1600,
+        'amountWords': " ", // Invalid: empty/whitespace
+        'purpose': "Merch bundle",
+        'finance_FN': "Shana",
+        'finance_MI': "K",
+        'finance_LN': "Urakot",
+        'receiptDate': "2024-08-15"
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadTransaction(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'amountWords cannot be empty')),
+      );
+    });
+
+    test('should reject transaction with invalid date format', () async {
+      // Arrange
+      final invalidData = {
+        'receiptNo': 500000090,
+        'studentID': 2023947212217,
+        'amount': 1600,
+        'amountWords': "One Thousand",
+        'purpose': "Merch bundle",
+        'finance_FN': "Shana",
+        'finance_MI': "K",
+        'finance_LN': "Urakot",
+        'receiptDate': "15/08/2024" // Invalid format
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadTransaction(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'receiptDate must be in YYYY-MM-DD format')),
+      );
+    });
+  });
+
+  group('Student Validation Tests', () {
+    test('should upload successfully when student data is completely valid', () async {
+      // Arrange
+      final validData = {
+        'studentID': 2099969082936,
+        'stud_FN': "Lex",
+        'stud_MI': "X",
+        'stud_LN': "Test",
+        'course': "BSCS",
+        'yearLevel': 3,
+        'stud_email': "mharc.alex@gmail.com"
+      };
+
+      // Act
+      await databaseService.uploadStudent(validData);
+
+      // Assert
+      verify(mockSupabaseClient.from('tracer.students')).called(1);
+      verify(mockQueryBuilder.insert(validData)).called(1);
+    });
+
+    test('should reject student missing required fields', () async {
+      // Arrange
+      final invalidData = {
+        'studentID': 2099969082936,
+        'stud_FN': "Lex",
+        // 'stud_MI' is missing
+        'stud_LN': "Test",
+        'course': "BSCS",
+        'yearLevel': 3,
+        'stud_email': "mharc.alex@gmail.com"
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadStudent(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'Missing required field: stud_MI')),
+      );
+    });
+
+    test('should reject student with year level out of bounds', () async {
+      // Arrange
+      final invalidData = {
+        'studentID': 2099969082936,
+        'stud_FN': "Lex",
+        'stud_MI': "X",
+        'stud_LN': "Test",
+        'course': "BSCS",
+        'yearLevel': 5, // Invalid: > 4
+        'stud_email': "mharc.alex@gmail.com"
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadStudent(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'yearLevel must be between 1 and 4')),
+      );
+    });
+
+    test('should reject student with invalid email format', () async {
+      // Arrange
+      final invalidData = {
+        'studentID': 2099969082936,
+        'stud_FN': "Lex",
+        'stud_MI': "X",
+        'stud_LN': "Test",
+        'course': "BSCS",
+        'yearLevel': 3,
+        'stud_email': "mharc.alex.gmail.com" // Invalid: missing @
+      };
+
+      // Act & Assert
+      expect(
+        () => databaseService.uploadStudent(invalidData),
+        throwsA(isA<ArgumentError>().having((e) => e.message, 'message', 'stud_email must contain an "@" symbol')),
+      );
+    });
+  });
+}
