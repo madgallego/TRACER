@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tracer/auth/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_snackbar.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,14 +12,14 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   // Auth service instance
-  final authService = AuthService(Supabase.instance.client);
+  final authService = AuthService();
 
   // Log out function
   void logout() async {
     await authService.logOut();
 
     if (mounted) {
-      Navigator.of(context).popUntil(ModalRoute.withName('/'));
+      Navigator.of(context).popUntil((route) => route.isFirst);
       ScaffoldMessenger.of(context).showSnackBar(
         GradientBorderSnackbar(message: 'Log out successful!')
       );

@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 class GradientTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String? hintText;
-  final Color? textColor;
-  final Color? fillColor;
+  final Color fillColor;
   final LinearGradient activeGradient;
   final BorderRadius? borderRadius;
   final String? prefixText;
@@ -24,8 +23,7 @@ class GradientTextFormField extends StatefulWidget {
     super.key,
     required this.controller,
     this.hintText,
-    this.textColor,
-    this.fillColor,
+    this.fillColor = Colors.white,
     required this.activeGradient,
     this.borderRadius,
     this.prefixText,
@@ -90,7 +88,7 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
 
       child: Container(
         decoration: BoxDecoration(
-          color: widget.fillColor ?? Colors.grey.shade100,
+          color: widget.fillColor,
           borderRadius: widget.borderRadius
         ),
 
@@ -110,7 +108,6 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
           style: TextStyle(
             fontFamily: "AROneSans",
             fontSize: 13.0,
-            color: widget.textColor,
           ),
 
           decoration: InputDecoration(
