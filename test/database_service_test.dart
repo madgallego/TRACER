@@ -4,13 +4,9 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// MUST be at the top with the other imports!
 import 'database_service_test.mocks.dart';
 
-// -----------------------------------------------------------------------------
-// DATABASE SERVICE CLASS
-// -----------------------------------------------------------------------------
-
+//database class 
 class DatabaseService {
   final SupabaseClient _client;
 
@@ -68,11 +64,8 @@ class DatabaseService {
   }
 }
 
-// -----------------------------------------------------------------------------
-// FAKES
-// -----------------------------------------------------------------------------
 
-// This Fake replaces the TransformBuilder and uses the correct PostgrestFilterBuilder type.
+//creates fake filter for simulation on database integration
 class FakeFilterBuilder extends Fake implements PostgrestFilterBuilder<dynamic> {
   @override
   Future<R> then<R>(
@@ -84,11 +77,7 @@ class FakeFilterBuilder extends Fake implements PostgrestFilterBuilder<dynamic> 
   }
 }
 
-// -----------------------------------------------------------------------------
-// UNIT TESTS
-// -----------------------------------------------------------------------------
-
-// Generate the mocks by attaching the annotation directly to main()
+//runs the mock test for database integration
 @GenerateMocks([SupabaseClient, SupabaseQueryBuilder])
 void main() {
   late MockSupabaseClient mockSupabaseClient;

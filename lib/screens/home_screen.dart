@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tracer/screens/scan_screen.dart';
-import 'package:tracer/screens/settings_screen.dart';
+import 'package:tracer/models/transaction.dart';
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
-import '../screens/records_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,182 +67,215 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF62D2F5), // Light blue
-              Color(0xFFFFFE6A), // Light Yellow
-            ],
-          ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 60.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0)
-                )
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 30),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22.0),
+          child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 30),
 
-                          //header logo
-                          Opacity(
-                            opacity: _fadeLogo.value,
-                            child: Transform.scale(
-                              scale: _scaleLogo.value,
-                              child: GradientBorderText(
-                                text: "TRACER",
-                                textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 90,
-                                  fontFamily: 'Iceland',
-                                  // fontWeight: FontWeight.w700,
-                                ),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                    AppDesign.primaryGradientStart
-                                  ]
-                                ),
-                                strokeWidth: 12.0,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 10.0,
-                                    color: Colors.black.withOpacity(0.5),
-                                    offset: Offset(0, 10.0),
-                                  ),
-                                ],
-                              ),
-                            ),
+                    //header logo
+                    Opacity(
+                      opacity: _fadeLogo.value,
+                      child: Transform.scale(
+                        scale: _scaleLogo.value,
+                        child: GradientBorderText(
+                          text: "TRACER",
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 90,
+                            fontFamily: 'Iceland',
                           ),
-                          const SizedBox(height: 40),
-
-                          // main buttons
-                          Transform.translate(
-                            offset: Offset(0, _translateButtons.value),
-                            child: Opacity(
-                              opacity: _fadeButtons.value,
-                              child: Column(
-                                children: [
-
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _HomeRoundedButton(
-                                        gradientIcon: GradientIcon(
-                                          icon: Icons.folder_open,
-                                          size: 24.0,
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd,
-                                            ]
-                                          )
-                                        ),
-                                        title: "Records",
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => RecordsScreen()));
-                                        },
-                                      ),
-                                      _HomeRoundedButton(
-                                        gradientIcon: GradientIcon(
-                                          icon: Icons.settings,
-                                          size: 24.0,
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd,
-                                            ]
-                                          )
-                                        ),
-                                        title: "Settings",
-                                        onTap: () async {
-                                          await Navigator.of(context).push(
-                                            MaterialPageRoute(builder: (context) => SettingsScreen())
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 25),
-
-                                  GradientBorderButton(
-                                    onPressed: () async {
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => ScanScreen())
-                                      );
-                                    },
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        GradientIcon(
-                                          icon: Icons.camera_alt_outlined,
-                                          size: 48.0,
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd,
-                                            ]
-                                          ),
-                                        ),
-                                        const Text(
-                                          "Scanner",
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: AppDesign.appOffblack,
-                                            fontFamily: "AROneSans",
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      ]
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 75),
-
-                                  _LinkTile(
-                                    title: "About this App",
-                                    onTap: (){
-                                      Navigator.pushNamed(context, "/howto");
-                                    },
-                                  )
-
-                                ],
-                              ),
-                            ),
+                          gradient: LinearGradient(
+                            colors: [
+                              AppDesign.primaryGradientStart,
+                              AppDesign.primaryGradientEnd,
+                              AppDesign.primaryGradientStart
+                            ]
                           ),
-                        ],
-                      );
-                    },
-                ),
-              ),
-            ),
+                          strokeWidth: 12.0,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10.0,
+                              color: Colors.black.withValues(alpha: 0.5),
+                              offset: Offset(0, 10.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+
+                    // main buttons
+                    Transform.translate(
+                      offset: Offset(0, _translateButtons.value),
+                      child: Opacity(
+                        opacity: _fadeButtons.value,
+                        child: Column(
+                          spacing: 15.0,
+                          children: [
+                            Row(
+                              spacing: 15.0,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: _HomeRoundedButton(
+                                    gradientIcon: GradientIcon(
+                                      icon: Icons.folder_open,
+                                      size: 24.0,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppDesign.primaryGradientStart,
+                                          AppDesign.primaryGradientEnd,
+                                        ]
+                                      )
+                                    ),
+                                    title: "Records",
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed('/records');
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: _HomeRoundedButton(
+                                    gradientIcon: GradientIcon(
+                                      icon: Icons.settings,
+                                      size: 24.0,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppDesign.primaryGradientStart,
+                                          AppDesign.primaryGradientEnd,
+                                        ]
+                                      )
+                                    ),
+                                    title: "Settings",
+                                    onTap: () async {
+                                      await Navigator.of(context).pushNamed('/settings');
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            _HomeMainBigRoundedButton(text: "Scanner"),
+                            _HomeBigRoundedButton(text: "Manual Input"),
+
+                            const SizedBox(height: 25),
+
+                            _LinkTile(
+                              title: "About this App",
+                              onTap: (){
+                                Navigator.pushNamed(context, "/howto");
+                              },
+                            )
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HomeMainBigRoundedButton extends StatelessWidget {
+  final String text;
+
+  const _HomeMainBigRoundedButton({
+    super.key,
+    this.text = "",
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GradientBorderButton(
+      onPressed: () async {
+        Navigator.of(context).pushNamed('/scan');
+      },
+      borderRadius: BorderRadius.circular(30.0),
+      gradient: LinearGradient(
+        colors: [
+          AppDesign.primaryGradientStart,
+          AppDesign.primaryGradientEnd,
+        ]
+      ),
+      child: Column(
+        children: [
+          GradientIcon(
+            icon: Icons.camera_alt_outlined,
+            size: 48.0,
+            gradient: LinearGradient(
+              colors: [
+                AppDesign.primaryGradientStart,
+                AppDesign.primaryGradientEnd,
+              ]
+            ),
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14.0,
+              color: AppDesign.appOffblack,
+              fontFamily: "AROneSans",
+              fontWeight: FontWeight.bold,
+            ),
+          )
+        ]
+      ),
+    );
+  }
+}
+
+class _HomeBigRoundedButton extends StatelessWidget {
+  final String text;
+
+  const _HomeBigRoundedButton({
+    super.key,
+    this.text = "",
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _HomeRoundedButton(
+            gradientIcon: GradientIcon(
+              icon: Icons.keyboard_alt_outlined,
+              size: 48.0,
+              gradient: LinearGradient(
+                colors: [
+                  AppDesign.primaryGradientStart,
+                  AppDesign.primaryGradientEnd,
+                ]
+              ),
+            ),
+            title: text,
+            onTap: () async {
+              Navigator.of(context).pushNamed(
+                '/verification',
+                arguments: {
+                  "transaction": Transaction(),
+                  "isFromHomeScreen": true,
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:tracer/models/transaction.dart';
-import 'package:tracer/screens/data_verification_screen.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:tracer/services/ocr_service.dart';
+import 'package:tracer/services/doc_ai_service.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -32,18 +29,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   late Animation<double> _resizeAnimation;
   late Animation<double> _translationAnimation;
 
-  final _ocr = OcrService();
-
-  final _picker = ImagePicker();
   late File _image;
-
-  Future<void> _openImagePicker() async {
-    final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      _image = File(pickedImage.path);
-    }
-  }
 
   @override
   void initState() {
@@ -111,13 +97,11 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   void dispose() {
     _initialAnimationController.dispose();
     _finalAnimationController.dispose();
-    _ocr.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    RecognizedText recognizedText;
     Transaction transaction = Transaction();
 
     return Container(
@@ -210,7 +194,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               height: AppDesign.camBtnHeight,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context).popUntil(ModalRoute.withName('/'));
                                 },
                                 child: Icon(
                                   Icons.close,
@@ -229,17 +213,13 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                             onPressed: () async {
                               _initialAnimationController.forward();
 
-                              recognizedText = await _ocr.run(widget.imagePath);
-                              transaction.populateWithOcrMapper(OcrMapperService(), recognizedText);
-
-                              print(recognizedText.text);
+                              transaction = await scanForm(await File(widget.imagePath).readAsBytes());
 
                               if (!context.mounted) return;
 
-                              await Navigator.of(context).pushReplacement(
-                                MaterialPageRoute<void>(
-                                  builder: (context) => DataVerificationScreen(transaction: transaction)
-                                )
+                              await Navigator.of(context).pushReplacementNamed(
+                                '/verification',
+                                arguments: {'transaction': transaction},
                               );
                             },
                             gradient: LinearGradient(colors: [
@@ -286,11 +266,10 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               height: AppDesign.camBtnHeight,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  await _openImagePicker();
-                                  setState(() {});
+                                  Navigator.of(context).pop();
                                 },
                                 child: Icon(
-                                  Icons.upload,
+                                  Icons.replay,
                                   size: AppDesign.sBtnIconSize,
                                   color: AppDesign.appOffblack,
                                 ),

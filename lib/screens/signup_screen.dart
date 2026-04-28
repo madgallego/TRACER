@@ -5,6 +5,7 @@ import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
 import '../widgets/gradient_border_snackbar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,20 +18,81 @@ class _SignupScreenState extends State<SignupScreen> {
   // Variables for managing form state
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+  bool _isLoadingOrgs = true;
+  List<Map<String, dynamic>> _organizations = [];
+  String? _selectedOrgId;
 
   // Auth service and controllers instances
-  final authService = AuthService();
+  final authService = AuthService(Supabase.instance.client);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _middleInitialController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _studentIdController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrganizations();
+  }
+
+  Future<void> _loadOrganizations() async {
+    try {
+      final orgs = await authService.getOrganizations();
+      debugPrint('Organizations loaded: $orgs');
+      if (mounted) {
+        setState(() {
+          _organizations = orgs;
+          _isLoadingOrgs = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading orgs: $e');
+      if (mounted) setState(() => _isLoadingOrgs = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _middleInitialController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _studentIdController.dispose();
+    super.dispose();
+  }
 
   // Sign up function
   Future<void> signup() async {
+    final firstName = _firstNameController.text.trim();
+    final middleInitial = _middleInitialController.text.trim();
+    final lastName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    // Check if passwords match
+    if (firstName.isEmpty || lastName.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          GradientBorderSnackbar(message: 'Please enter your first and last name.')
+        );
+      }
+      return;
+    }
+
+    if (_selectedOrgId == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          GradientBorderSnackbar(message: 'Please select your organization.')
+        );
+      }
+      return;
+    }
+
     if (password != confirmPassword) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -39,18 +101,33 @@ class _SignupScreenState extends State<SignupScreen> {
       }
       return;
     }
+    
+    if (_studentIdController.text.trim().isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          GradientBorderSnackbar(message: 'Please enter your student ID.')
+        );
+      }
+      return;
+    }
 
-    // Attempt to sign up the user
     try {
-      await authService.signUp(email, password);
+      await authService.signUp(
+        email: email,
+        password: password,
+        firstName: firstName,
+        middleInitial: middleInitial,
+        lastName: lastName,
+        orgId: _selectedOrgId!,
+        studentId: _studentIdController.text.trim(),
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           GradientBorderSnackbar(message: 'Sign up successful! Please check your email to verify your account and proceed to log in.')
         );
-        Navigator.pop(context);
+        Navigator.of(context).pop();
       }
-    // Handle sign up errors
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -162,6 +239,186 @@ class _SignupScreenState extends State<SignupScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+
+                                // First name field
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _firstNameController,
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
+                                  decoration: InputDecoration(
+                                    hintText: 'First Name',
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
+                                    filled: true,
+                                    fillColor: Colors.grey.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    prefixIcon: GradientIcon(
+                                      icon: Icons.person,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                  ),
+                                ),
+
+                                // Middle name field
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _middleInitialController,
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
+                                  decoration: InputDecoration(
+                                    hintText: 'Middle Initial (Optional)',
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
+                                    filled: true,
+                                    fillColor: Colors.grey.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    prefixIcon: GradientIcon(
+                                      icon: Icons.person_outline,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                  ),
+                                ),
+
+                                // Last name field
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _lastNameController,
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
+                                  decoration: InputDecoration(
+                                    hintText: 'Last Name',
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
+                                    filled: true,
+                                    fillColor: Colors.grey.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    prefixIcon: GradientIcon(
+                                      icon: Icons.person,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                  ),
+                                ),
+
+                                // Student ID field
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _studentIdController,
+                                  style: const TextStyle(color: Colors.black, fontFamily: "AROneSans"),
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    hintText: 'Student ID',
+                                    hintStyle: TextStyle(color: Colors.black45, fontFamily: "AROneSans"),
+                                    filled: true,
+                                    fillColor: Colors.grey.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    prefixIcon: GradientIcon(
+                                      icon: Icons.badge,
+                                      size: AppDesign.sBtnIconSize,
+                                      gradient: LinearGradient(colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]),
+                                    ),
+                                  ),
+                                ),
+
+                                // Organization dropdown
+                                const SizedBox(height: 12),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Row(
+                                    children: [
+                                      GradientIcon(
+                                        icon: Icons.groups,
+                                        size: AppDesign.sBtnIconSize,
+                                        gradient: LinearGradient(colors: [
+                                          AppDesign.primaryGradientStart,
+                                          AppDesign.primaryGradientEnd,
+                                        ]),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        child: _isLoadingOrgs
+                                            ? const Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 16),
+                                                child: Text(
+                                                  'Loading organizations...',
+                                                  style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontFamily: "AROneSans",
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              )
+                                            : DropdownButtonHideUnderline(
+                                                child: DropdownButton<String>(
+                                                  value: _selectedOrgId,
+                                                  isExpanded: true,
+                                                  borderRadius: BorderRadius.circular(16),
+                                                  dropdownColor: Colors.white,
+                                                  icon: GradientIcon(
+                                                    icon: Icons.arrow_drop_down,
+                                                    size: AppDesign.sBtnIconSize,
+                                                    gradient: LinearGradient(colors: [
+                                                      AppDesign.primaryGradientStart,
+                                                      AppDesign.primaryGradientEnd,
+                                                    ]),
+                                                  ),
+                                                  hint: const Text(
+                                                    'Select Organization',
+                                                    style: TextStyle(
+                                                      color: Colors.black45,
+                                                      fontFamily: "AROneSans",
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontFamily: "AROneSans",
+                                                    fontSize: 16,
+                                                  ),
+                                                  items: _organizations.map((org) {
+                                                    return DropdownMenuItem<String>(
+                                                      value: org['id'] as String,
+                                                      child: Text(
+                                                        '${org['abbrv']} - ${org['name']}',
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (value) {
+                                                    setState(() => _selectedOrgId = value);
+                                                  },
+                                                ),
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
                                 // Email field
                                 const SizedBox(height: 12),
                                 TextField(
@@ -187,6 +444,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
+
                                 // Password field
                                 const SizedBox(height: 12),
                                 TextField(
@@ -227,6 +485,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
+
                                 // Confirm Password field
                                 const SizedBox(height: 12),
                                 TextField(
@@ -267,6 +526,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
+
                                 // Sign up button
                                 const SizedBox(height: 16),
                                 SizedBox(
@@ -292,7 +552,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
-                                //Sign up field
+
+                                //Question field
                                 const SizedBox(height: 16),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -303,7 +564,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                        Navigator.of(context).pop();
                                       },
                                       style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,

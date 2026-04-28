@@ -39,6 +39,7 @@ abstract class AppDesign {
   static const Color appYellow = Color(0xffffe161);
   static const Color appPaleCyan = Color(0xffe2fff8);
   static const Color appOffblack = Color(0xff302e34);
+  static const Color appLightGray = Color(0xfff1f1f1);
   // static const Color white = Color(0xffffffff); just use Colors.white
 
   // Gradient Colors

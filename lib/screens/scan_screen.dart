@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import 'package:native_device_orientation/native_device_orientation.dart';
-import 'package:tracer/screens/scan_confirmation_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/gradient_border_button.dart';
@@ -200,12 +199,9 @@ class ScanScreenState extends State<ScanScreen> {
                           if (!context.mounted) return;
 
                           // If the picture was taken, display it on a new screen.
-                          await Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => ScanConfirmationScreen(
-                                imagePath: correctedImagePath,
-                              ),
-                            ),
+                          await Navigator.of(context).pushNamed(
+                            '/scan_confirmation',
+                            arguments: correctedImagePath,
                           );
 
                           if (_controller.value.isInitialized) {
@@ -250,12 +246,9 @@ class ScanScreenState extends State<ScanScreen> {
                         if (!context.mounted) return;
 
                         // If the picture a picture was chosen, display it on the new screen
-                        await Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (context) => ScanConfirmationScreen(
-                              imagePath: _image!.path,
-                            ),
-                          ),
+                        await Navigator.of(context).pushNamed(
+                          '/scan_confirmation',
+                          arguments: _image!.path,
                         );
 
                         _image = null;
