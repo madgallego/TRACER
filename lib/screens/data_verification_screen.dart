@@ -528,10 +528,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                                           if (widget.transaction.isMissingRequiredValue()) {
                                             ErrorSnackbar.show(context, 'Please fill in all required fields!');
-
-                                            // ScaffoldMessenger.of(context).showSnackBar(
-                                            //   ErrorSnackbar(errorMsg: "Please fill in all required fields!",)
-                                            // );
                                             return;
                                           }
 
@@ -542,14 +538,10 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                                             showSuccessDialog(context);
                                           } on DuplicateReceiptException {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Receipt number already exists.\nAre you sure it is correct?",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Receipt number already exists.\nAre you sure it is correct?');
                                           }
                                           catch (e) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Unknown error,\nPlease try again later.",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');
                                           }
                                         },
                                         borderRadius: BorderRadius.circular(30.0),
