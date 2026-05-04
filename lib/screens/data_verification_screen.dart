@@ -13,7 +13,7 @@ import 'package:tracer/widgets/gradient_icon.dart';
 
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/models/transaction.dart';
-import 'package:tracer/widgets/labeled_field.dart';
+import 'package:tracer/widgets/labeled_widgets.dart';
 import 'package:tracer/widgets/titled_card.dart';
 
 class DataVerificationScreen extends StatefulWidget {
@@ -47,6 +47,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   final TextEditingController _foFirstNameController = TextEditingController();
   final TextEditingController _foMiddleInitialController = TextEditingController();
   final TextEditingController _foLastNameController = TextEditingController();
+
+  bool _isReceiptRequested = true;
 
   String _formatName(String name) {
     if (name.isEmpty) return "";
@@ -131,6 +133,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     widget.transaction.foFirstName = _foFirstNameController.text;
     widget.transaction.foMiddleInitial = _foMiddleInitialController.text;
     widget.transaction.foLastName = _foLastNameController.text;
+    widget.transaction.isReceiptRequested = _isReceiptRequested;
 
   }
 
@@ -413,6 +416,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           LabeledFormField(
                                             label: "Amount",
                                             controller: _transactAmountController,
+                                            keyboardType: TextInputType.number,
                                             onChanged: (_) {
                                               _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
                                             },
@@ -508,8 +512,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                                       label: "Last Name",
                                                       controller: _foLastNameController,
                                                       formatters: [
-                                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
-                                                        MIFormatter()
+                                                        NameFormatter()
                                                       ],
                                                       keyboardType: TextInputType.name,
                                                       textCapitalization: TextCapitalization.words,
@@ -520,6 +523,12 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             ],
                                           ),
                                         ],
+                                      ),
+
+                                      LabeledCheckbox(
+                                        label: 'Send Receipt to Student',
+                                        value: _isReceiptRequested,
+                                        onChanged: (val) => setState(() => _isReceiptRequested = val ?? false)
                                       ),
 
                                       GradientBorderButton(
@@ -542,6 +551,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           }
                                           catch (e) {
                                             ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');
+                                            debugPrint(e.toString());
                                           }
                                         },
                                         borderRadius: BorderRadius.circular(30.0),

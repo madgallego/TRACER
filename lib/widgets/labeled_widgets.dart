@@ -86,3 +86,38 @@ class LabeledFormField extends StatelessWidget {
     );
   }
 }
+
+class LabeledCheckbox extends StatelessWidget {
+  final String label;
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+
+  const LabeledCheckbox({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: AppDesign.defaultBoxShadows,
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child: Row(
+        children: [
+          Checkbox(
+            value: value,
+            onChanged: onChanged,
+            side: BorderSide(color: AppDesign.appOffblack, width: 1.5),
+          ),
+          Text(label, style: AppDesign.bodyStyle),
+        ],
+      ),
+    );
+  }
+}

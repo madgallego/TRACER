@@ -13,6 +13,7 @@ class Transaction {
   String? foFirstName;
   String? foMiddleInitial;
   String? foLastName;
+  bool? isReceiptRequested;
 
   Transaction({
     this.stuFirstName,
@@ -29,6 +30,7 @@ class Transaction {
     this.foFirstName,
     this.foMiddleInitial,
     this.foLastName,
+    this.isReceiptRequested,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,13 @@ class Transaction {
       } catch (e) {
         print("Date parse error: $e");
       }
+    }
+
+    bool sendReceipt;
+    if (json['send_receipt'] == "true") {
+      sendReceipt = true;
+    } else {
+      sendReceipt = false;
     }
 
     return Transaction(
@@ -60,6 +69,7 @@ class Transaction {
       transactYear: year,
       transactMonth: month,
       transactDay: day,
+      isReceiptRequested: sendReceipt,
     );
   }
 
@@ -74,6 +84,7 @@ class Transaction {
       "finance_mi": foMiddleInitial,
       "finance_ln": foLastName,
       "receiptdate": "$transactYear-$transactMonth-$transactDay",
+      "send_receipt": isReceiptRequested,
     };
   }
 
