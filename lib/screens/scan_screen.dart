@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tracer/utils/feedback_helper.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../widgets/gradient_icon.dart';
@@ -177,6 +178,7 @@ class ScanScreenState extends State<ScanScreen> {
                       onPressed: () async {
                         try {
                           await _cameraSetupFuture;
+                          await FeedbackHelper.cameraShutterFeedback();
 
                           if (!context.mounted) return;
 

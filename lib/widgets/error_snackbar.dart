@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tracer/utils/constants.dart';
+import 'package:tracer/utils/feedback_helper.dart';
 
 class ErrorSnackbar extends SnackBar {
   final String errorMsg;
+
+  static void show (BuildContext context, String message) {
+    FeedbackHelper.errorFeedback();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      ErrorSnackbar(errorMsg: message)
+    );
+  }
 
   ErrorSnackbar({
     super.key,

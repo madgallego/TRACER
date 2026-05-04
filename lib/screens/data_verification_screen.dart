@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:tracer/services/db_service.dart';
+import 'package:tracer/utils/feedback_helper.dart';
 import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/widgets/error_snackbar.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
@@ -526,9 +527,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           _setTransactionFromFields();
 
                                           if (widget.transaction.isMissingRequiredValue()) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Please fill in all required fields!",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Please fill in all required fields!');
+
+                                            // ScaffoldMessenger.of(context).showSnackBar(
+                                            //   ErrorSnackbar(errorMsg: "Please fill in all required fields!",)
+                                            // );
                                             return;
                                           }
 
@@ -597,6 +600,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   }
 
   Future<dynamic> showSuccessDialog(BuildContext context) {
+    FeedbackHelper.successFeedback();
+
     return showDialog(
       context: context,
       barrierDismissible: false,
