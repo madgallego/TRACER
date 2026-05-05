@@ -8,6 +8,7 @@ import '../utils/constants.dart';
 import '../widgets/gradient_border_snackbar.dart';
 import '../widgets/gradient_border_text_form_field.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/error_snackbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,6 +22,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final authService = AuthService(Supabase.instance.client);
   final double mainColumnSpacing = 20.0;
   final double sectionSpacing = 60.0;
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   void logout() async {
     await authService.logOut();
@@ -143,7 +155,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       context,
                                       icon: Icons.lock,
                                       title: 'Change Password',
-                                      child: _ChangePasswordForm(authService: authService),
+                                      child: _ChangePasswordForm(
+                                        authService: authService,
+                                        currentPasswordController: _currentPasswordController,
+                                        newPasswordController: _newPasswordController,
+                                        confirmPasswordController: _confirmPasswordController,
+                                      ),
                                     );
                                   },
                                   borderRadius: BorderRadius.circular(30.0),
@@ -234,8 +251,16 @@ class _LabeledText extends StatelessWidget {
 
 class _ChangePasswordForm extends StatefulWidget {
   final AuthService authService;
+  final TextEditingController currentPasswordController;
+  final TextEditingController newPasswordController;
+  final TextEditingController confirmPasswordController;
 
-  const _ChangePasswordForm({required this.authService});
+  const _ChangePasswordForm({
+    required this.authService,
+    required this.currentPasswordController,
+    required this.newPasswordController,
+    required this.confirmPasswordController,
+  });
 
   @override
   State<_ChangePasswordForm> createState() => _ChangePasswordFormState();
@@ -247,22 +272,10 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
   bool _confirmPasswordVisible = false;
   bool _isChangingPassword = false;
 
-  final _currentPasswordController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
   Future<void> _changePassword() async {
-    final currentPassword = _currentPasswordController.text.trim();
-    final newPassword = _newPasswordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
+    final currentPassword = widget.currentPasswordController.text.trim();
+    final newPassword = widget.newPasswordController.text.trim();
+    final confirmPassword = widget.confirmPasswordController.text.trim();
 
     if (currentPassword.isEmpty ||
         newPassword.isEmpty ||
@@ -300,6 +313,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
 
       if (mounted) {
         final parentContext = context;
+        widget.currentPasswordController.clear();
+        widget.newPasswordController.clear();
+        widget.confirmPasswordController.clear();
         Navigator.pop(context);
         Future.delayed(const Duration(milliseconds: 100), () {
           if (mounted) {
@@ -310,7 +326,13 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         });
       }
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        final parentContext = context;
+        Navigator.pop(context);
+        Future.delayed(const Duration(milliseconds: 100), () {
+          ErrorSnackbar.show(parentContext, 'Incorrect current password.');
+        });
+      }
     } finally {
       if (mounted) setState(() => _isChangingPassword = false);
     }
@@ -320,12 +342,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
     final parentContext = context;
     Navigator.pop(context);
     Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        ScaffoldMessenger.of(parentContext).hideCurrentSnackBar();
-        ScaffoldMessenger.of(parentContext).showSnackBar(
-          GradientBorderSnackbar(message: message),
-        );
-      }
+      ErrorSnackbar.show(parentContext, message);
     });
   }
 
@@ -339,7 +356,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
         GradientTextFormField(
-          controller: _currentPasswordController,
+          controller: widget.currentPasswordController,
           obscureText: !_currentPasswordVisible,
           fillColor: AppDesign.appLightGray,
           borderRadius: BorderRadius.circular(30),
@@ -371,7 +388,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
         GradientTextFormField(
-          controller: _newPasswordController,
+          controller: widget.newPasswordController,
           obscureText: !_newPasswordVisible,
           fillColor: AppDesign.appLightGray,
           borderRadius: BorderRadius.circular(30),
@@ -403,7 +420,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
         GradientTextFormField(
-          controller: _confirmPasswordController,
+          controller: widget.confirmPasswordController,
           obscureText: !_confirmPasswordVisible,
           fillColor: AppDesign.appLightGray,
           borderRadius: BorderRadius.circular(30),
