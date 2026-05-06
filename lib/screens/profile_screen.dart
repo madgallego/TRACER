@@ -21,10 +21,18 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final authService = AuthService(Supabase.instance.client);
   final double mainColumnSpacing = 20.0;
+
   final double sectionSpacing = 60.0;
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
+  bool _isLoading = true;
+  String _fullName = '';
+  String _email = '';
+  String _studentNumber = '';
+  String _yearAndBloc = '';
+  String _organization = '';
 
   @override
   void dispose() {
@@ -32,6 +40,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final userId = Supabase.instance.client.auth.currentSession?.user.id;
+      if (userId == null) return;
+
+      // Fetch finance officer details
+      final foResponse = await Supabase.instance.client
+          .from('finance_officers')
+          .select('first_name, middle_initial, last_name, email, student_id, yearlevel, bloc, organization_id')
+          .eq('user_id', userId)
+          .single();
+
+      // Fetch organization name
+      final orgResponse = await Supabase.instance.client
+          .from('organizations')
+          .select('name')
+          .eq('id', foResponse['organization_id'])
+          .single();
+
+      // Format full name
+      final mi = (foResponse['middle_initial'] != null && foResponse['middle_initial'].toString().isNotEmpty)
+          ? "${foResponse['middle_initial']}. "
+          : "";
+      final fullName = "${foResponse['first_name'] ?? ''} $mi${foResponse['last_name'] ?? ''}".trim();
+
+      // Format year and bloc
+      final year = foResponse['yearlevel']?.toString() ?? '';
+      final bloc = foResponse['bloc']?.toString() ?? '';
+      final yearAndBloc = year.isNotEmpty && bloc.isNotEmpty ? "$year - $bloc" : year.isNotEmpty ? year : bloc;
+
+      // Format student number
+      final studentID = foResponse['student_id']?.toString() ?? '';
+      final studentNumber = '${studentID.substring(0, 4)}-${studentID.substring(4, 8)}-${studentID.substring(8, 13)}';
+
+      if (mounted) {
+        setState(() {
+          _fullName = fullName;
+          _email = foResponse['email'] ?? '';
+          _studentNumber = studentNumber;
+          _yearAndBloc = yearAndBloc;
+          _organization = orgResponse['name'] ?? '';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading profile: $e');
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   void logout() async {
@@ -88,61 +152,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         spacing: sectionSpacing,
                         children: [
-                          TitledCard(
-                            title: 'Profile Details',
-                            icon: GradientIcon(
-                              icon: Icons.account_circle,
-                              size: 28.0,
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppDesign.primaryGradientStart,
-                                  AppDesign.primaryGradientEnd,
-                                ],
-                              ),
-                            ),
-                            children: [
-                              _LabeledText(
-                                label: 'Full Name',
-                                value: '',
-                              ),
-                              _LabeledText(
-                                label: 'Email',
-                                value: '',
-                              ),
-                              _LabeledText(
-                                label: 'Student Number',
-                                value: '',
-                              ),
-                              _LabeledText(
-                                label: 'Year and Bloc',
-                                value: '',
-                              ),
-                              _LabeledText(
-                                label: 'Organization',
-                                value: '',
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
-                                child: GradientBorderButton(
-                                  onPressed: () async {
-                                    // Edit logic here
-                                  },
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd
-                                    ]
-                                  ),
-                                  child: const Text(
-                                    'Edit',
-                                    style: AppDesign.buttonTextStyle,
-                                  ),
+                          _isLoading
+                            ? const Center (child: CircularProgressIndicator())
+                            : TitledCard(
+                              title: 'Profile Details',
+                              icon: GradientIcon(
+                                icon: Icons.account_circle,
+                                size: 28.0,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppDesign.primaryGradientStart,
+                                    AppDesign.primaryGradientEnd,
+                                  ],
                                 ),
-                              )
-                            ]
-                          ),
+                              ),
+                              children: [
+                                _LabeledText(
+                                  label: 'Full Name',
+                                  value: _fullName,
+                                ),
+                                _LabeledText(
+                                  label: 'Email',
+                                  value: _email,
+                                ),
+                                _LabeledText(
+                                  label: 'Student Number',
+                                  value: _studentNumber,
+                                ),
+                                _LabeledText(
+                                  label: 'Year and Bloc',
+                                  value: _yearAndBloc,
+                                ),
+                                _LabeledText(
+                                  label: 'Organization',
+                                  value: _organization,
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+                                  child: GradientBorderButton(
+                                    onPressed: () async {
+                                      // Edit logic here
+                                    },
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppDesign.primaryGradientStart,
+                                        AppDesign.primaryGradientEnd
+                                      ]
+                                    ),
+                                    child: const Text(
+                                      'Edit',
+                                      style: AppDesign.buttonTextStyle,
+                                    ),
+                                  ),
+                                )
+                              ]
+                            ),
 
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
