@@ -83,6 +83,21 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     return buf.toString();
   }
 
+  String _formatAmount(String? rawAmount) {
+    if (rawAmount == null || rawAmount.isEmpty) return '';
+
+    double? value = double.tryParse(rawAmount);
+    if (value == null || value == 0) return '';
+
+    String formatted = value.toStringAsFixed(2);
+
+    if (formatted.endsWith('.00')) {
+      return formatted.substring(0, formatted.length - 3);
+    }
+
+    return formatted;
+  }
+
   String _getAmtWords(String amt) {
     if (amt.isEmpty) return '';
 
@@ -119,7 +134,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     _transactMonthController.text = _formatNum(widget.transaction.transactMonth ?? "");
     _transactDayController.text = _formatNum(widget.transaction.transactDay ?? "");
     _transactYearController.text = _formatNum(widget.transaction.transactYear ?? "");
-    _transactAmountController.text = _formatNum(widget.transaction.transactAmount ?? "");
+    _transactAmountController.text = _formatAmount(widget.transaction.transactAmount ?? "");
     _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
     _transactDescriptionController.text = _formatName(widget.transaction.transactPurpose ?? "");
     _foFirstNameController.text = _formatName(widget.transaction.foFirstName ?? "");
@@ -613,6 +628,13 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
   Future<dynamic> showSuccessDialog(BuildContext context) {
     FeedbackHelper.successFeedback();
+    String dialog;
+
+    if (_isReceiptRequested) {
+      dialog = 'Data saved successfully!\nReceipt was also sent to student\'s email.';
+    } else {
+      dialog = 'Data saved successfully!';
+    }
 
     return showDialog(
       context: context,
@@ -629,7 +651,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
               ],
             ),
           ),
-          "Data saved successfully!\nReceipt was also sent to student's email.",
+          dialog,
           GradientBorderButton(
             onPressed: () async {
               Navigator.of(context).popUntil(ModalRoute.withName('/'));
