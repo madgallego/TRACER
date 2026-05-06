@@ -86,19 +86,28 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   String _getAmtWords(String amt) {
     if (amt.isEmpty) return '';
 
-    final numWords = int.parse(amt).toWords();
+    double? value = double.tryParse(amt);
+    if (value == null || value == 0) return '';
 
-    List<String> wordList = numWords.split(' ');
+    int pesos = value.truncate();
+    int centavos = ((value - pesos) * 100).round();
 
-    for (final (index, word) in wordList.indexed) {
-      wordList[index] = '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    String formatTitleCase(String text) {
+      return text.split(' ').map((word) {
+      if (word.isEmpty) return '';
+        return word[0].toUpperCase() + word.substring(1).toLowerCase();
+      }).join(' ');
     }
 
-    if (wordList.last != "Pesos") {
-      wordList.add("Pesos");
+    String pesosWords = formatTitleCase(pesos.toWords());
+    String result = "$pesosWords Pesos";
+
+    if (centavos > 0) {
+      String centavosWords = formatTitleCase(centavos.toWords());
+      result += " and $centavosWords Centavos";
     }
 
-    return wordList.join(' ');
+    return result;
   }
 
   void _setFieldInitialValues() {
@@ -416,12 +425,13 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           LabeledFormField(
                                             label: "Amount",
                                             controller: _transactAmountController,
-                                            keyboardType: TextInputType.number,
+                                            keyboardType: TextInputType.numberWithOptions(decimal: true),
                                             onChanged: (_) {
                                               _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
                                             },
                                             formatters: [
-                                              FilteringTextInputFormatter.digitsOnly,
+                                              // This regex allows digits and up to 2 decimal places (standard for PHP)
+                                              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                                             ],
                                             prefixText: "PHP ",
                                           ),
