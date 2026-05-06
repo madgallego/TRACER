@@ -44,6 +44,7 @@ dependencies:
   number_to_words_english: ^3.0.4
   http: ^1.6.0
   flutter_svg: ^2.2.4
+  audioplayers: ^6.6.0
 
 dev_dependencies:
   build_runner: ^2.13.1
@@ -74,6 +75,7 @@ flutter:
   assets:
     - assets/.env
     - assets/images/svg/
+    - assets/sounds/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

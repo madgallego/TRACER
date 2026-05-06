@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracer/auth/auth_service.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
-import 'package:tracer/widgets/labeled_field.dart';
+import 'package:tracer/widgets/labeled_widgets.dart';
 import 'package:tracer/widgets/titled_card.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_snackbar.dart';

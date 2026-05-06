@@ -13,6 +13,7 @@ import 'package:tracer/screens/data_verification_screen.dart';
 import 'package:tracer/screens/records_screen.dart';
 import 'package:tracer/screens/profile_screen.dart';
 import 'package:tracer/screens/signup_screen.dart';
+import 'package:tracer/utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,15 @@ Future<void> main() async {
               overlayColor: Colors.black,
               padding: EdgeInsets.zero,
             )
+          ),
+          checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppDesign.appOffblack;
+            }
+            return Colors.transparent;
+          }),
+          side: BorderSide(color: AppDesign.appOffblack, width: 1.5), // Border color
           ),
         ),
         debugShowCheckedModeBanner: false,

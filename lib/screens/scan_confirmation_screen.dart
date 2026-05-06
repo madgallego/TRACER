@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tracer/models/transaction.dart';
 import 'package:tracer/services/doc_ai_service.dart';
+import 'package:tracer/utils/feedback_helper.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -214,6 +215,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               _initialAnimationController.forward();
 
                               transaction = await scanForm(await File(widget.imagePath).readAsBytes());
+                              await FeedbackHelper.processCompleteFeedback();
 
                               if (!context.mounted) return;
 

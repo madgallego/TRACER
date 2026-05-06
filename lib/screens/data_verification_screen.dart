@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:tracer/services/db_service.dart';
+import 'package:tracer/utils/feedback_helper.dart';
 import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/widgets/error_snackbar.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
@@ -12,7 +13,7 @@ import 'package:tracer/widgets/gradient_icon.dart';
 
 import 'package:tracer/utils/constants.dart';
 import 'package:tracer/models/transaction.dart';
-import 'package:tracer/widgets/labeled_field.dart';
+import 'package:tracer/widgets/labeled_widgets.dart';
 import 'package:tracer/widgets/titled_card.dart';
 
 class DataVerificationScreen extends StatefulWidget {
@@ -46,6 +47,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   final TextEditingController _foFirstNameController = TextEditingController();
   final TextEditingController _foMiddleInitialController = TextEditingController();
   final TextEditingController _foLastNameController = TextEditingController();
+
+  bool _isReceiptRequested = true;
 
   String _formatName(String name) {
     if (name.isEmpty) return "";
@@ -83,19 +86,28 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   String _getAmtWords(String amt) {
     if (amt.isEmpty) return '';
 
-    final numWords = int.parse(amt).toWords();
+    double? value = double.tryParse(amt);
+    if (value == null || value == 0) return '';
 
-    List<String> wordList = numWords.split(' ');
+    int pesos = value.truncate();
+    int centavos = ((value - pesos) * 100).round();
 
-    for (final (index, word) in wordList.indexed) {
-      wordList[index] = '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    String formatTitleCase(String text) {
+      return text.split(' ').map((word) {
+      if (word.isEmpty) return '';
+        return word[0].toUpperCase() + word.substring(1).toLowerCase();
+      }).join(' ');
     }
 
-    if (wordList.last != "Pesos") {
-      wordList.add("Pesos");
+    String pesosWords = formatTitleCase(pesos.toWords());
+    String result = "$pesosWords Pesos";
+
+    if (centavos > 0) {
+      String centavosWords = formatTitleCase(centavos.toWords());
+      result += " and $centavosWords Centavos";
     }
 
-    return wordList.join(' ');
+    return result;
   }
 
   void _setFieldInitialValues() {
@@ -130,6 +142,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     widget.transaction.foFirstName = _foFirstNameController.text;
     widget.transaction.foMiddleInitial = _foMiddleInitialController.text;
     widget.transaction.foLastName = _foLastNameController.text;
+    widget.transaction.isReceiptRequested = _isReceiptRequested;
 
   }
 
@@ -412,11 +425,13 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           LabeledFormField(
                                             label: "Amount",
                                             controller: _transactAmountController,
+                                            keyboardType: TextInputType.numberWithOptions(decimal: true),
                                             onChanged: (_) {
                                               _transactAmountWordsController.text = _getAmtWords(_transactAmountController.text);
                                             },
                                             formatters: [
-                                              FilteringTextInputFormatter.digitsOnly,
+                                              // This regex allows digits and up to 2 decimal places (standard for PHP)
+                                              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                                             ],
                                             prefixText: "PHP ",
                                           ),
@@ -507,8 +522,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                                       label: "Last Name",
                                                       controller: _foLastNameController,
                                                       formatters: [
-                                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
-                                                        MIFormatter()
+                                                        NameFormatter()
                                                       ],
                                                       keyboardType: TextInputType.name,
                                                       textCapitalization: TextCapitalization.words,
@@ -521,14 +535,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                         ],
                                       ),
 
+                                      LabeledCheckbox(
+                                        label: 'Send Receipt to Student',
+                                        value: _isReceiptRequested,
+                                        onChanged: (val) => setState(() => _isReceiptRequested = val ?? false)
+                                      ),
+
                                       GradientBorderButton(
                                         onPressed: () async {
                                           _setTransactionFromFields();
 
                                           if (widget.transaction.isMissingRequiredValue()) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Please fill in all required fields!",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Please fill in all required fields!');
                                             return;
                                           }
 
@@ -539,14 +557,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
                                             showSuccessDialog(context);
                                           } on DuplicateReceiptException {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Receipt number already exists.\nAre you sure it is correct?",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Receipt number already exists.\nAre you sure it is correct?');
                                           }
                                           catch (e) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              ErrorSnackbar(errorMsg: "Unknown error,\nPlease try again later.",)
-                                            );
+                                            ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');
+                                            debugPrint(e.toString());
                                           }
                                         },
                                         borderRadius: BorderRadius.circular(30.0),
@@ -597,6 +612,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   }
 
   Future<dynamic> showSuccessDialog(BuildContext context) {
+    FeedbackHelper.successFeedback();
+
     return showDialog(
       context: context,
       barrierDismissible: false,
