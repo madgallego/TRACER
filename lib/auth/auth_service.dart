@@ -73,4 +73,23 @@ class AuthService {
       redirectTo: 'io.supabase.tracer://login-callback',
     );
   }
+
+  Future<void> updateProfile({
+    required String firstName,
+    required String middleInitial,
+    required String lastName,
+    required String yearLevel,
+    required String bloc,
+  }) async {
+    final userId = _supabase.auth.currentSession?.user.id;
+    if (userId == null) return;
+
+    await _supabase.from('finance_officers').update({
+      'first_name': firstName,
+      'middle_initial': middleInitial.isNotEmpty ? middleInitial : null,
+      'last_name': lastName,
+      'yearlevel': yearLevel.isNotEmpty ? int.tryParse(yearLevel) : null,
+      'bloc': bloc.isNotEmpty ? bloc : null,
+    }).eq('user_id', userId);
+  }
 }
