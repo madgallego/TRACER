@@ -9,6 +9,8 @@ import '../widgets/gradient_border_snackbar.dart';
 import '../widgets/gradient_border_text_form_field.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/error_snackbar.dart';
+import '../utils/formatters.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -27,6 +29,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  final _firstNameController = TextEditingController();
+  final _middleInitialController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _studentNumberController = TextEditingController();
+  final _yearController = TextEditingController();
+  final _blocController = TextEditingController();
+  final _organizationController = TextEditingController();
+
   bool _isLoading = true;
   String _fullName = '';
   String _email = '';
@@ -39,6 +50,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
+    _firstNameController.dispose();
+    _middleInitialController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _studentNumberController.dispose();
+    _yearController.dispose();
+    _blocController.dispose();
+    _organizationController.dispose();
     super.dispose();
   }
 
@@ -89,6 +108,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _studentNumber = studentNumber;
           _yearAndBloc = yearAndBloc;
           _organization = orgResponse['name'] ?? '';
+          _firstNameController.text = foResponse['first_name'] ?? '';
+          _middleInitialController.text = foResponse['middle_initial'] ?? '';
+          _lastNameController.text = foResponse['last_name'] ?? '';
+          _emailController.text = foResponse['email'] ?? '';
+          _studentNumberController.text = foResponse['student_id']?.toString() ?? '';
+          _yearController.text = foResponse['yearlevel']?.toString() ?? '';
+          _blocController.text = foResponse['bloc']?.toString() ?? '';
+          _organizationController.text = orgResponse['name'] ?? '';
           _isLoading = false;
         });
       }
@@ -192,7 +219,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
                                   child: GradientBorderButton(
                                     onPressed: () async {
-                                      // Edit logic here
+                                        AppBottomSheet.show(
+                                          context,
+                                          icon: Icons.account_circle,
+                                          title: 'Edit profile',
+                                          child: _EditProfileForm(
+                                            authService: authService,
+                                            firstNameController: _firstNameController,
+                                            middleInitialController: _middleInitialController,
+                                            lastNameController: _lastNameController,
+                                            emailController: _emailController,
+                                            studentNumberController: _studentNumberController,
+                                            yearController: _yearController,
+                                            blocController: _blocController,
+                                            organizationController: _organizationController,
+                                            onSaveSuccess: _loadProfile,
+                                          ),
+                                        );
                                     },
                                     borderRadius: BorderRadius.circular(30.0),
                                     gradient: const LinearGradient(
@@ -449,7 +492,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 setState(() => _currentPasswordVisible = !_currentPasswordVisible),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Text('New password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
@@ -481,7 +524,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 setState(() => _newPasswordVisible = !_newPasswordVisible),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Text('Confirm new password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
@@ -513,7 +556,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         GradientBorderButton(
           onPressed: _isChangingPassword ? () async {} : _changePassword,
           gradient: const LinearGradient(
@@ -532,6 +575,269 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               : Text('Save', style: AppDesign.buttonTextStyle),
         ),
       ],
+    );
+  }
+}
+
+class _EditProfileForm extends StatefulWidget {
+  final AuthService authService;
+  final TextEditingController firstNameController;
+  final TextEditingController middleInitialController;
+  final TextEditingController lastNameController;
+  final TextEditingController emailController;
+  final TextEditingController studentNumberController;
+  final TextEditingController yearController;
+  final TextEditingController blocController;
+  final TextEditingController organizationController;
+  final VoidCallback onSaveSuccess;
+
+  const _EditProfileForm({
+    required this.authService,
+    required this.firstNameController,
+    required this.middleInitialController,
+    required this.lastNameController,
+    required this.emailController,
+    required this.studentNumberController,
+    required this.yearController,
+    required this.blocController,
+    required this.organizationController,
+    required this.onSaveSuccess,
+  });
+
+  @override
+  State<_EditProfileForm> createState() => _EditProfileFormState();
+}
+
+class _EditProfileFormState extends State<_EditProfileForm> {
+  bool _isSaving = false;
+
+  Future<void> _save() async {
+    if (widget.firstNameController.text.trim().isEmpty ||
+        widget.lastNameController.text.trim().isEmpty) {
+      final parentContext = context;
+      Navigator.pop(context);
+      Future.delayed(const Duration(milliseconds: 100), () {
+        ErrorSnackbar.show(parentContext, 'First and last name are required.');
+      });
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      await widget.authService.updateProfile(
+        firstName: widget.firstNameController.text.trim(),
+        middleInitial: widget.middleInitialController.text.trim(),
+        lastName: widget.lastNameController.text.trim(),
+        yearLevel: widget.yearController.text.trim(),
+        bloc: widget.blocController.text.trim(),
+      );
+
+      if (mounted) {
+        final parentContext = context;
+        Navigator.pop(context);
+        widget.onSaveSuccess();
+        Future.delayed(const Duration(milliseconds: 100), () {
+          ScaffoldMessenger.of(parentContext).showSnackBar(
+            GradientBorderSnackbar(message: 'Profile updated successfully!'),
+          );
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        final parentContext = context;
+        Navigator.pop(context);
+        Future.delayed(const Duration(milliseconds: 100), () {
+          ErrorSnackbar.show(parentContext, 'Failed to update profile.');
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // First Name
+            LabeledFormField(
+              label: "First Name",
+              controller: widget.firstNameController,
+              formatters: [NameFormatter()],
+              keyboardType: TextInputType.name,
+            ),
+
+            const SizedBox(height: 10),
+
+            // M.I. and Last Name side by side
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // M.I.
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    spacing: 5.0,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabeledFormField(
+                        optional:true,
+                        label: "M.I.",
+                        controller: widget.middleInitialController,
+                        formatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
+                          MIFormatter()
+                        ],
+                        keyboardType: TextInputType.name,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Last Name
+                Expanded(
+                  flex: 7,
+                  child: Column(
+                    spacing: 5,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabeledFormField(
+                        label: "Last Name",
+                        controller: widget.lastNameController,
+                        formatters: [NameFormatter()],
+                        keyboardType: TextInputType.name,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Email (read only)
+            LabeledFormField(
+              readOnly: true,
+              label: "Email",
+              controller: widget.emailController,
+              suffixIcon: Icons.edit_off_outlined,
+              iconGradient: const LinearGradient(colors: [
+                AppDesign.disabledGray,
+                AppDesign.disabledGray,
+              ]),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Student Number (read only)
+            LabeledFormField(
+              readOnly: true,
+              label: "Student Number",
+              controller: widget.studentNumberController,
+              formatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+              ],
+              suffixIcon: Icons.edit_off_outlined,
+              iconGradient: const LinearGradient(colors: [
+                AppDesign.disabledGray,
+                AppDesign.disabledGray,
+              ]),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Year and Bloc side by side
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Year
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabeledFormField(
+                        optional:true,
+                        label: "Year",
+                        controller: widget.yearController,
+                        formatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
+                        keyboardType: TextInputType.number,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Bloc
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabeledFormField(
+                        optional:true,
+                        label: "Bloc",
+                        controller: widget.blocController,
+                        formatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
+                          MIFormatter()
+                        ],
+                        keyboardType: TextInputType.name,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Organization (read only)
+            LabeledFormField(
+              readOnly: true,
+              label: "Organization",
+              controller: widget.organizationController,
+              formatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))
+              ],
+              suffixIcon: Icons.edit_off_outlined,
+              iconGradient: const LinearGradient(colors: [
+                AppDesign.disabledGray,
+                AppDesign.disabledGray,
+              ]),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Save button
+            Center(
+              child: SizedBox(
+                width: 160,
+                child: GradientBorderButton(
+                  onPressed: _isSaving ? () async {} : _save,
+                  gradient: const LinearGradient(colors: [
+                    AppDesign.primaryGradientStart,
+                    AppDesign.primaryGradientEnd,
+                  ]),
+                  borderRadius: BorderRadius.circular(30),
+                  child: _isSaving
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text('Save', style: AppDesign.buttonTextStyle),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
