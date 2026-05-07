@@ -115,7 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Sign up successful! Please check your email to verify your account and proceed to log in.')
+          GradientBorderSnackbar(message: 'Sign up successful!') // Please check your email to verify your account and proceed to log in.
         );
         Navigator.of(context).pop();
       }
