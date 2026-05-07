@@ -80,6 +80,7 @@ class AuthService {
     required String lastName,
     required String yearLevel,
     required String bloc,
+    required String studentId,
   }) async {
     final userId = _supabase.auth.currentSession?.user.id;
     if (userId == null) return;
@@ -90,6 +91,7 @@ class AuthService {
       'last_name': lastName,
       'yearlevel': yearLevel.isNotEmpty ? int.tryParse(yearLevel) : null,
       'bloc': bloc.isNotEmpty ? bloc : null,
+      'student_id': studentId.isNotEmpty ? studentId : null,
     }).eq('user_id', userId);
   }
 }

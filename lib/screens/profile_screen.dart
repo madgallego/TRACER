@@ -71,20 +71,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final userId = Supabase.instance.client.auth.currentSession?.user.id;
       if (userId == null) return;
+      debugPrint('Current user ID: $userId'); // Debug print to check the user ID
 
       // Fetch finance officer details
       final foResponse = await Supabase.instance.client
           .from('finance_officers')
           .select('first_name, middle_initial, last_name, email, student_id, yearlevel, bloc, organization_id')
           .eq('user_id', userId)
-          .single();
+          .limit(1)
+          .maybeSingle();
+
+      if (foResponse == null) {
+        debugPrint('No finance officer record found for this user ID.');
+        if (mounted) setState(() => _isLoading = false);
+        return; 
+      }    
+
+      debugPrint('FO Response: $foResponse'); // Debug print to check the response data
 
       // Fetch organization name
       final orgResponse = await Supabase.instance.client
           .from('organizations')
           .select('name')
-          .eq('id', foResponse['organization_id'])
-          .single();
+          .eq('id', foResponse!['organization_id'].toString())
+          .limit(1)
+          .maybeSingle();
+
+      debugPrint('Org ID being queried: ${foResponse['organization_id']}'); // Debug print to check the organization ID
 
       // Format full name
       final mi = (foResponse['middle_initial'] != null && foResponse['middle_initial'].toString().isNotEmpty)
@@ -98,8 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final yearAndBloc = year.isNotEmpty && bloc.isNotEmpty ? "$year - $bloc" : year.isNotEmpty ? year : bloc;
 
       // Format student number
-      final studentID = foResponse['student_id']?.toString() ?? '';
-      final studentNumber = '${studentID.substring(0, 4)}-${studentID.substring(4, 8)}-${studentID.substring(8, 13)}';
+      final studentID = foResponse!['student_id']?.toString() ?? '';
+      String studentNumber = studentID;
+      if (studentID.length >= 13) {
+        studentNumber = '${studentID.substring(0, 4)}-${studentID.substring(4, 8)}-${studentID.substring(8, 13)}';
+      }
+
+      debugPrint('FO Response: $foResponse'); // Debug print to check the response data
 
       if (mounted) {
         setState(() {
@@ -107,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _email = foResponse['email'] ?? '';
           _studentNumber = studentNumber;
           _yearAndBloc = yearAndBloc;
-          _organization = orgResponse['name'] ?? '';
+          _organization = orgResponse?['name'] ?? '';
           _firstNameController.text = foResponse['first_name'] ?? '';
           _middleInitialController.text = foResponse['middle_initial'] ?? '';
           _lastNameController.text = foResponse['last_name'] ?? '';
@@ -115,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _studentNumberController.text = foResponse['student_id']?.toString() ?? '';
           _yearController.text = foResponse['yearlevel']?.toString() ?? '';
           _blocController.text = foResponse['bloc']?.toString() ?? '';
-          _organizationController.text = orgResponse['name'] ?? '';
+          _organizationController.text = orgResponse?['name'] ?? '';
           _isLoading = false;
         });
       }
@@ -631,6 +649,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
         lastName: widget.lastNameController.text.trim(),
         yearLevel: widget.yearController.text.trim(),
         bloc: widget.blocController.text.trim(),
+        studentId: widget.studentNumberController.text.trim(),
       );
 
       if (mounted) {
