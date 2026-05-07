@@ -70,9 +70,15 @@ class DbService {
     try {
       final response = await _client
           .from('transaction')
-          .select()
+          .select('''
+            *, 
+            students_for_functions(stud_fn, stud_mi, stud_ln),
+            uploader:finance_officers(first_name, middle_initial, last_name)
+          ''')
           .eq('organization_id', orgId)
           .order('receiptdate', ascending: false);
+
+      print('RAW DATABASE RESPONSE: $response');
 
       return (response as List)
           .map((item) => Transaction.fromJson(item))

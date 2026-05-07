@@ -13,6 +13,9 @@ class Transaction {
   String? foFirstName;
   String? foMiddleInitial;
   String? foLastName;
+  String? uploaderFirstName;
+  String? uploaderMiddleInitial;
+  String? uploaderLastName;
   bool? isReceiptRequested;
 
   Transaction({
@@ -30,10 +33,16 @@ class Transaction {
     this.foFirstName,
     this.foMiddleInitial,
     this.foLastName,
+    this.uploaderFirstName,
+    this.uploaderMiddleInitial,
+    this.uploaderLastName,
     this.isReceiptRequested,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
+    final studentData = json['students_for_functions'] as Map<String, dynamic>?;
+    final uploaderData = json['uploader'] as Map<String, dynamic>?;
+
     String month = '', day = '', year = '';
     if (json['receiptdate'] != null) {
       try {
@@ -57,15 +66,18 @@ class Transaction {
     return Transaction(
       receiptNum: json['receiptno']?.toString() ?? '',
       stuNum: json['studentid']?.toString() ?? '',
-      stuFirstName: json['stud_fn']?.toString() ?? '',
-      stuMiddleInitial: json['stud_mi']?.toString() ?? '',
-      stuLastName: json['stud_ln']?.toString() ?? '',
+      stuFirstName: studentData?['stud_fn']?.toString(),
+      stuMiddleInitial: studentData?['stud_mi']?.toString(),
+      stuLastName: studentData?['stud_ln']?.toString(),
       transactAmount: json['amount']?.toString() ?? '0.00',
       transactAmountWords: json['amountwords']?.toString() ?? '',
       transactPurpose: json['purpose']?.toString() ?? 'No Purpose',
       foFirstName: json['finance_fn']?.toString() ?? '',
       foMiddleInitial: json['finance_mi']?.toString() ?? '',
       foLastName: json['finance_ln']?.toString() ?? '',
+      uploaderFirstName: uploaderData?['first_name']?.toString(),
+      uploaderMiddleInitial: uploaderData?['middle_initial']?.toString(),
+      uploaderLastName: uploaderData?['last_name']?.toString(),
       transactYear: year,
       transactMonth: month,
       transactDay: day,

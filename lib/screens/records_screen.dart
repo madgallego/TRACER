@@ -218,6 +218,15 @@ class _RecordsScreenState extends State<RecordsScreen> {
         ? "${record.stuMiddleInitial}. "
         : "";
     final stuName = "${record.stuFirstName ?? ''} $stuMi${record.stuLastName ?? ''}".trim();
+    
+    // Format uploader name
+    // Format Uploader Name with Middle Initial Logic
+    final String upFn = record.uploaderFirstName ?? '';
+    final String upLn = record.uploaderLastName ?? '';
+    final String rawUpMi = record.uploaderMiddleInitial ?? '';
+    final String upMi = rawUpMi.isNotEmpty ? "$rawUpMi. " : "";
+    
+    final String uploaderFullName = "$upFn $upMi$upLn".trim();
 
     showModalBottomSheet(
       context: context,
@@ -247,22 +256,13 @@ class _RecordsScreenState extends State<RecordsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Receipt no.',
-                      style: TextStyle(
-                        fontFamily: "AROneSans",
-                        fontSize: 13,
-                        color: Colors.black54,
-                      ),
+                      style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
                     ),
                     Text(
                       record.receiptNum ?? '---',
-                      style: const TextStyle(
-                        fontFamily: "AROneSans",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28,
-                        color: Colors.black87,
-                      ),
+                      style: AppDesign.bodyStyle.copyWith(fontSize: 28, fontWeight: FontWeight.bold)
                     ),
                   ],
                 ),
@@ -303,8 +303,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
             const SizedBox(height: 12),
 
             _buildDetailRow('Finance Officer', foName.isEmpty ? '---' : foName),
-            _buildDetailRow('Student Treasurer', stuName.isEmpty ? '---' : stuName),
+            _buildDetailRow('Student Name', stuName.isEmpty ? '---' : stuName),
             _buildDetailRow('Student ID', _formatStudentId(record.stuNum)),
+            _buildDetailRow('Uploaded by', uploaderFullName.isEmpty ? '---' : uploaderFullName),
 
             const SizedBox(height: 20),
 
@@ -343,22 +344,13 @@ class _RecordsScreenState extends State<RecordsScreen> {
             width: 150,
             child: Text(
               label,
-              style: const TextStyle(
-                fontFamily: "AROneSans",
-                fontSize: 14,
-                color: Colors.black54,
-              ),
+              style: AppDesign.bodyStyle.copyWith(fontSize: 14, color: Colors.black54),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontFamily: "AROneSans",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
+              style: AppDesign.bodyStyle.copyWith(fontSize: 14),
             ),
           ),
         ],
@@ -386,14 +378,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date Range
-            const Text(
+            Text(
               "Date Range",
-              style: TextStyle(
-                fontFamily: "AROneSans",
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: Colors.black54,
-              ),
+              style: AppDesign.bodyStyle.copyWith(fontSize: 13, color: Colors.black54),
             ),
             const SizedBox(height: 8),
             Row(
@@ -420,11 +407,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                           children: [
                             Text(
                               _fromDate == null ? 'From' : _formatDate(_fromDate),
-                              style: TextStyle(
-                                fontFamily: "AROneSans",
-                                fontSize: 13,
-                                color: _fromDate == null ? Colors.black38 : Colors.black87,
-                              ),
+                              style: AppDesign.bodyStyle.copyWith(fontSize: 13, color: _fromDate == null ? Colors.black38 : Colors.black87),
                             ),
                             GradientIcon(
                               icon: Icons.calendar_today,
@@ -463,11 +446,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                           children: [
                             Text(
                               _toDate == null ? 'To' : _formatDate(_toDate),
-                              style: TextStyle(
-                                fontFamily: "AROneSans",
-                                fontSize: 13,
-                                color: _toDate == null ? Colors.black38 : Colors.black87,
-                              ),
+                              style: AppDesign.bodyStyle.copyWith(fontSize: 13, color: _toDate == null ? Colors.black38 : Colors.black87),
                             ),
                             GradientIcon(
                               icon: Icons.calendar_today,
@@ -489,14 +468,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
             const SizedBox(height: 14),
 
             // Finance Officer filter
-            const Text(
+            Text(
               "Finance Officer",
-              style: TextStyle(
-                fontFamily: "AROneSans",
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: Colors.black54,
-              ),
+              style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black54),
             ),
             const SizedBox(height: 8),
             Container(
@@ -526,27 +500,22 @@ class _RecordsScreenState extends State<RecordsScreen> {
                         AppDesign.primaryGradientEnd,
                       ]),
                     ),
-                    hint: const Text(
+                    hint: Text(
                       'All finance officers',
-                      style: TextStyle(fontFamily: "AROneSans", fontSize: 13),
+                      style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
                     ),
-                    style: const TextStyle(
-                      fontFamily: "AROneSans",
-                      fontSize: 13,
-                      color: Colors.black87,
-                    ),
+                    style: AppDesign.bodyStyle.copyWith(fontSize: 13, color: Colors.black87),
                     items: [
-                      const DropdownMenuItem(
+                      DropdownMenuItem(
                         value: null,
                         child: Text('All finance officers',
-                            style: TextStyle(fontFamily: "AROneSans", fontSize: 13)),
+                            style: AppDesign.bodyStyle.copyWith(fontSize: 13)),
                       ),
                       ..._foNameOptions.map(
                         (name) => DropdownMenuItem(
                           value: name,
                           child: Text(name,
-                              style: const TextStyle(
-                                  fontFamily: "AROneSans", fontSize: 13)),
+                              style: AppDesign.bodyStyle.copyWith(fontSize: 13)),
                         ),
                       ),
                     ],
@@ -567,9 +536,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
                 child: TextButton.icon(
                   onPressed: _clearFilters,
                   icon: const Icon(Icons.clear, size: 16),
-                  label: const Text(
+                  label: Text(
                     'Clear Filters',
-                    style: TextStyle(fontFamily: "AROneSans", fontSize: 13),
+                    style: AppDesign.bodyStyle.copyWith(fontSize: 13),
                   ),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFFF44336), 
@@ -655,14 +624,10 @@ class _RecordsScreenState extends State<RecordsScreen> {
                                   padding: const EdgeInsets.fromLTRB(20, 7, 10, 0),
                                   child: TextField(
                                     controller: _searchController,
-                                    style: const TextStyle(
-                                      fontFamily: "AROneSans",
-                                      fontSize: 13.0,
-                                    ),
+                                    style: AppDesign.bodyStyle.copyWith(fontSize: 13.0,),
                                     decoration: InputDecoration(
                                       hintText: "Search records...",
-                                      hintStyle: const TextStyle(
-                                        fontFamily: "AROneSans",
+                                      hintStyle: AppDesign.bodyStyle.copyWith(
                                         fontSize: 13.0,
                                         color: Colors.black38,
                                       ),
@@ -917,12 +882,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                   child: Text(
                     "Php ${double.tryParse(record.transactAmount ?? '0')?.toStringAsFixed(2) ?? '0.00'}",
                     softWrap: false,
-                    style: const TextStyle(
-                      fontFamily: "AROneSans",
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold, 
-                      color: Colors.black87
-                    ),
+                    style: AppDesign.bodyStyle.copyWith(fontSize: 12,),
                   ),
                 ),
               ),
