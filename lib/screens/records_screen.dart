@@ -5,6 +5,7 @@ import '../models/transaction.dart';
 import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../services/db_service.dart';
 
 class RecordsScreen extends StatefulWidget {
   const RecordsScreen({super.key});
@@ -14,6 +15,8 @@ class RecordsScreen extends StatefulWidget {
 }
 
 class _RecordsScreenState extends State<RecordsScreen> {
+  DbService? _dbService;
+
   // Controller for search input
   final TextEditingController _searchController = TextEditingController();
 
@@ -35,50 +38,33 @@ class _RecordsScreenState extends State<RecordsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadOrgAndRecords();
+    _setupServiceAndLoad(); 
     _searchController.addListener(_applyFilters);
   }
 
-  // Method for loading organization and records
-  Future<void> _loadOrgAndRecords() async {
+  Future<void> _setupServiceAndLoad() async {
     try {
-      final userId = Supabase.instance.client.auth.currentSession?.user.id;
-      if (userId == null) return;
-
-      final foResponse = await Supabase.instance.client
-          .from('finance_officers')
-          .select('organization_id')
-          .eq('user_id', userId)
-          .single();
-
-      if (mounted) {
-        setState(() {
-          _currentOrgId = foResponse['organization_id'] as String?;
-        });
-      }
-
-      await _fetchRecords();
+      _dbService = await DbService.initialize();
+      await _loadData();
     } catch (e) {
-      debugPrint('Error loading org: $e');
+      debugPrint("Service initialization failed: $e");
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // Methods for fetching filtered data and processing 
-  Future<void> _fetchRecords() async {
-    if (_currentOrgId == null) return;
+  Future<void> _loadData() async {
+    if (_dbService == null) return;
 
     try {
-      final response = await Supabase.instance.client
-          .from('transaction')
-          .select()
-          .eq('organization_id', _currentOrgId!)
-          .order('receiptdate', ascending: false);
+      final orgId = await _dbService!.getFinanceOfficerOrgId();
+      
+      if (orgId == null) {
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
 
-      final data = (response as List)
-          .map((item) => Transaction.fromJson(item))
-          .toList();
+      final data = await _dbService!.fetchTransactions(orgId);
 
-      // Extract unique finance officer names for the filter dropdown
       final foNames = data
           .map((r) {
             final fn = r.foFirstName ?? '';
@@ -95,6 +81,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
       if (mounted) {
         setState(() {
+          _currentOrgId = orgId;
           _allRecords = data;
           _filteredRecords = data;
           _foNameOptions = foNames;
@@ -102,10 +89,8 @@ class _RecordsScreenState extends State<RecordsScreen> {
         });
       }
     } catch (e) {
-      debugPrint("Error: $e");
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      debugPrint("Error loading data: $e");
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

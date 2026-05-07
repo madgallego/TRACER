@@ -36,6 +36,35 @@ class DbService {
       throw Exception("Database Error: ${e.message}");
     }
   }
+
+  Future<String?> getFinanceOfficerOrgId() async {
+    final userId = _client.auth.currentSession?.user.id;
+    if (userId == null) return null;
+
+    final response = await _client
+        .from('finance_officers')
+        .select('organization_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    return response?['organization_id'] as String?;
+  }
+
+  Future<List<Transaction>> fetchTransactions(String orgId) async {
+    try {
+      final response = await _client
+          .from('transaction')
+          .select()
+          .eq('organization_id', orgId)
+          .order('receiptdate', ascending: false);
+
+      return (response as List)
+          .map((item) => Transaction.fromJson(item))
+          .toList();
+    } catch (e) {
+      throw Exception("Failed to fetch records: $e");
+    }
+  }
 }
 
 
