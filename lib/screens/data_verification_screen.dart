@@ -512,6 +512,8 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             showSuccessDialog(context);
                                           } on DuplicateReceiptException {
                                             ErrorSnackbar.show(context, 'Receipt number already exists.\nAre you sure it is correct?');
+                                          } on NonExistentStudentException {
+                                            ErrorSnackbar.show(context, 'Student Number does not exist\nAre you sure it is correct?');
                                           }
                                           catch (e) {
                                             ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');

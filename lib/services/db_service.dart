@@ -45,8 +45,11 @@ class DbService {
       if (e.code == '23505') {
         throw DuplicateReceiptException();
       }
+      if (e.code == '23503') {
+        throw NonExistentStudentException();
+      }
 
-      throw Exception("Database Error: ${e.message}");
+      throw Exception("Error Code: ${e.code}\nMessage: ${e.message}");
     }
   }
 
@@ -83,3 +86,4 @@ class DbService {
 
 // Custom exceptions
 class DuplicateReceiptException implements Exception {}
+class NonExistentStudentException implements Exception {}
