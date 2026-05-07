@@ -69,7 +69,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
     try {
       final response = await Supabase.instance.client
-          .from('updtransaction')
+          .from('transaction')
           .select()
           .eq('organization_id', _currentOrgId!)
           .order('receiptdate', ascending: false);
