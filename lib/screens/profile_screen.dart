@@ -735,19 +735,14 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
             const SizedBox(height: 10),
 
-            // Student Number (read only)
+            // Student Number 
             LabeledFormField(
-              readOnly: true,
               label: "Student Number",
               controller: widget.studentNumberController,
               formatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
               ],
-              suffixIcon: Icons.edit_off_outlined,
-              iconGradient: const LinearGradient(colors: [
-                AppDesign.disabledGray,
-                AppDesign.disabledGray,
-              ]),
+              keyboardType: TextInputType.number,
             ),
 
             const SizedBox(height: 10),
