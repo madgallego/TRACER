@@ -6,6 +6,7 @@ import '../widgets/gradient_icon.dart';
 import '../widgets/gradient_border_text.dart';
 import '../widgets/gradient_border_snackbar.dart';
 import '../widgets/gradient_border_text_form_field.dart';
+import '../widgets/error_snackbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,7 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Attempt to log in the user
+    if (email.isEmpty || password.isEmpty) {
+      ErrorSnackbar.show(context, 'Please fill in all fields.');
+      return;
+    }
+
     try {
       await authService.logIn(email, password);
 
@@ -38,12 +43,27 @@ class _LoginScreenState extends State<LoginScreen> {
           GradientBorderSnackbar(message: 'Log in successful!')
         );
       }
-    // Handle login errors
+    } on AuthException catch (e) {
+      if (mounted) {
+        String message;
+        switch (e.message) {
+          case 'Invalid login credentials':
+            message = 'Incorrect email or password. Please try again.';
+            break;
+          case 'Email not confirmed':
+            message = 'Please verify your email before logging in.';
+            break;
+          case 'Too many requests':
+            message = 'Too many attempts. Please wait a moment and try again.';
+            break;
+          default:
+            message = 'Log in failed. Please try again.';
+        }
+        ErrorSnackbar.show(context, message);
+      }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Log in failed: $e.')
-        );
+        ErrorSnackbar.show(context, 'Something went wrong. Please try again.');
       }
     }
   }

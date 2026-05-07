@@ -8,6 +8,7 @@ import '../widgets/gradient_border_snackbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/gradient_border_text_form_field.dart';
 import '../widgets/gradient_dropdown.dart';
+import '../widgets/error_snackbar.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -73,31 +74,35 @@ class _SignupScreenState extends State<SignupScreen> {
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (firstName.isEmpty || lastName.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Please enter your first and last name.')
-        );
-      }
+      ErrorSnackbar.show(context, 'Please enter your first and last name.');
+      return;
+    }
+
+    if (email.isEmpty) {
+      ErrorSnackbar.show(context, 'Please enter your email address.');
       return;
     }
 
     if (_selectedOrgId == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Please select your organization.')
-        );
-      }
+      ErrorSnackbar.show(context, 'Please select your organization.');
+      return;
+    }
+
+    if (password.isEmpty) {
+      ErrorSnackbar.show(context, 'Please enter a password.');
+      return;
+    }
+
+    if (password.length < 6) {
+      ErrorSnackbar.show(context, 'Password must be at least 6 characters.');
       return;
     }
 
     if (password != confirmPassword) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Passwords do not match. Please try again.')
-        );
-      }
+      ErrorSnackbar.show(context, 'Passwords do not match. Please try again.');
       return;
     }
+
 
     try {
       await authService.signUp(
@@ -114,14 +119,30 @@ class _SignupScreenState extends State<SignupScreen> {
         );
         Navigator.of(context).pop();
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          GradientBorderSnackbar(message: 'Sign up failed: $e.')
-        );
+    } on AuthException catch (e) {
+        if (mounted) {
+        String message;
+        switch (e.message) {
+          case 'User already registered':
+            message = 'An account with this email already exists.';
+            break;
+          case 'Password should be at least 6 characters':
+            message = 'Password must be at least 6 characters.';
+            break;
+          case 'Unable to validate email address: invalid format':
+            message = 'Please enter a valid email address.';
+            break;
+          default:
+            message = 'Sign up failed. Please try again.';
+        }
+        ErrorSnackbar.show(context, message);
       }
+    } catch (e) {
+    if (mounted) {
+      ErrorSnackbar.show(context, 'Something went wrong. Please try again.');
     }
   }
+}
 
   // User interface
   @override
