@@ -33,9 +33,6 @@ class DataVerificationScreen extends StatefulWidget {
 
 class DataVerificationScreenState extends State<DataVerificationScreen> {
   // Controllers for text form fields
-  final TextEditingController _stuFirstNameController = TextEditingController();
-  final TextEditingController _stuMiddleInitialController = TextEditingController();
-  final TextEditingController _stuLastNameController = TextEditingController();
   final TextEditingController _stuNumController = TextEditingController();
   final TextEditingController _transactRecordNumController = TextEditingController();
   final TextEditingController _transactMonthController = TextEditingController();
@@ -126,9 +123,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   }
 
   void _setFieldInitialValues() {
-    _stuFirstNameController.text = _formatName(widget.transaction.stuFirstName ?? "");
-    _stuMiddleInitialController.text = _formatMI(widget.transaction.stuMiddleInitial ?? "");
-    _stuLastNameController.text = _formatName(widget.transaction.stuLastName ?? "");
     _stuNumController.text = _formatNum(widget.transaction.stuNum ?? "");
     _transactRecordNumController.text = _formatNum(widget.transaction.receiptNum ?? "");
     _transactMonthController.text = _formatNum(widget.transaction.transactMonth ?? "");
@@ -143,9 +137,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   }
 
   void _setTransactionFromFields() {
-    widget.transaction.stuFirstName = _stuFirstNameController.text;
-    widget.transaction.stuMiddleInitial = _stuMiddleInitialController.text;
-    widget.transaction.stuLastName = _stuLastNameController.text;
     widget.transaction.stuNum = _stuNumController.text;
     widget.transaction.receiptNum = _transactRecordNumController.text;
     widget.transaction.transactMonth = _transactMonthController.text;
@@ -195,9 +186,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
 
   @override
   void dispose() {
-    _stuFirstNameController.dispose();
-    _stuMiddleInitialController.dispose();
-    _stuLastNameController.dispose();
     _stuNumController.dispose();
     _transactMonthController.dispose();
     _transactDayController.dispose();
@@ -282,69 +270,20 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                         ),
                                         children: [
                                           LabeledFormField(
-                                            label: "First Name",
-                                            controller: _stuFirstNameController,
-                                            formatters: [NameFormatter()],
-                                            keyboardType: TextInputType.name,
-                                            textCapitalization: TextCapitalization.words,
-                                          ),
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: Column(
-                                                  spacing: 5.0,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    LabeledFormField(
-                                                      label: "M.I.",
-                                                      optional: true,
-                                                      controller: _stuMiddleInitialController,
-                                                      formatters: [
-                                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-z]')),
-                                                        MIFormatter()
-                                                      ],
-                                                      keyboardType: TextInputType.name,
-                                                      textCapitalization: TextCapitalization.words,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              const SizedBox(
-                                                width: 10.0,
-                                              ),
-
-                                              Expanded(
-                                                flex: 7,
-                                                child: Column(
-                                                  spacing: 5.0,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    LabeledFormField(
-                                                      label: "Last Name",
-                                                      controller: _stuLastNameController,
-                                                      formatters: [
-                                                        NameFormatter()
-                                                      ],
-                                                      keyboardType: TextInputType.name,
-                                                      textCapitalization: TextCapitalization.words,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-
-                                          LabeledFormField(
                                             label: "Student Number",
                                             controller: _stuNumController,
                                             formatters: [
                                               FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                                             ],
                                             keyboardType: TextInputType.number,
+                                          ),
+
+                                          Text(
+                                            'The app fetches the student\'s details from the database using the student number.',
+                                            style: AppDesign.bodyStyle.copyWith(
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
                                         ],
                                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracer/models/transaction.dart';
 import 'package:tracer/utils/constants.dart';
+import 'package:tracer/utils/link_helper.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
 import 'package:tracer/widgets/gradient_border_text.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
@@ -171,9 +172,9 @@ class _HomeScreenState extends State<HomeScreen>
                             const SizedBox(height: 25),
 
                             _LinkTile(
-                              title: "About this App",
-                              onTap: (){
-                                Navigator.pushNamed(context, "/howto");
+                              title: "User Manual",
+                              onTap: () async {
+                                await LinkHelper.openUrl('https://heyzine.com/flip-book/eb3a911ba9.html');
                               },
                             )
 

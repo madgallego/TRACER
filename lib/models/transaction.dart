@@ -97,7 +97,7 @@ class Transaction {
 
   bool isMissingRequiredValue() {
     return [
-      stuFirstName, stuLastName, stuNum, receiptNum, transactDay, transactMonth, transactPurpose,
+      stuNum, receiptNum, transactDay, transactMonth, transactPurpose,
       transactYear, transactAmount, transactAmountWords, foFirstName, foLastName
     ].any((field) => field == null || field.isEmpty);
   }

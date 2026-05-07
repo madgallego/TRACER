@@ -21,9 +21,22 @@ class DbService {
 
   Future<Transaction> insertTransaction(Transaction transaction) async {
     try {
+      // NOTE: Change to defensive, maybe raise unauthenticated error and
+      // bring user back to login page
+      final uuid = _client.auth.currentUser!.id;
+
+      final orgID = await getFinanceOfficerOrgId();
+
+      // Build json to be inserted to db
+      Map<String, dynamic> insertJson = {
+        'finance_id': uuid,
+        'organization_id': orgID,
+        ...transaction.toJson()
+      };
+
       final response = await _client
       .from('transaction')
-      .insert(transaction.toJson())
+      .insert(insertJson)
       .select()
       .single();
 
