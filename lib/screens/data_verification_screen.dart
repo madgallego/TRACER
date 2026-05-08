@@ -464,32 +464,42 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return _Popup(
-          GradientIcon(
-            icon: Icons.check_circle_outline,
-            size: 48.0,
-            gradient: LinearGradient(
-              colors: [
-                AppDesign.primaryGradientStart,
-                AppDesign.primaryGradientEnd,
-              ],
+        return PopScope(
+          canPop: false,
+
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+
+            Navigator.of(context).popUntil(ModalRoute.withName('/'));
+          },
+
+          child: _Popup(
+            GradientIcon(
+              icon: Icons.check_circle_outline,
+              size: 48.0,
+              gradient: LinearGradient(
+                colors: [
+                  AppDesign.primaryGradientStart,
+                  AppDesign.primaryGradientEnd,
+                ],
+              ),
             ),
-          ),
-          dialog,
-          GradientBorderButton(
-            onPressed: () async {
-              Navigator.of(context).popUntil(ModalRoute.withName('/'));
-            },
-            borderRadius: BorderRadius.circular(30.0),
-            gradient: LinearGradient(
-              colors: [
-                AppDesign.primaryGradientStart,
-                AppDesign.primaryGradientEnd,
-              ],
-            ),
-            child: Text(
-              "Confirm",
-              style: AppDesign.buttonTextStyle,
+            dialog,
+            GradientBorderButton(
+              onPressed: () async {
+                Navigator.of(context).popUntil(ModalRoute.withName('/'));
+              },
+              borderRadius: BorderRadius.circular(30.0),
+              gradient: LinearGradient(
+                colors: [
+                  AppDesign.primaryGradientStart,
+                  AppDesign.primaryGradientEnd,
+                ],
+              ),
+              child: Text(
+                "Confirm",
+                style: AppDesign.buttonTextStyle,
+              ),
             ),
           ),
         );
