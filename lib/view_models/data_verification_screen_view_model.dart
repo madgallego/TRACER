@@ -45,6 +45,20 @@ class VerificationViewModel extends ChangeNotifier {
     transaction.isReceiptRequested = isReceiptRequested;
   }
 
+  void clear() {
+    stuNumController.text = '';
+    transactRecordNumController.text = '';
+    transactMonthController.text = '';
+    transactDayController.text = '';
+    transactYearController.text = '';
+    transactAmountController.text = '';
+    transactAmountWordsController.text = '';
+    transactDescriptionController.text = '';
+    foFirstNameController.text = '';
+    foMiddleInitialController.text = '';
+    foLastNameController.text = '';
+  }
+
   bool isEmpty() {
     return [
       stuNumController,
