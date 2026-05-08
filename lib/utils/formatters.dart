@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
+import 'package:number_to_words_english/number_to_words_english.dart';
 
+// Text Input Formatters
 class NameFormatter extends TextInputFormatter {
   const NameFormatter();
 
@@ -72,5 +74,83 @@ class MIFormatter extends TextInputFormatter {
       selection: TextSelection.collapsed(offset: newOffset),
       composing: TextRange.empty,
     );
+  }
+}
+
+// Formatters that take in a String and output a String
+abstract class Formatters {
+  static String name(String name) {
+    if (name.isEmpty) return "";
+
+    List<String> nameList = name.split(' ');
+
+    for (final (index, name) in nameList.indexed) {
+      nameList[index] = "${name[0].toUpperCase()}${name.substring(1).toLowerCase()}";
+    }
+
+    return nameList.join(" ");
+  }
+
+  static String middleInitial(String mi) {
+    if (mi.isNotEmpty) {
+      return mi[0].toUpperCase();
+    }
+
+    return '';
+  }
+
+  static String digits(String number) {
+    List<String> chars = number.split('');
+    StringBuffer buf = StringBuffer('');
+
+    for (final char in chars) {
+      if (char.isValidNumberString()) {
+        buf.write(char);
+      }
+    }
+
+    return buf.toString();
+  }
+
+  static String currency(String? rawAmount) {
+    if (rawAmount == null || rawAmount.isEmpty) return '';
+
+    double? value = double.tryParse(rawAmount);
+    if (value == null || value == 0) return '';
+
+    String formatted = value.toStringAsFixed(2);
+
+    if (formatted.endsWith('.00')) {
+      return formatted.substring(0, formatted.length - 3);
+    }
+
+    return formatted;
+  }
+
+  static String amountToWords(String amt) {
+    if (amt.isEmpty) return '';
+
+    double? value = double.tryParse(amt);
+    if (value == null || value == 0) return '';
+
+    int pesos = value.truncate();
+    int centavos = ((value - pesos) * 100).round();
+
+    String formatTitleCase(String text) {
+      return text.split(' ').map((word) {
+      if (word.isEmpty) return '';
+        return word[0].toUpperCase() + word.substring(1).toLowerCase();
+      }).join(' ');
+    }
+
+    String pesosWords = formatTitleCase(pesos.toWords());
+    String result = "$pesosWords Pesos";
+
+    if (centavos > 0) {
+      String centavosWords = formatTitleCase(centavos.toWords());
+      result += " and $centavosWords Centavos";
+    }
+
+    return result;
   }
 }
