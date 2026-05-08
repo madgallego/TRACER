@@ -3,6 +3,8 @@ class Transaction {
   String? stuMiddleInitial;
   String? stuLastName;
   String? stuNum;
+  String? stuYearLevel;
+  String? stuBloc;
   String? receiptNum;
   String? transactMonth;
   String? transactDay;
@@ -23,6 +25,8 @@ class Transaction {
     this.stuMiddleInitial,
     this.stuLastName,
     this.stuNum,
+    this.stuYearLevel,
+    this.stuBloc,
     this.receiptNum,
     this.transactMonth,
     this.transactDay,
@@ -69,6 +73,8 @@ class Transaction {
       stuFirstName: studentData?['stud_fn']?.toString(),
       stuMiddleInitial: studentData?['stud_mi']?.toString(),
       stuLastName: studentData?['stud_ln']?.toString(),
+      stuYearLevel: studentData?['yearlevel']?.toString(),
+      stuBloc: studentData?['bloc']?.toString(),
       transactAmount: json['amount']?.toString() ?? '0.00',
       transactAmountWords: json['amountwords']?.toString() ?? '',
       transactPurpose: json['purpose']?.toString() ?? 'No Purpose',

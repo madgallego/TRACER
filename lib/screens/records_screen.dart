@@ -31,6 +31,10 @@ class _RecordsScreenState extends State<RecordsScreen> {
   DateTime? _toDate;
   String? _selectedFoName;
   List<String> _foNameOptions = [];
+  String? _selectedYearLevel;
+  String? _selectedBloc;
+  List<String> _yearLevelOptions = [];
+  List<String> _blocOptions = []; 
 
   // Organization
   String? _currentOrgId;
@@ -79,12 +83,28 @@ class _RecordsScreenState extends State<RecordsScreen> {
           .toList()
         ..sort();
 
+      final yearLevels = data
+          .map((r) => r.stuYearLevel ?? '') 
+          .where((y) => y.isNotEmpty)
+          .toSet()
+          .toList()
+        ..sort();
+
+      final blocs = data
+          .map((r) => r.stuBloc ?? '') // Replace with your actual model property
+          .where((b) => b.isNotEmpty)
+          .toSet()
+          .toList()
+        ..sort();
+
       if (mounted) {
         setState(() {
           _currentOrgId = orgId;
           _allRecords = data;
           _filteredRecords = data;
           _foNameOptions = foNames;
+          _yearLevelOptions = yearLevels;
+          _blocOptions = blocs;
           _isLoading = false;
         });
       }
@@ -151,7 +171,19 @@ class _RecordsScreenState extends State<RecordsScreen> {
           matchesFo = fullName == _selectedFoName;
         }
 
-        return matchesSearch && matchesDate && matchesFo;
+        // --- Year Level ---
+        bool matchesYear = true;
+        if (_selectedYearLevel != null) {
+          matchesYear = record.stuYearLevel == _selectedYearLevel;
+        }
+
+        // --- Bloc ---
+        bool matchesBloc = true;
+        if (_selectedBloc != null) {
+          matchesYear = record.stuBloc == _selectedBloc;
+        }
+
+        return matchesSearch && matchesDate && matchesFo && matchesYear && matchesBloc;
       }).toList();
     });
   }
@@ -162,12 +194,14 @@ class _RecordsScreenState extends State<RecordsScreen> {
       _fromDate = null;
       _toDate = null;
       _selectedFoName = null;
+      _selectedYearLevel = null; 
+      _selectedBloc = null; 
     });
     _applyFilters();
   }
 
   bool get _hasActiveFilters =>
-      _fromDate != null || _toDate != null || _selectedFoName != null;
+      _fromDate != null || _toDate != null || _selectedFoName != null || _selectedYearLevel != null || _selectedBloc != null; 
 
   // Date picker helper
   Future<void> _pickDate(bool isFrom) async {
@@ -302,8 +336,8 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
             const SizedBox(height: 12),
 
-            _buildDetailRow('Finance Officer', foName.isEmpty ? '---' : foName),
-            _buildDetailRow('Student Name', stuName.isEmpty ? '---' : stuName),
+            _buildDetailRow('Received by', foName.isEmpty ? '---' : foName),
+            _buildDetailRow('Paid by', stuName.isEmpty ? '---' : stuName),
             _buildDetailRow('Student ID', _formatStudentId(record.stuNum)),
             _buildDetailRow('Uploaded by', uploaderFullName.isEmpty ? '---' : uploaderFullName),
 
@@ -528,6 +562,100 @@ class _RecordsScreenState extends State<RecordsScreen> {
               ),
             ),
 
+            const SizedBox(height: 14),
+
+            // Year Level and Bloc
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Year Level",
+                        style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(23)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedYearLevel,
+                              isExpanded: true,
+                              icon: GradientIcon(icon: Icons.arrow_drop_down, size: AppDesign.sBtnIconSize, gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd])),
+                              hint: Text(
+                                'All Years', 
+                                style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
+                              ),
+                              items: [
+                                DropdownMenuItem(value: null, child: Text('All Years', style: AppDesign.bodyStyle.copyWith(fontSize: 13))),
+                                ..._yearLevelOptions.map((year) => DropdownMenuItem(value: year, child: Text(year, style: AppDesign.bodyStyle.copyWith(fontSize: 13)))),
+                              ],
+                              onChanged: (value) {
+                                setState(() => _selectedYearLevel = value);
+                                _applyFilters();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Bloc Dropdown
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Bloc",
+                        style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(23)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedBloc,
+                              isExpanded: true,
+                              icon: GradientIcon(icon: Icons.arrow_drop_down, size: AppDesign.sBtnIconSize, gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd])),
+                              hint: Text(
+                                'All Blocs', 
+                                style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
+                              ),
+                              items: [
+                                DropdownMenuItem(value: null, child: Text('All Blocs', style: AppDesign.bodyStyle.copyWith(fontSize: 13))),
+                                ..._blocOptions.map((bloc) => DropdownMenuItem(value: bloc, child: Text(bloc, style: AppDesign.bodyStyle.copyWith(fontSize: 13)))),
+                              ],
+                              onChanged: (value) {
+                                setState(() => _selectedBloc = value);
+                                _applyFilters();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            
             // Clear filters button
             if (_hasActiveFilters) ...[
               const SizedBox(height: 14),

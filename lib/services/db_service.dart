@@ -72,7 +72,7 @@ class DbService {
           .from('transaction')
           .select('''
             *, 
-            students_for_functions(stud_fn, stud_mi, stud_ln),
+            students_for_functions(stud_fn, stud_mi, stud_ln, yearlevel, bloc),
             uploader:finance_officers(first_name, middle_initial, last_name)
           ''')
           .eq('organization_id', orgId)
