@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:tracer/services/db_service.dart';
 import 'package:tracer/utils/feedback_helper.dart';
 import 'package:tracer/utils/formatters.dart';
 import 'package:tracer/view_models/data_verification_screen_view_model.dart';
 import 'package:tracer/widgets/error_snackbar.dart';
 import 'package:tracer/widgets/gradient_border_button.dart';
-import 'package:tracer/widgets/gradient_border_text_form_field.dart';
 import 'package:tracer/widgets/gradient_icon.dart';
 
 import 'package:tracer/utils/constants.dart';
@@ -453,11 +451,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
   Future<dynamic> showSuccessDialog(BuildContext context, Transaction resp) {
     FeedbackHelper.successFeedback();
     String dialog;
+    String continueBtnText;
 
     if (resp.isReceiptRequested == true) {
       dialog = 'Data saved successfully!\nReceipt was also sent to student\'s email.';
     } else {
       dialog = 'Data saved successfully!';
+    }
+
+    if (widget.isFromHomeScreen) {
+      continueBtnText = 'Input another receipt';
+    } else {
+      continueBtnText = 'Scan another receipt';
     }
 
     return showDialog(
@@ -487,7 +492,14 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
             dialog,
             GradientBorderButton(
               onPressed: () async {
-                Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                if (widget.isFromHomeScreen) {
+                  widget.transaction = Transaction();
+                  viewModel.clear();
+                  Navigator.of(context, rootNavigator: true).pop();
+                } else {
+                  Navigator.of(context).popUntil(ModalRoute.withName('/scan'));
+                }
+
               },
               borderRadius: BorderRadius.circular(30.0),
               gradient: LinearGradient(
@@ -497,7 +509,18 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                 ],
               ),
               child: Text(
-                "Confirm",
+                continueBtnText,
+                style: AppDesign.buttonTextStyle,
+              ),
+            ),
+            btn2: GradientBorderButton(
+              onPressed: () async {
+                Navigator.of(context).popUntil(ModalRoute.withName('/'));
+              },
+              gradient: LinearGradient(colors: [Colors.white, Colors.white]),
+              borderRadius: BorderRadius.circular(30.0),
+              child: Text(
+                'Back to Home',
                 style: AppDesign.buttonTextStyle,
               ),
             ),
