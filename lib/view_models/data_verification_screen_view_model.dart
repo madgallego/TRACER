@@ -28,6 +28,15 @@ class VerificationViewModel extends ChangeNotifier {
     foFirstNameController.text = Formatters.name(transaction.foFirstName ?? "");
     foMiddleInitialController.text = Formatters.middleInitial(transaction.foMiddleInitial ?? "");
     foLastNameController.text = Formatters.name(transaction.foLastName ?? "");
+
+    // Clamp date to current date
+    if (Formatters.isFutureDate(transactMonthController.text, transactDayController.text, transactYearController.text)) {
+      final now = DateTime.now();
+
+      transactMonthController.text = now.month.toString();
+      transactDayController.text = now.day.toString();
+      transactYearController.text = now.year.toString();
+    }
   }
 
   void updateModel(Transaction transaction) {

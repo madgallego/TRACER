@@ -159,4 +159,17 @@ abstract class Formatters {
 
     return result;
   }
+
+  static bool isFutureDate(String month, String day, String year) {
+    try {
+      final date = DateTime(
+        int.parse(year),
+        int.parse(month),
+        int.parse(day),
+      );
+      return date.isAfter(DateTime.now());
+    } catch (e) {
+      return false;
+    }
+  }
 }
