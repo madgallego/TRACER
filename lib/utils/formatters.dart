@@ -99,7 +99,7 @@ abstract class Formatters {
     return '';
   }
 
-  static String digits(String number) {
+  static String digits(String number, {int limit = -1}) {
     List<String> chars = number.split('');
     StringBuffer buf = StringBuffer('');
 
@@ -109,7 +109,13 @@ abstract class Formatters {
       }
     }
 
-    return buf.toString();
+    String res = buf.toString();
+
+    if (limit != -1) {
+      res.substring(0, limit+1);
+    }
+
+    return res;
   }
 
   static String currency(String? rawAmount) {
