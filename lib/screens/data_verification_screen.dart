@@ -389,11 +389,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             viewModel.updateModel(widget.transaction);
 
                                             try {
-                                              await context.read<DbService>().insertTransaction(widget.transaction);
+                                              Transaction resp = await context.read<DbService>().insertTransaction(widget.transaction);
 
                                               if (!context.mounted) return;
 
-                                              showSuccessDialog(context);
+                                              showSuccessDialog(context, resp);
                                             } on DuplicateReceiptException {
                                               ErrorSnackbar.show(context, 'Receipt number already exists.\nAre you sure it is correct?');
                                             } on NonExistentStudentException {
@@ -450,11 +450,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
     );
   }
 
-  Future<dynamic> showSuccessDialog(BuildContext context) {
+  Future<dynamic> showSuccessDialog(BuildContext context, Transaction resp) {
     FeedbackHelper.successFeedback();
     String dialog;
 
-    if (viewModel.isReceiptRequested) {
+    if (resp.isReceiptRequested == true) {
       dialog = 'Data saved successfully!\nReceipt was also sent to student\'s email.';
     } else {
       dialog = 'Data saved successfully!';
