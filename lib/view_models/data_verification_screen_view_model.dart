@@ -19,9 +19,9 @@ class VerificationViewModel extends ChangeNotifier {
   void init(Transaction transaction) {
     stuNumController.text = Formatters.digits(transaction.stuNum ?? "");
     transactRecordNumController.text = Formatters.digits(transaction.receiptNum ?? "");
-    transactMonthController.text = Formatters.digits(transaction.transactMonth ?? "");
-    transactDayController.text = Formatters.digits(transaction.transactDay ?? "");
-    transactYearController.text = Formatters.digits(transaction.transactYear ?? "");
+    transactMonthController.text = Formatters.digits(transaction.transactMonth ?? "", limit: 2);
+    transactDayController.text = Formatters.digits(transaction.transactDay ?? "", limit: 2);
+    transactYearController.text = Formatters.digits(transaction.transactYear ?? "", limit: 4);
     transactAmountController.text = Formatters.currency(transaction.transactAmount ?? "");
     transactAmountWordsController.text = Formatters.amountToWords(transactAmountController.text);
     transactDescriptionController.text = Formatters.name(transaction.transactPurpose ?? "");
