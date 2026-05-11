@@ -206,13 +206,6 @@ class _HomeMainBigRoundedButton extends StatelessWidget {
       onPressed: () async {
         Navigator.of(context).pushNamed('/scan');
       },
-      borderRadius: BorderRadius.circular(30.0),
-      gradient: LinearGradient(
-        colors: [
-          AppDesign.primaryGradientStart,
-          AppDesign.primaryGradientEnd,
-        ]
-      ),
       child: Column(
         children: [
           const GradientIcon(

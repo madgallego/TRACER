@@ -177,11 +177,6 @@ class ScanScreenState extends State<ScanScreen> {
                           debugPrint(e.toString());
                         }
                       },
-                      gradient: LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd
-                        ]),
-                      borderRadius: AppDesign.sBtnBorderRadius,
                       child: GradientIcon(
                         icon: Icons.camera_rounded,
                         size: AppDesign.sBtnIconSize,

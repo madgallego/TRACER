@@ -237,11 +237,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: () async {
                                       await login();
                                     },
-                                    gradient: LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]),
-                                    borderRadius: AppDesign.sBtnBorderRadius,
                                     child: Text(
                                       'Log In',
                                       style: AppDesign.buttonTextStyle,

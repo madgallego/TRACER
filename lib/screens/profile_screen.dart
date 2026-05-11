@@ -84,8 +84,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (foResponse == null) {
         debugPrint('No finance officer record found for this user ID.');
         if (mounted) setState(() => _isLoading = false);
-        return; 
-      }    
+        return;
+      }
 
       debugPrint('FO Response: $foResponse'); // Debug print to check the response data
 
@@ -255,13 +255,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                         );
                                     },
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]
-                                    ),
                                     child: const Text(
                                       'Edit',
                                       style: AppDesign.buttonTextStyle,
@@ -290,13 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     );
                                   },
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppDesign.dangerRed,
-                                      AppDesign.dangerRed,
-                                    ]
-                                  ),
+                                  borderColor: AppDesign.dangerRed,
                                   child: Text(
                                     'Change Password',
                                     style: AppDesign.buttonTextStyle,
@@ -306,13 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onPressed: () async {
                                     logout();
                                   },
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white,
-                                      Colors.white,
-                                    ]
-                                  ),
+                                  borderColor: Colors.white,
                                   child: Text(
                                     'Log Out',
                                     style: AppDesign.buttonTextStyle,
@@ -577,13 +558,6 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         const SizedBox(height: 20),
         GradientBorderButton(
           onPressed: _isChangingPassword ? () async {} : _changePassword,
-          gradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(30),
           child: _isChangingPassword
               ? const SizedBox(
                   height: 20,
@@ -754,7 +728,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
             const SizedBox(height: 10),
 
-            // Student Number 
+            // Student Number
             LabeledFormField(
               label: "Student Number",
               controller: widget.studentNumberController,
@@ -834,11 +808,6 @@ class _EditProfileFormState extends State<_EditProfileForm> {
                 width: 160,
                 child: GradientBorderButton(
                   onPressed: _isSaving ? () async {} : _save,
-                  gradient: const LinearGradient(colors: [
-                    AppDesign.primaryGradientStart,
-                    AppDesign.primaryGradientEnd,
-                  ]),
-                  borderRadius: BorderRadius.circular(30),
                   child: _isSaving
                       ? const SizedBox(
                           height: 20,

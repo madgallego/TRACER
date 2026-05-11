@@ -224,11 +224,6 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 arguments: {'transaction': transaction},
                               );
                             },
-                            gradient: LinearGradient(colors: [
-                                AppDesign.primaryGradientStart,
-                                AppDesign.primaryGradientEnd
-                              ]),
-                            borderRadius: AppDesign.sBtnBorderRadius,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [

@@ -407,11 +407,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                     onPressed: () async {
                                       await signup();
                                     },
-                                    gradient: LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]),
-                                    borderRadius: AppDesign.sBtnBorderRadius,
                                     child: Text(
                                       'Sign Up',
                                       style: AppDesign.buttonTextStyle,

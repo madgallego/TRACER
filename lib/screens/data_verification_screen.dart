@@ -402,10 +402,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                               debugPrint(e.toString());
                                             }
                                           },
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          gradient: const LinearGradient(
-                                            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
-                                          ),
                                           child: const Text(
                                             "Upload to Database",
                                             style: AppDesign.buttonTextStyle,
@@ -501,13 +497,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                 }
 
               },
-              borderRadius: BorderRadius.circular(30.0),
-              gradient: LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
               child: Text(
                 continueBtnText,
                 style: AppDesign.buttonTextStyle,
@@ -517,8 +506,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
               onPressed: () async {
                 Navigator.of(context).popUntil(ModalRoute.withName('/'));
               },
-              gradient: LinearGradient(colors: [Colors.white, Colors.white]),
-              borderRadius: BorderRadius.circular(30.0),
               child: Text(
                 'Back to Home',
                 style: AppDesign.buttonTextStyle,
@@ -546,13 +533,6 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
             onPressed: () async {
               Navigator.of(context).pop();
             },
-            borderRadius: BorderRadius.circular(30.0),
-            gradient: LinearGradient(
-              colors: [
-                AppDesign.primaryGradientStart,
-                AppDesign.primaryGradientEnd,
-              ],
-            ),
             child: Text(
               "Go back",
               style: AppDesign.buttonTextStyle,
@@ -566,8 +546,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
               }
               Navigator.of(context).popUntil(ModalRoute.withName('/scan'));
             },
-            gradient: LinearGradient(colors: [AppDesign.dangerRed, AppDesign.dangerRed]),
-            borderRadius: BorderRadius.circular(30.0),
+            borderColor: AppDesign.dangerRed,
             child: Text(
               "Discard",
               style: AppDesign.buttonTextStyle,

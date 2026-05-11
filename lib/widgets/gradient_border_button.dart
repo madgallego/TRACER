@@ -9,19 +9,26 @@ class GradientBorderButton extends StatefulWidget {
   final Future<void> Function() onPressed;
   final Widget child;
   final double borderWidth;
-  final LinearGradient gradient;
+  final LinearGradient? borderGradient;
+  final Color? borderColor;
   final BorderRadius? borderRadius;
   final Color innerColor;
+  final bool disabled;
 
   const GradientBorderButton({
     super.key,
     required this.onPressed,
     required this.child,
     this.borderWidth = 2.0,
-    required this.gradient,
+    this.borderGradient,
+    this.borderColor,
     this.borderRadius,
     this.innerColor = Colors.white,
-  });
+    this.disabled = false,
+  }) : assert(
+    borderColor == null || borderGradient == null,
+    'Cannot provide both a color and a gradient'
+  );
 
   @override
   State<GradientBorderButton> createState() => _GradientBorderButtonState();
@@ -60,22 +67,6 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
     );
   }
 
-  // Future<void> _handlePress() async {
-
-  //   if (processState.isLoading) return;
-  //   processState.setLoading(true);
-  //   _rotationController.repeat();
-
-  //   try {
-  //     await widget.onPressed();
-  //   } catch (e) {
-  //     debugPrint("Process failed: $e");
-  //   } finally {
-  //     processState.setLoading(false);
-  //     _rotationController.stop();
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -101,11 +92,16 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
 
   @override
   Widget build(BuildContext context) {
-    final outerRadius = widget.borderRadius;
+    final outerRadius = widget.borderRadius ?? AppDesign.defaultCircularBorderRadius;
 
     // Dynamic shadows for depressed effect when pressed
     final double targetBlur = _isPressed ? 5.0 : 2.0;
     final double targetOffset = _isPressed ? 1.0 : 2.0;
+
+    // If no color or gradient supplied, use default app gradient
+    final effectiveGradient = (widget.borderColor == null && widget.borderGradient == null)
+      ? AppDesign.primaryGradient
+      : widget.borderGradient;
 
     return ChangeNotifierProvider(
       create: (context) => ProcessState(),
@@ -118,9 +114,9 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
 
             return Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: widget.gradient.colors,
-                  transform: GradientRotation(_animation.value),
+                color: widget.borderColor,
+                gradient: effectiveGradient?.withTransform(
+                  GradientRotation(_animation.value)
                 ),
                 borderRadius: outerRadius ?? BorderRadius.circular(10.0),
                 boxShadow: [
