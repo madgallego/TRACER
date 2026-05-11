@@ -111,7 +111,7 @@ abstract class Formatters {
 
     String res = buf.toString();
 
-    if (limit != -1) {
+    if (limit != -1 && limit <= res.length) {
       res = res.substring(0, limit);
     }
 
