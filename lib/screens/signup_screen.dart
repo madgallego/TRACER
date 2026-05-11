@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tracer/auth/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
@@ -30,8 +31,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _studentNumberController = TextEditingController();
 
   @override
   void initState() {
@@ -57,24 +57,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _studentNumberController.dispose();
     super.dispose();
   }
 
   // Sign up function
   Future<void> signup() async {
-    final firstName = _firstNameController.text.trim();
-    final lastName = _lastNameController.text.trim();
+    final studentNumber = _studentNumberController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (firstName.isEmpty || lastName.isEmpty) {
-      ErrorSnackbar.show(context, 'Please enter your first and last name.');
+    if (studentNumber.isEmpty) {
+      ErrorSnackbar.show(context, 'Please enter your student number.');
       return;
     }
 
@@ -103,13 +101,33 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
+    setState(() => _isLoadingOrgs = true);
+
+    final studentExists = await authService.checkStudentExists(studentNumber);
+    
+    if (!studentExists) {
+      if (mounted) {
+        setState(() => _isLoadingOrgs = false);
+        ErrorSnackbar.show(context, "Student number doesn't exist.");
+      }
+      return; 
+    }
+
+    final isAlreadyRegistered = await authService.isStudentAlreadyRegistered(studentNumber);
+    
+    if (isAlreadyRegistered) {
+      if (mounted) {
+        setState(() => _isLoadingOrgs = false);
+        ErrorSnackbar.show(context, 'An account with this student number already exists.');
+      }
+      return;
+    }
 
     try {
       await authService.signUp(
         email: email,
         password: password,
-        firstName: firstName,
-        lastName: lastName,
+        studentNumber: studentNumber,
         orgId: _selectedOrgId!,
       );
 
@@ -120,6 +138,8 @@ class _SignupScreenState extends State<SignupScreen> {
         Navigator.of(context).pop();
       }
     } on AuthException catch (e) {
+        debugPrint('SUPABASE AUTH ERROR: ${e.message} | Status Code: ${e.statusCode}'); // Debug to print error message and status code 
+
         if (mounted) {
         String message;
         switch (e.message) {
@@ -247,11 +267,11 @@ class _SignupScreenState extends State<SignupScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
 
-                                // First name field
+                                // Student number field
                                 const SizedBox(height: 12),
                                 GradientTextFormField(
-                                  controller: _firstNameController,
-                                  hintText: 'First Name',
+                                  controller: _studentNumberController,
+                                  hintText: 'Student Number',
                                   fillColor: AppDesign.appLightGray,
                                   borderRadius: BorderRadius.circular(10),
                                   activeGradient: const LinearGradient(colors: [
@@ -259,34 +279,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                     AppDesign.primaryGradientEnd,
                                   ]),
                                   prefixIcon: GradientIcon(
-                                    icon: Icons.person,
+                                    icon: Icons.badge,
                                     size: AppDesign.sBtnIconSize,
                                     gradient: const LinearGradient(colors: [
                                       AppDesign.primaryGradientStart,
                                       AppDesign.primaryGradientEnd,
                                     ]),
                                   ),
-                                ),
-
-                                // Last name field
-                                const SizedBox(height: 12),
-                                GradientTextFormField(
-                                  controller: _lastNameController,
-                                  hintText: 'Last Name',
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
-                                  prefixIcon: GradientIcon(
-                                    icon: Icons.person,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
-                                  ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  ],
+                                  keyboardType: TextInputType.number,
                                 ),
 
                                 // Email field
@@ -309,6 +312,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                       AppDesign.primaryGradientEnd,
                                     ]),
                                   ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                  ],
                                 ),
 
                                 // Organization dropdown
