@@ -73,7 +73,9 @@ class DbService {
           .select('''
             *, 
             students_for_functions(stud_fn, stud_mi, stud_ln, yearlevel, bloc),
-            uploader:finance_officers(first_name, middle_initial, last_name)
+            uploader:finance_officers(
+              uploaderDetails:students_for_functions(first_name, middle_initial, last_name)
+            )
           ''')
           .eq('organization_id', orgId)
           .order('receiptdate', ascending: false);
