@@ -199,7 +199,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 },
                                 child: Icon(
                                   Icons.close,
-                                  size: AppDesign.sBtnIconSize,
+                                  size: AppDesign.sIconSize,
                                   color: AppDesign.appOffblack,
                                 ),
                               ),
@@ -254,7 +254,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 },
                                 child: Icon(
                                   Icons.replay,
-                                  size: AppDesign.sBtnIconSize,
+                                  size: AppDesign.sIconSize,
                                   color: AppDesign.appOffblack,
                                 ),
                               ),

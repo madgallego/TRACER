@@ -141,11 +141,7 @@ class ScanScreenState extends State<ScanScreen> {
                       },
                       child: GradientIcon(
                         icon: Icons.close,
-                        size: AppDesign.sBtnIconSize,
-                        gradient: LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd
-                        ]),
+                        size: AppDesign.sIconSize,
                       ),
                     ),
                   ),
@@ -179,11 +175,7 @@ class ScanScreenState extends State<ScanScreen> {
                       },
                       child: GradientIcon(
                         icon: Icons.camera_rounded,
-                        size: AppDesign.sBtnIconSize,
-                        gradient: LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd
-                        ]),
+                        size: AppDesign.sIconSize,
                       ),
                     ),
                   ),
@@ -220,11 +212,7 @@ class ScanScreenState extends State<ScanScreen> {
                       },
                       child: GradientIcon(
                         icon: Icons.upload,
-                        size: AppDesign.sBtnIconSize,
-                        gradient: LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd
-                        ]),
+                        size: AppDesign.sIconSize,
                       ),
                     ),
                   ),

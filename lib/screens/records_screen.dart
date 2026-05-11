@@ -34,7 +34,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
   String? _selectedYearLevel;
   String? _selectedBloc;
   List<String> _yearLevelOptions = [];
-  List<String> _blocOptions = []; 
+  List<String> _blocOptions = [];
 
   // Organization
   String? _currentOrgId;
@@ -42,7 +42,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
   @override
   void initState() {
     super.initState();
-    _setupServiceAndLoad(); 
+    _setupServiceAndLoad();
     _searchController.addListener(_applyFilters);
   }
 
@@ -61,7 +61,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
     try {
       final orgId = await _dbService!.getFinanceOfficerOrgId();
-      
+
       if (orgId == null) {
         if (mounted) setState(() => _isLoading = false);
         return;
@@ -84,7 +84,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
         ..sort();
 
       final yearLevels = data
-          .map((r) => r.stuYearLevel ?? '') 
+          .map((r) => r.stuYearLevel ?? '')
           .where((y) => y.isNotEmpty)
           .toSet()
           .toList()
@@ -194,14 +194,14 @@ class _RecordsScreenState extends State<RecordsScreen> {
       _fromDate = null;
       _toDate = null;
       _selectedFoName = null;
-      _selectedYearLevel = null; 
-      _selectedBloc = null; 
+      _selectedYearLevel = null;
+      _selectedBloc = null;
     });
     _applyFilters();
   }
 
   bool get _hasActiveFilters =>
-      _fromDate != null || _toDate != null || _selectedFoName != null || _selectedYearLevel != null || _selectedBloc != null; 
+      _fromDate != null || _toDate != null || _selectedFoName != null || _selectedYearLevel != null || _selectedBloc != null;
 
   // Date picker helper
   Future<void> _pickDate(bool isFrom) async {
@@ -252,14 +252,14 @@ class _RecordsScreenState extends State<RecordsScreen> {
         ? "${record.stuMiddleInitial}. "
         : "";
     final stuName = "${record.stuFirstName ?? ''} $stuMi${record.stuLastName ?? ''}".trim();
-    
+
     // Format uploader name
     // Format Uploader Name with Middle Initial Logic
     final String upFn = record.uploaderFirstName ?? '';
     final String upLn = record.uploaderLastName ?? '';
     final String rawUpMi = record.uploaderMiddleInitial ?? '';
     final String upMi = rawUpMi.isNotEmpty ? "$rawUpMi. " : "";
-    
+
     final String uploaderFullName = "$upFn $upMi$upLn".trim();
 
     showModalBottomSheet(
@@ -446,10 +446,6 @@ class _RecordsScreenState extends State<RecordsScreen> {
                             GradientIcon(
                               icon: Icons.calendar_today,
                               size: 14,
-                              gradient: const LinearGradient(colors: [
-                                AppDesign.primaryGradientStart,
-                                AppDesign.primaryGradientEnd,
-                              ]),
                             ),
                           ],
                         ),
@@ -485,10 +481,6 @@ class _RecordsScreenState extends State<RecordsScreen> {
                             GradientIcon(
                               icon: Icons.calendar_today,
                               size: 14,
-                              gradient: const LinearGradient(colors: [
-                                AppDesign.primaryGradientStart,
-                                AppDesign.primaryGradientEnd,
-                              ]),
                             ),
                           ],
                         ),
@@ -528,11 +520,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                     borderRadius: BorderRadius.circular(16),
                     icon: GradientIcon(
                       icon: Icons.arrow_drop_down,
-                      size: AppDesign.sBtnIconSize,
-                      gradient: LinearGradient(colors: [
-                        AppDesign.primaryGradientStart,
-                        AppDesign.primaryGradientEnd,
-                      ]),
+                      size: AppDesign.sIconSize,
                     ),
                     hint: Text(
                       'All finance officers',
@@ -589,9 +577,12 @@ class _RecordsScreenState extends State<RecordsScreen> {
                             child: DropdownButton<String>(
                               value: _selectedYearLevel,
                               isExpanded: true,
-                              icon: GradientIcon(icon: Icons.arrow_drop_down, size: AppDesign.sBtnIconSize, gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd])),
+                              icon: GradientIcon(
+                                icon: Icons.arrow_drop_down,
+                                size: AppDesign.sIconSize
+                              ),
                               hint: Text(
-                                'All Years', 
+                                'All Years',
                                 style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
                               ),
                               items: [
@@ -633,9 +624,12 @@ class _RecordsScreenState extends State<RecordsScreen> {
                             child: DropdownButton<String>(
                               value: _selectedBloc,
                               isExpanded: true,
-                              icon: GradientIcon(icon: Icons.arrow_drop_down, size: AppDesign.sBtnIconSize, gradient: const LinearGradient(colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd])),
+                              icon: GradientIcon(
+                                icon: Icons.arrow_drop_down,
+                                size: AppDesign.sIconSize,
+                              ),
                               hint: Text(
-                                'All Blocs', 
+                                'All Blocs',
                                 style: AppDesign.bodyStyle.copyWith(fontSize: 13, fontWeight: FontWeight.normal),
                               ),
                               items: [
@@ -655,7 +649,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                 ),
               ],
             ),
-            
+
             // Clear filters button
             if (_hasActiveFilters) ...[
               const SizedBox(height: 14),
@@ -669,7 +663,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                     style: AppDesign.bodyStyle.copyWith(fontSize: 13),
                   ),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFFF44336), 
+                    foregroundColor: const Color(0xFFF44336),
                   ),
                 ),
               ),
@@ -765,11 +759,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                                         child: GradientIcon(
                                           icon: Icons.search,
-                                          size: AppDesign.sBtnIconSize,
-                                          gradient: const LinearGradient(colors: [
-                                            AppDesign.primaryGradientStart,
-                                            AppDesign.primaryGradientEnd
-                                          ]),
+                                          size: AppDesign.sIconSize,
                                         ),
                                       ),
                                     ),
@@ -806,15 +796,12 @@ class _RecordsScreenState extends State<RecordsScreen> {
                                   child: _hasActiveFilters
                                       ? Icon(
                                           Icons.tune,
-                                          size: AppDesign.sBtnIconSize,
+                                          size: AppDesign.sIconSize,
                                           color: Colors.white,
                                         )
                                       : GradientIcon(
                                           icon: Icons.tune,
-                                          size: AppDesign.sBtnIconSize,
-                                          gradient: const LinearGradient(
-                                            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                                          ),
+                                          size: AppDesign.sIconSize,
                                         ),
                                 ),
                               ),
@@ -923,7 +910,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
   // Widget for each record row
   Widget _buildRecordRow(Transaction record) {
-    // Format date 
+    // Format date
     final months = ['Jan','Feb','Mar','Apr','May','Jun',
                     'Jul','Aug','Sep','Oct','Nov','Dec'];
     final monthNum = int.tryParse(record.transactMonth ?? '');
@@ -936,9 +923,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
     final fName = record.foFirstName ?? '';
     final mInitial = record.foMiddleInitial != null ? "${record.foMiddleInitial}. " : "";
     final lName = record.foLastName ?? '';
-    
+
     String foName = "$fName $mInitial$lName".trim();
-    
+
     if (foName.isEmpty) foName = 'No Name';
 
     return Material(
@@ -963,7 +950,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                   ),
                 ),
               ),
-              
+
               // Title, date and finance officer name
               Expanded(
                 flex: 3,
@@ -1001,7 +988,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                   ],
                 ),
               ),
-              
+
               // Amount
               Expanded(
                 flex: 2,

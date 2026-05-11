@@ -103,9 +103,9 @@ abstract class AppDesign {
 
   static final BorderRadius defaultCircularBorderRadius = BorderRadius.circular(30.0);
 
-  static final double sBtnIconSize = 24.0;
-  static final double mBtnIconSize = 36.0; // currently unused and might change
-  static final double lBtnIconSize = 48.0; // currently unused and might change
+  static final double sIconSize = 24.0;
+  static final double mIconSize = 48.0;
+  static final double lIconSize = 96.0;
 
   // Gradient widgets loading animations
   static final Duration loadingRotationDuration = Duration(milliseconds: 700);

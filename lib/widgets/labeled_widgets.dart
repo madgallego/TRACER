@@ -16,6 +16,7 @@ class LabeledFormField extends StatelessWidget {
   final String? prefixText;
   final IconData suffixIcon;
   final LinearGradient? iconGradient;
+  final Color? iconColor;
   final Color? textColor;
   final Color? fillColor;
   final bool optional;
@@ -33,13 +34,22 @@ class LabeledFormField extends StatelessWidget {
     this.prefixText,
     this.suffixIcon = Icons.edit_outlined,
     this.iconGradient,
+    this.iconColor,
     this.textColor,
     this.fillColor,
     this.optional = false,
-  });
+  }) : assert(
+    iconColor == null || iconGradient == null,
+    'Cannot provide both iconColor and iconGradient'
+  );
 
   @override
   Widget build(BuildContext context) {
+    // If no color or gradient supplied, use default app gradient
+    final effectiveGradient = (iconColor == null && iconGradient == null)
+      ? AppDesign.primaryGradient
+      : iconGradient;
+
     return Column(
       spacing: 5.0,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,12 +84,9 @@ class LabeledFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(30.0),
           suffixIcon: GradientIcon(
             icon: suffixIcon,
-            size: 24.0,
-            gradient: iconGradient ?? const LinearGradient(
-              colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-            )
+            size: AppDesign.sIconSize,
+            gradient: effectiveGradient,
+            color: iconColor,
           ),
         ),
       ],

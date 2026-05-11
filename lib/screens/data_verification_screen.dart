@@ -143,11 +143,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           title: "Student Details",
                                           icon: GradientIcon(
                                             icon: Icons.account_circle_rounded,
-                                            size: 28.0,
-                                            gradient: LinearGradient(colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd
-                                            ])
+                                            size: AppDesign.sIconSize,
                                           ),
                                           children: [
                                             LabeledFormField(
@@ -173,11 +169,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           title: "Transaction Details",
                                           icon: GradientIcon(
                                             icon: Icons.credit_card_rounded,
-                                            size: 28.0,
-                                            gradient: LinearGradient(colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd
-                                            ])
+                                            size: AppDesign.sIconSize,
                                           ),
                                           children: [
                                             Row(
@@ -275,7 +267,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                             LabeledFormField(
                                               label: "Amount in words",
                                               suffixIcon: Icons.edit_off_outlined,
-                                              iconGradient: const LinearGradient(colors: [AppDesign.disabledGray, AppDesign.disabledGray]),
+                                              iconColor: AppDesign.disabledGray,
                                               textColor: Colors.grey.shade500,
                                               controller: viewModel.transactAmountWordsController,
                                               readOnly: true,
@@ -305,11 +297,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                           title: "Finance Officer Details",
                                           icon: GradientIcon(
                                             icon: Icons.stars_rounded,
-                                            size: 28.0,
-                                            gradient: LinearGradient(colors: [
-                                              AppDesign.primaryGradientStart,
-                                              AppDesign.primaryGradientEnd
-                                            ])
+                                            size: AppDesign.sIconSize,
                                           ),
                                           children: [
                                             LabeledFormField(
@@ -477,13 +465,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
           child: _Popup(
             GradientIcon(
               icon: Icons.check_circle_outline,
-              size: 48.0,
-              gradient: LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.mIconSize,
             ),
             dialog,
             GradientBorderButton(
@@ -583,7 +565,7 @@ class _TopStickyButton extends StatelessWidget {
             children: [
               Icon(
                 iconData,
-                size: AppDesign.sBtnIconSize,
+                size: AppDesign.sIconSize,
                 color: AppDesign.appOffblack,
               ),
 

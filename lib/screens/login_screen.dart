@@ -185,11 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.mail,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                 ),
                                 // Password field
@@ -206,20 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.lock,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: GradientIcon(
                                       icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                      size: AppDesign.sBtnIconSize,
-                                      gradient: const LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd,
-                                      ]),
+                                      size: AppDesign.sIconSize,
                                     ),
                                     onPressed: () {
                                       setState(() {

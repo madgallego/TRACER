@@ -130,13 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   child: _HomeRoundedButton(
                                     gradientIcon: GradientIcon(
                                       icon: Icons.folder_open,
-                                      size: 24.0,
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppDesign.primaryGradientStart,
-                                          AppDesign.primaryGradientEnd,
-                                        ]
-                                      )
+                                      size: AppDesign.sIconSize,
                                     ),
                                     title: "Records",
                                     onTap: () {
@@ -149,13 +143,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   child: _HomeRoundedButton(
                                     gradientIcon: GradientIcon(
                                       icon: Icons.account_circle_rounded,
-                                      size: 24.0,
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppDesign.primaryGradientStart,
-                                          AppDesign.primaryGradientEnd,
-                                        ]
-                                      )
+                                      size: AppDesign.sIconSize,
                                     ),
                                     title: "Profile",
                                     onTap: () async {
@@ -208,15 +196,9 @@ class _HomeMainBigRoundedButton extends StatelessWidget {
       },
       child: Column(
         children: [
-          const GradientIcon(
+          GradientIcon(
             icon: Icons.camera_alt_outlined,
-            size: 48.0,
-            gradient: LinearGradient(
-              colors: [
-                AppDesign.primaryGradientStart,
-                AppDesign.primaryGradientEnd,
-              ]
-            ),
+            size: AppDesign.mIconSize,
           ),
           Text(title, style: AppDesign.buttonTextStyle),
         ]
@@ -241,13 +223,7 @@ class _HomeBigRoundedButton extends StatelessWidget {
           child: _HomeRoundedButton(
             gradientIcon: GradientIcon(
               icon: Icons.keyboard_alt_outlined,
-              size: 48.0,
-              gradient: LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ]
-              ),
+              size: AppDesign.mIconSize,
             ),
             title: text,
             onTap: () async {

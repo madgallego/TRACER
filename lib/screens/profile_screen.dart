@@ -173,13 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Center(
                       child: GradientIcon(
                         icon: Icons.account_circle,
-                        size: 96.0,
-                        gradient: LinearGradient(
-                          colors: [
-                            AppDesign.primaryGradientStart,
-                            AppDesign.primaryGradientEnd,
-                          ],
-                        ),
+                        size: AppDesign.lIconSize,
                       ),
                     ),
 
@@ -203,13 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: 'Profile Details',
                               icon: GradientIcon(
                                 icon: Icons.account_circle,
-                                size: 28.0,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ],
-                                ),
+                                size: AppDesign.sIconSize,
                               ),
                               children: [
                                 _LabeledText(
@@ -479,13 +467,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               icon: _currentPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _currentPasswordVisible = !_currentPasswordVisible),
@@ -511,13 +493,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               icon: _newPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _newPasswordVisible = !_newPasswordVisible),
@@ -543,13 +519,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               icon: _confirmPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
@@ -720,10 +690,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
               label: "Email",
               controller: widget.emailController,
               suffixIcon: Icons.edit_off_outlined,
-              iconGradient: const LinearGradient(colors: [
-                AppDesign.disabledGray,
-                AppDesign.disabledGray,
-              ]),
+              iconColor: AppDesign.disabledGray,
             ),
 
             const SizedBox(height: 10),
@@ -794,10 +761,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))
               ],
               suffixIcon: Icons.edit_off_outlined,
-              iconGradient: const LinearGradient(colors: [
-                AppDesign.disabledGray,
-                AppDesign.disabledGray,
-              ]),
+              iconColor: AppDesign.disabledGray,
             ),
 
             const SizedBox(height: 20),
