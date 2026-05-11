@@ -17,8 +17,7 @@ class AuthService {
   Future<AuthResponse> signUp({
     required String email,
     required String password,
-    required String firstName,
-    required String lastName,
+    required String studentNumber,
     required String orgId,
   }) async {
     final response = await _supabase.auth.signUp(
@@ -32,8 +31,7 @@ class AuthService {
       await _supabase.from('finance_officers').insert({
         'user_id': userId,
         'email': email,
-        'first_name': firstName,
-        'last_name': lastName,
+        'student_id': studentNumber,
         'organization_id': orgId,
       });
     }
@@ -74,24 +72,31 @@ class AuthService {
     );
   }
 
-  Future<void> updateProfile({
-    required String firstName,
-    required String middleInitial,
-    required String lastName,
-    required String yearLevel,
-    required String bloc,
-    required String studentId,
-  }) async {
-    final userId = _supabase.auth.currentSession?.user.id;
-    if (userId == null) return;
+  Future<bool> checkStudentExists(String studentId) async {
+    try {
+      final response = await _supabase
+          .from('students_for_functions') 
+          .select('studentid')
+          .eq('studentid', studentId)
+          .maybeSingle();
 
-    await _supabase.from('finance_officers').update({
-      'first_name': firstName,
-      'middle_initial': middleInitial.isNotEmpty ? middleInitial : null,
-      'last_name': lastName,
-      'yearlevel': yearLevel.isNotEmpty ? int.tryParse(yearLevel) : null,
-      'bloc': bloc.isNotEmpty ? bloc : null,
-      'student_id': studentId.isNotEmpty ? studentId : null,
-    }).eq('user_id', userId);
+      return response != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> isStudentAlreadyRegistered(String studentId) async {
+    try {
+      final response = await _supabase
+          .from('finance_officers')
+          .select('student_id')
+          .eq('student_id', studentId)
+          .maybeSingle();
+
+      return response != null;
+    } catch (e) {
+      return false; 
+    }
   }
 }
