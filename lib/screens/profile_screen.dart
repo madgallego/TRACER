@@ -451,17 +451,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('Current password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.currentPasswordController,
           obscureText: !_currentPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _currentPasswordVisible
@@ -477,17 +469,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('New password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.newPasswordController,
           obscureText: !_newPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _newPasswordVisible
@@ -503,17 +487,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('Confirm new password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.confirmPasswordController,
           obscureText: !_confirmPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _confirmPasswordVisible

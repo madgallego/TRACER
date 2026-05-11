@@ -27,7 +27,7 @@ class GradientDropdown<T> extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppDesign.appLightGray,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppDesign.defaultCircularBorderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(

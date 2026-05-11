@@ -173,16 +173,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 // Email field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _emailController,
                                   hintText: 'Email',
                                   keyboardType: TextInputType.emailAddress,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.mail,
                                     size: AppDesign.sIconSize,
@@ -190,16 +184,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 // Password field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _passwordController,
                                   hintText: 'Password',
                                   obscureText: !_passwordVisible,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.lock,
                                     size: AppDesign.sIconSize,

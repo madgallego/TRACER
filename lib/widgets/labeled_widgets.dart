@@ -36,7 +36,7 @@ class LabeledFormField extends StatelessWidget {
     this.iconGradient,
     this.iconColor,
     this.textColor,
-    this.fillColor,
+    this.fillColor = AppDesign.appLightGray,
     this.optional = false,
   }) : assert(
     iconColor == null || iconGradient == null,
@@ -65,7 +65,7 @@ class LabeledFormField extends StatelessWidget {
               )
           ],
         ),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: controller,
           inputFormatters: formatters,
           keyboardType: keyboardType,
@@ -78,9 +78,6 @@ class LabeledFormField extends StatelessWidget {
           // Shared design properties
           textColor: textColor,
           fillColor: fillColor,
-          activeGradient: const LinearGradient(
-            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd]
-          ),
           borderRadius: BorderRadius.circular(30.0),
           suffixIcon: GradientIcon(
             icon: suffixIcon,

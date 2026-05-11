@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tracer/utils/constants.dart';
 
-class GradientTextFormField extends StatefulWidget {
+class GradientBorderTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String? hintText;
   final Color? textColor;
   final Color? fillColor;
-  final LinearGradient activeGradient;
+  final LinearGradient? activeGradient;
   final BorderRadius? borderRadius;
   final String? prefixText;
   final Widget? suffixIcon;
@@ -23,13 +23,13 @@ class GradientTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
 
-  const GradientTextFormField({
+  const GradientBorderTextFormField({
     super.key,
     required this.controller,
     this.hintText,
     this.textColor,
-    this.fillColor,
-    required this.activeGradient,
+    this.fillColor = AppDesign.appLightGray,
+    this.activeGradient,
     this.borderRadius,
     this.prefixText,
     this.suffixIcon,
@@ -46,10 +46,10 @@ class GradientTextFormField extends StatefulWidget {
   });
 
   @override
-  State<GradientTextFormField> createState() => _GradientTextFormFieldState();
+  State<GradientBorderTextFormField> createState() => _GradientBorderTextFormFieldState();
 }
 
-class _GradientTextFormFieldState extends State<GradientTextFormField> {
+class _GradientBorderTextFormFieldState extends State<GradientBorderTextFormField> {
   final FocusNode _focusNode = FocusNode();
   bool _isFocused = false;
 
@@ -71,8 +71,12 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    // Provide defaults
+    final effectiveGradient = widget.activeGradient ?? AppDesign.primaryGradient;
+    final effectiveBorderRadius = widget.borderRadius ?? AppDesign.defaultCircularBorderRadius;
+
     // Define the border color/gradient based on focus state
-    final currentGradient = _isFocused ? widget.activeGradient : null;
+    final currentGradient = _isFocused ? effectiveGradient : null;
     final Color unfocusedColor = Colors.grey.shade300;
     final double borderWidth = _isFocused ? 1.0 : 0.0;
 
@@ -88,15 +92,15 @@ class _GradientTextFormFieldState extends State<GradientTextFormField> {
           color: _isFocused ? Colors.transparent : unfocusedColor,
           width: borderWidth,
         ),
-        borderRadius: widget.borderRadius,
+        borderRadius: effectiveBorderRadius,
       ),
 
       padding: EdgeInsets.all(borderWidth),
 
       child: Container(
         decoration: BoxDecoration(
-          color: widget.fillColor ?? AppDesign.appLightGray,
-          borderRadius: widget.borderRadius
+          color: widget.fillColor,
+          borderRadius: effectiveBorderRadius
         ),
 
         child: TextFormField(
