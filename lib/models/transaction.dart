@@ -46,6 +46,7 @@ class Transaction {
   factory Transaction.fromJson(Map<String, dynamic> json) {
     final studentData = json['students_for_functions'] as Map<String, dynamic>?;
     final uploaderData = json['uploader'] as Map<String, dynamic>?;
+    final uploaderStudentData = uploaderData?['uploaderDetails'] as Map<String, dynamic>?;
 
     String month = '', day = '', year = '';
     if (json['receiptdate'] != null) {
@@ -81,9 +82,9 @@ class Transaction {
       foFirstName: json['finance_fn']?.toString() ?? '',
       foMiddleInitial: json['finance_mi']?.toString() ?? '',
       foLastName: json['finance_ln']?.toString() ?? '',
-      uploaderFirstName: uploaderData?['first_name']?.toString(),
-      uploaderMiddleInitial: uploaderData?['middle_initial']?.toString(),
-      uploaderLastName: uploaderData?['last_name']?.toString(),
+      uploaderFirstName: uploaderStudentData?['first_name']?.toString(),
+      uploaderMiddleInitial: uploaderStudentData?['middle_initial']?.toString(),
+      uploaderLastName: uploaderStudentData?['last_name']?.toString(),
       transactYear: year,
       transactMonth: month,
       transactDay: day,
