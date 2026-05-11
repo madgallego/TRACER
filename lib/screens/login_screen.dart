@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tracer/auth/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/gradient_border_button.dart';
@@ -191,6 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       AppDesign.primaryGradientEnd,
                                     ]),
                                   ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                  ],
                                 ),
                                 // Password field
                                 const SizedBox(height: 12),
