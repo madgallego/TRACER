@@ -379,7 +379,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   children: [
                                     Text(
                                       "Already have an account? ",
-                                      style: AppDesign.bodyStyle
+                                      style: AppDesign.bodyStyle.copyWith(color: Colors.black45)
                                     ),
                                     TextButton(
                                       onPressed: () {
