@@ -118,7 +118,7 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
                 gradient: effectiveGradient?.withTransform(
                   GradientRotation(_animation.value)
                 ),
-                borderRadius: outerRadius ?? BorderRadius.circular(10.0),
+                borderRadius: outerRadius,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.14),
@@ -142,9 +142,7 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
           // Material allows ink well to paint this effect
           child: Material(
             color: widget.innerColor,
-            borderRadius: outerRadius != null
-              ? _calculateInnerRadius(outerRadius)
-              : BorderRadius.circular(10.0 - widget.borderWidth),
+            borderRadius: _calculateInnerRadius(outerRadius),
             child: InkWell(
               onTap: () async {
                 if (processState.isLoading) return;
@@ -168,15 +166,11 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
                 });
               },
 
-              borderRadius: outerRadius != null
-                ? _calculateInnerRadius(outerRadius)
-                : BorderRadius.circular(10.0 - widget.borderWidth),
+              borderRadius: _calculateInnerRadius(outerRadius),
 
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: outerRadius != null
-                    ? _calculateInnerRadius(outerRadius)
-                    : BorderRadius.circular(10.0 - widget.borderWidth),
+                  borderRadius: _calculateInnerRadius(outerRadius),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Center(child: widget.child),
