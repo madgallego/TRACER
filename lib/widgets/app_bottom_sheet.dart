@@ -58,11 +58,7 @@ class AppBottomSheet extends StatelessWidget {
                   children: [
                     GradientIcon(
                       icon: icon,
-                      size: 28,
-                      gradient: const LinearGradient(colors: [
-                        AppDesign.primaryGradientStart,
-                        AppDesign.primaryGradientEnd,
-                      ]),
+                      size: AppDesign.sIconSize,
                     ),
                     const SizedBox(width: 12),
                     Expanded(

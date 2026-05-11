@@ -174,23 +174,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 // Email field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _emailController,
                                   hintText: 'Email',
                                   keyboardType: TextInputType.emailAddress,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.mail,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   inputFormatters: [
                                     FilteringTextInputFormatter.deny(RegExp(r'\s')),
@@ -198,32 +188,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 // Password field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _passwordController,
                                   hintText: 'Password',
                                   obscureText: !_passwordVisible,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.lock,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: GradientIcon(
                                       icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                      size: AppDesign.sBtnIconSize,
-                                      gradient: const LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd,
-                                      ]),
+                                      size: AppDesign.sIconSize,
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -241,11 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: () async {
                                       await login();
                                     },
-                                    gradient: LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]),
-                                    borderRadius: AppDesign.sBtnBorderRadius,
                                     child: Text(
                                       'Log In',
                                       style: AppDesign.buttonTextStyle,

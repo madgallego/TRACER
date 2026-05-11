@@ -7,15 +7,20 @@ import 'package:tracer/utils/process_state.dart';
 
 class GradientIcon extends StatefulWidget {
   final IconData icon;
-  final double size;
-  final Gradient gradient;
+  final double? size;
+  final LinearGradient? gradient;
+  final Color? color;
 
   const GradientIcon({
-    super.key,
     required this.icon,
-    required this.size,
-    required this.gradient,
-  });
+    super.key,
+    this.size,
+    this.gradient,
+    this.color,
+  }) : assert(
+    color == null || gradient == null,
+    'Cannot provide both a color and a gradient'
+  );
 
   @override
   State<GradientIcon> createState() => _GradientIconState();
@@ -54,6 +59,11 @@ class _GradientIconState extends State<GradientIcon>
   Widget build(BuildContext context) {
     bool isProcessStateAvailable = true;
 
+    // If no color or gradient supplied, use default app gradient
+    final effectiveGradient = (widget.color == null && widget.gradient == null)
+      ? AppDesign.primaryGradient
+      : widget.gradient;
+
     // Since gradient icons can also exist outside of a GradientBorderButton,
     // we need to check if the ProcessState provider exists first
     try {
@@ -75,11 +85,18 @@ class _GradientIconState extends State<GradientIcon>
     return AnimatedBuilder(
       animation: _rotationController,
       builder: (context, child) {
+        if (widget.color != null) {
+          return Icon(
+            widget.icon,
+            size: widget.size,
+            color: widget.color,
+          );
+        }
+
         return ShaderMask(
           shaderCallback: (Rect bounds) {
-            return LinearGradient(
-              colors: widget.gradient.colors,
-              transform: GradientRotation(_animation.value),
+            return effectiveGradient!.withTransform(
+              GradientRotation(_animation.value),
             ).createShader(
               Rect.fromLTWH(0, 0, bounds.width, bounds.height),
             );

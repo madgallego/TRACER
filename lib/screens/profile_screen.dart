@@ -72,8 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (foResponse == null) {
         debugPrint('No finance officer record found for this user ID.');
         if (mounted) setState(() => _isLoading = false);
-        return; 
-      }    
+        return;
+      }
 
       debugPrint('FO Response: $foResponse'); // Debug print to check the response data
 
@@ -158,13 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Center(
                       child: GradientIcon(
                         icon: Icons.account_circle,
-                        size: 96.0,
-                        gradient: LinearGradient(
-                          colors: [
-                            AppDesign.primaryGradientStart,
-                            AppDesign.primaryGradientEnd,
-                          ],
-                        ),
+                        size: AppDesign.lIconSize,
                       ),
                     ),
 
@@ -188,13 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: 'Profile Details',
                               icon: GradientIcon(
                                 icon: Icons.account_circle,
-                                size: 28.0,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ],
-                                ),
+                                size: AppDesign.sIconSize,
                               ),
                               children: [
                                 _LabeledText(
@@ -219,7 +207,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ]
                             ),
-
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                             child: Column(
@@ -239,13 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     );
                                   },
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppDesign.dangerRed,
-                                      AppDesign.dangerRed,
-                                    ]
-                                  ),
+                                  borderColor: AppDesign.dangerRed,
                                   child: Text(
                                     'Change Password',
                                     style: AppDesign.buttonTextStyle,
@@ -255,13 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onPressed: () async {
                                     logout();
                                   },
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white,
-                                      Colors.white,
-                                    ]
-                                  ),
+                                  borderColor: Colors.white,
                                   child: Text(
                                     'Log Out',
                                     style: AppDesign.buttonTextStyle,
@@ -431,29 +406,15 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('Current password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.currentPasswordController,
           obscureText: !_currentPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _currentPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _currentPasswordVisible = !_currentPasswordVisible),
@@ -463,29 +424,15 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('New password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.newPasswordController,
           obscureText: !_newPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _newPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _newPasswordVisible = !_newPasswordVisible),
@@ -495,29 +442,15 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         Text('Confirm new password',
             style: AppDesign.bodyStyle),
         const SizedBox(height: 5),
-        GradientTextFormField(
+        GradientBorderTextFormField(
           controller: widget.confirmPasswordController,
           obscureText: !_confirmPasswordVisible,
-          fillColor: AppDesign.appLightGray,
-          borderRadius: BorderRadius.circular(30),
-          activeGradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
           suffixIcon: IconButton(
             icon: GradientIcon(
               icon: _confirmPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              size: AppDesign.sBtnIconSize,
-              gradient: const LinearGradient(
-                colors: [
-                  AppDesign.primaryGradientStart,
-                  AppDesign.primaryGradientEnd,
-                ],
-              ),
+              size: AppDesign.sIconSize,
             ),
             onPressed: () =>
                 setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
@@ -526,13 +459,6 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         const SizedBox(height: 20),
         GradientBorderButton(
           onPressed: _isChangingPassword ? () async {} : _changePassword,
-          gradient: const LinearGradient(
-            colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(30),
           child: _isChangingPassword
               ? const SizedBox(
                   height: 20,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tracer/models/transaction.dart';
 
@@ -18,6 +19,8 @@ import 'package:tracer/utils/constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   final dbService = await DbService.initialize();
 
   runApp(
@@ -26,6 +29,8 @@ Future<void> main() async {
 
       child: MaterialApp(
         theme: ThemeData(
+          canvasColor: Colors.white,
+
           fontFamily: 'IBMPlexSans',
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(

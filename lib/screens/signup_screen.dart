@@ -269,22 +269,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                 // Student number field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _studentNumberController,
                                   hintText: 'Student Number',
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.badge,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -294,23 +284,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                 // Email field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _emailController,
                                   hintText: 'Email',
                                   keyboardType: TextInputType.emailAddress,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.mail,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   inputFormatters: [
                                     FilteringTextInputFormatter.deny(RegExp(r'\s')),
@@ -340,32 +320,18 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                 // Password field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _passwordController,
                                   hintText: 'Password',
                                   obscureText: !_passwordVisible,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.lock,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: GradientIcon(
                                       icon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                      size: AppDesign.sBtnIconSize,
-                                      gradient: const LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd,
-                                      ]),
+                                      size: AppDesign.sIconSize,
                                     ),
                                     onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
                                   ),
@@ -373,32 +339,18 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                 // Confirm Password field
                                 const SizedBox(height: 12),
-                                GradientTextFormField(
+                                GradientBorderTextFormField(
                                   controller: _confirmPasswordController,
                                   hintText: 'Confirm Password',
                                   obscureText: !_confirmPasswordVisible,
-                                  fillColor: AppDesign.appLightGray,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeGradient: const LinearGradient(colors: [
-                                    AppDesign.primaryGradientStart,
-                                    AppDesign.primaryGradientEnd,
-                                  ]),
                                   prefixIcon: GradientIcon(
                                     icon: Icons.lock,
-                                    size: AppDesign.sBtnIconSize,
-                                    gradient: const LinearGradient(colors: [
-                                      AppDesign.primaryGradientStart,
-                                      AppDesign.primaryGradientEnd,
-                                    ]),
+                                    size: AppDesign.sIconSize,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: GradientIcon(
                                       icon: _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                      size: AppDesign.sBtnIconSize,
-                                      gradient: const LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd,
-                                      ]),
+                                      size: AppDesign.sIconSize,
                                     ),
                                     onPressed: () => setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
                                   ),
@@ -413,11 +365,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                     onPressed: () async {
                                       await signup();
                                     },
-                                    gradient: LinearGradient(colors: [
-                                        AppDesign.primaryGradientStart,
-                                        AppDesign.primaryGradientEnd
-                                      ]),
-                                    borderRadius: AppDesign.sBtnBorderRadius,
                                     child: Text(
                                       'Sign Up',
                                       style: AppDesign.buttonTextStyle,

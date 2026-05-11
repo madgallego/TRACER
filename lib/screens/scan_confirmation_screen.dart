@@ -199,7 +199,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 },
                                 child: Icon(
                                   Icons.close,
-                                  size: AppDesign.sBtnIconSize,
+                                  size: AppDesign.sIconSize,
                                   color: AppDesign.appOffblack,
                                 ),
                               ),
@@ -224,11 +224,6 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 arguments: {'transaction': transaction},
                               );
                             },
-                            gradient: LinearGradient(colors: [
-                                AppDesign.primaryGradientStart,
-                                AppDesign.primaryGradientEnd
-                              ]),
-                            borderRadius: AppDesign.sBtnBorderRadius,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -259,7 +254,7 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                                 },
                                 child: Icon(
                                   Icons.replay,
-                                  size: AppDesign.sBtnIconSize,
+                                  size: AppDesign.sIconSize,
                                   color: AppDesign.appOffblack,
                                 ),
                               ),

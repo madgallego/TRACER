@@ -27,18 +27,14 @@ class GradientDropdown<T> extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppDesign.appLightGray,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppDesign.defaultCircularBorderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
           GradientIcon(
             icon: prefixIcon,
-            size: AppDesign.sBtnIconSize,
-            gradient: const LinearGradient(colors: [
-              AppDesign.primaryGradientStart,
-              AppDesign.primaryGradientEnd,
-            ]),
+            size: AppDesign.sIconSize,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -58,11 +54,7 @@ class GradientDropdown<T> extends StatelessWidget {
                       dropdownColor: Colors.white,
                       icon: GradientIcon(
                         icon: Icons.arrow_drop_down,
-                        size: AppDesign.sBtnIconSize,
-                        gradient: const LinearGradient(colors: [
-                          AppDesign.primaryGradientStart,
-                          AppDesign.primaryGradientEnd,
-                        ]),
+                        size: AppDesign.sIconSize,
                       ),
                       hint: Text(
                         hintText,
