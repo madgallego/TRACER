@@ -74,7 +74,7 @@ class DbService {
             *, 
             students_for_functions(stud_fn, stud_mi, stud_ln, yearlevel, bloc),
             uploader:finance_officers(
-              uploaderDetails:students_for_functions(first_name, middle_initial, last_name)
+              uploaderDetails:students_for_functions(stud_fn, stud_mi, stud_ln)
             )
           ''')
           .eq('organization_id', orgId)
