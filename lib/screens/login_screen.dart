@@ -8,7 +8,10 @@ import '../widgets/gradient_border_text.dart';
 import '../widgets/gradient_border_snackbar.dart';
 import '../widgets/gradient_border_text_form_field.dart';
 import '../widgets/error_snackbar.dart';
+import '../widgets/app_bottom_sheet.dart';
+import 'change_password_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +28,32 @@ class _LoginScreenState extends State<LoginScreen> {
   final authService = AuthService(Supabase.instance.client);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  // Stream subscription for auth state changes 
+  late final StreamSubscription<AuthState> _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final AuthChangeEvent event = data.event;
+      
+      if (event == AuthChangeEvent.passwordRecovery) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   // Log in function
   Future<void> login() async {
@@ -208,6 +237,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                   ),
                                 ),
+
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      AppBottomSheet.show(
+                                        context,
+                                        icon: Icons.lock_reset,
+                                        title: 'Reset Password',
+                                        child: _ForgotPasswordForm(authService: authService),
+                                      );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: const Size(0, 0),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: Text(
+                                      'Forgot Password?',
+                                      style: AppDesign.bodyStyle.copyWith(
+                                        color: AppDesign.primaryGradientEnd,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
                                 // Sign in button
                                 const SizedBox(height: 16),
                                 SizedBox(
@@ -264,6 +321,113 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ForgotPasswordForm extends StatefulWidget {
+  final AuthService authService;
+
+  const _ForgotPasswordForm({required this.authService});
+
+  @override
+  State<_ForgotPasswordForm> createState() => _ForgotPasswordFormState();
+}
+
+class _ForgotPasswordFormState extends State<_ForgotPasswordForm> {
+  final _emailController = TextEditingController();
+  bool _isSending = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendResetLink() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      _showError('Please enter your email.');
+      return;
+    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      _showError('Please enter a valid email address.');
+      return;
+    }
+
+    setState(() => _isSending = true);
+
+    try {
+      await widget.authService.sendPasswordResetEmail(email);
+
+      if (mounted) {
+        final parentContext = context;
+        _emailController.clear();
+        Navigator.pop(context); 
+        
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            ScaffoldMessenger.of(parentContext).showSnackBar(
+              GradientBorderSnackbar(message: 'Password reset link sent! Check your inbox.'),
+            );
+          }
+        });
+      }
+    } catch (e) {
+      _showError('Failed to send password reset link. Please try again.');
+    } finally {
+      if (mounted) setState(() => _isSending = false);
+    }
+  }
+
+  void _showError(String message) {
+    final parentContext = context;
+    Navigator.pop(context); 
+    Future.delayed(const Duration(milliseconds: 100), () {
+      ErrorSnackbar.show(parentContext, message);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Enter your email address and we will send a secure link to reset your password. If you do not receive an email within a few minutes, please coordinate with the TRACER administrators.',
+          style: AppDesign.bodyStyle,
+        ),
+
+        const SizedBox(height: 20),
+
+        Text('Email Address', style: AppDesign.bodyStyle),
+        const SizedBox(height: 5),
+        GradientBorderTextFormField(
+          controller: _emailController,
+          hintText: 'Email',
+          keyboardType: TextInputType.emailAddress,
+          prefixIcon: GradientIcon(
+            icon: Icons.mail,
+            size: AppDesign.sIconSize,
+          ),
+          inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+          ],
+        ),
+        
+        const SizedBox(height: 20),
+
+        GradientBorderButton(
+          onPressed: _isSending ? () async {} : _sendResetLink,
+          child: _isSending
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Send Link', style: AppDesign.buttonTextStyle),
+        ),
+      ],
     );
   }
 }
