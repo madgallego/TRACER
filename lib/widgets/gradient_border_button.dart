@@ -108,9 +108,10 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
       ? context.watch<ConnectivityState>().isOnline
       : true;
 
-    final Future<void> Function()? effectiveOnPressed = isBtnEnabled
-      ? widget.onPressed
-      : null;
+    // Apply grayscale filter on whole button when it is disabled
+    final ColorFilter colorFilter = isBtnEnabled
+      ? ColorFilter.mode(Colors.transparent, BlendMode.multiply)
+      : ColorFilter.mode(Colors.grey, BlendMode.saturation);
 
     return ChangeNotifierProvider(
       create: (context) => ProcessState(),
@@ -121,12 +122,13 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
           animation: _rotationController,
           builder: (context, child) {
 
+            // An issue with Flutter makes ColorFiltered apply outside of the child's boundaries
+            // Wrapping the color filter with a Clip widget fixes this issue
+            // We use ClipRRect instead of ClipRect due to the rounded corners of the button
+            // Shadows have to be applied outside the ClipRRect
+            // More information: https://github.com/flutter/flutter/issues/98809
             return Container(
               decoration: BoxDecoration(
-                color: widget.borderColor,
-                gradient: effectiveGradient?.withTransform(
-                  GradientRotation(_animation.value)
-                ),
                 borderRadius: outerRadius,
                 boxShadow: [
                   BoxShadow(
@@ -143,8 +145,25 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
                   )
                 ]
               ),
-              padding: EdgeInsets.all(widget.borderWidth),
-              child: child,
+              child: ClipRRect(
+                borderRadius: outerRadius,
+
+                child: ColorFiltered(
+                  colorFilter: colorFilter,
+
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: widget.borderColor,
+                      gradient: effectiveGradient?.withTransform(
+                        GradientRotation(_animation.value)
+                      ),
+                      borderRadius: outerRadius,
+                    ),
+                    padding: EdgeInsets.all(widget.borderWidth),
+                    child: child,
+                  ),
+                ),
+              ),
             );
           },
           // Ink well implements ripple effect on tap, as well as tap detection
@@ -153,22 +172,21 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
             color: widget.innerColor,
             borderRadius: _calculateInnerRadius(outerRadius),
             child: InkWell(
-              onTap: () async {
+              onTap: isBtnEnabled ? () async {
                 if (processState.isLoading) return;
-                if (effectiveOnPressed == null) return;
 
                 processState.setLoading(true);
                 _rotationController.repeat();
 
                 try {
-                  await effectiveOnPressed();
+                  await widget.onPressed();
                 } catch (e) {
                   debugPrint("Process failed: $e");
                 } finally {
                   processState.setLoading(false);
                   _rotationController.reset();
                 }
-              },
+              } : null,
 
               onHighlightChanged: (isHighlighting) {
                 setState(() {
