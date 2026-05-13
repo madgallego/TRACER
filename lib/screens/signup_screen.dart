@@ -104,17 +104,17 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => _isLoadingOrgs = true);
 
     final studentExists = await authService.checkStudentExists(studentNumber);
-    
+
     if (!studentExists) {
       if (mounted) {
         setState(() => _isLoadingOrgs = false);
         ErrorSnackbar.show(context, "Student number doesn't exist.");
       }
-      return; 
+      return;
     }
 
     final isAlreadyRegistered = await authService.isStudentAlreadyRegistered(studentNumber);
-    
+
     if (isAlreadyRegistered) {
       if (mounted) {
         setState(() => _isLoadingOrgs = false);
@@ -138,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
         Navigator.of(context).pop();
       }
     } on AuthException catch (e) {
-        debugPrint('SUPABASE AUTH ERROR: ${e.message} | Status Code: ${e.statusCode}'); // Debug to print error message and status code 
+        debugPrint('SUPABASE AUTH ERROR: ${e.message} | Status Code: ${e.statusCode}'); // Debug to print error message and status code
 
         if (mounted) {
         String message;
@@ -362,6 +362,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   width: 2000.0,
                                   height: 50.0,
                                   child: GradientBorderButton(
+                                    isInternetRequired: true,
                                     onPressed: () async {
                                       await signup();
                                     },

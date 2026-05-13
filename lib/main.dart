@@ -14,7 +14,7 @@ import 'package:tracer/screens/data_verification_screen.dart';
 import 'package:tracer/screens/records_screen.dart';
 import 'package:tracer/screens/profile_screen.dart';
 import 'package:tracer/screens/signup_screen.dart';
-import 'package:tracer/utils/connectivity_state.dart';
+import 'package:tracer/utils/connectivity.dart';
 import 'package:tracer/utils/constants.dart';
 
 Future<void> main() async {
@@ -32,6 +32,10 @@ Future<void> main() async {
       ],
 
       child: MaterialApp(
+        builder: (context, child) {
+          return GlobalConnectivityListener(child: child!);
+        },
+
         theme: ThemeData(
           canvasColor: Colors.white,
 

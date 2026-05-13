@@ -366,6 +366,7 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                         ),
 
                                         GradientBorderButton(
+                                          isInternetRequired: true,
                                           onPressed: () async {
                                             if (viewModel.isMissingRequiredValue()) {
                                               ErrorSnackbar.show(context, 'Please fill in all required fields!');

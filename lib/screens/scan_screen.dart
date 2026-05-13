@@ -66,160 +66,165 @@ class ScanScreenState extends State<ScanScreen> {
     // Size of the gesture hint / navbar at the bottom of the screen
     final double bottomInset = MediaQuery.of(context).padding.bottom;
 
-    return Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return Scaffold(
+      body: Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Flexible(
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: AppDesign.camMaxWidth,
-                  maxHeight: AppDesign.camMaxHeight,
-                ),
-                padding: const EdgeInsets.all(AppDesign.camBorderThickness),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
-                  gradient: const LinearGradient(
-                    colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: AppDesign.camMaxWidth,
+                    maxHeight: AppDesign.camMaxHeight,
                   ),
+                  padding: const EdgeInsets.all(AppDesign.camBorderThickness),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
+                    gradient: const LinearGradient(
+                      colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: AppDesign.defaultBoxShadows,
+                  ),
+                  child: FutureBuilder<void>(
+                    future: _cameraSetupFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        // If the Future is complete, display the preview.
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
+                          child: CameraPreview(_controller)
+                        );
+                      } else {
+                        // Otherwise, display a loading indicator.
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }
+                  ),
+                ),
+              ),
+
+              const SizedBox(
+                height: 10.0,
+              ),
+
+              Container(
+                // Factor in gesture hint / navbar space
+                height: 90.0 + bottomInset,
+                padding: EdgeInsets.only(top: 10.0, bottom: 10.0 + bottomInset, right: 10.0, left: 10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: AppDesign.bottomBarBorderRadius,
                   boxShadow: AppDesign.defaultBoxShadows,
                 ),
-                child: FutureBuilder<void>(
-                  future: _cameraSetupFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      // If the Future is complete, display the preview.
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
-                        child: CameraPreview(_controller)
-                      );
-                    } else {
-                      // Otherwise, display a loading indicator.
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  }
-                ),
-              ),
-            ),
-
-            const SizedBox(
-              height: 10.0,
-            ),
-
-            Container(
-              // Factor in gesture hint / navbar space
-              height: 90.0 + bottomInset,
-              padding: EdgeInsets.only(top: 10.0, bottom: 10.0 + bottomInset, right: 10.0, left: 10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: AppDesign.bottomBarBorderRadius,
-                boxShadow: AppDesign.defaultBoxShadows,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width: AppDesign.camBtnWidth,
-                    height: AppDesign.camBtnHeight,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                      },
-                      child: GradientIcon(
-                        icon: Icons.close,
-                        size: AppDesign.sIconSize,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: AppDesign.camBtnWidth,
+                      height: AppDesign.camBtnHeight,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                        child: GradientIcon(
+                          icon: Icons.close,
+                          size: AppDesign.sIconSize,
+                        ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(
-                    width: AppDesign.camBtnWidth + 80.0,
-                    height: AppDesign.camBtnHeight + 5.0,
-                    child: GradientBorderButton(
-                      onPressed: () async {
-                        try {
-                          await _cameraSetupFuture;
-                          await FeedbackHelper.cameraShutterFeedback();
+                    SizedBox(
+                      width: AppDesign.camBtnWidth + 80.0,
+                      height: AppDesign.camBtnHeight + 5.0,
+                      child: GradientBorderButton(
+                        isInternetRequired: true,
+                        onPressed: () async {
+                          try {
+                            await _cameraSetupFuture;
+                            await FeedbackHelper.cameraShutterFeedback();
 
-                          final image = await _controller.takePicture();
+                            final image = await _controller.takePicture();
+                            await _controller.pausePreview();
+
+                            if (!context.mounted) return;
+
+                            // If the picture was taken, display it on a new screen.
+                            await Navigator.of(context).pushNamed(
+                              '/scan_confirmation',
+                              arguments: image.path,
+                            );
+
+                            if (_controller.value.isInitialized) {
+                              await _controller.resumePreview();
+                            }
+                          } catch (e) {
+                            debugPrint(e.toString());
+                          }
+                        },
+                        child: GradientIcon(
+                          icon: Icons.camera_rounded,
+                          size: AppDesign.sIconSize,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                      width: AppDesign.camBtnWidth,
+                      height: AppDesign.camBtnHeight,
+                      child: GradientBorderButton(
+                        isInternetRequired: true,
+                        borderColor: Colors.white,
+                        onPressed: () async {
                           await _controller.pausePreview();
+
+                          await _openImagePicker();
+
+                          if (_image == null) {
+                            if (_controller.value.isInitialized) {
+                              await _controller.resumePreview();
+                            }
+                            return;
+                          }
 
                           if (!context.mounted) return;
 
-                          // If the picture was taken, display it on a new screen.
+                          // If the picture a picture was chosen, display it on the new screen
                           await Navigator.of(context).pushNamed(
                             '/scan_confirmation',
-                            arguments: image.path,
+                            arguments: _image!.path,
                           );
 
+                          _image = null;
+
                           if (_controller.value.isInitialized) {
                             await _controller.resumePreview();
                           }
-                        } catch (e) {
-                          debugPrint(e.toString());
-                        }
-                      },
-                      child: GradientIcon(
-                        icon: Icons.camera_rounded,
-                        size: AppDesign.sIconSize,
+                        },
+                        child: GradientIcon(
+                          icon: Icons.upload,
+                          size: AppDesign.sIconSize,
+                        ),
                       ),
                     ),
-                  ),
-
-                  SizedBox(
-                    width: AppDesign.camBtnWidth,
-                    height: AppDesign.camBtnHeight,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await _controller.pausePreview();
-
-                        await _openImagePicker();
-
-                        if (_image == null) {
-                          if (_controller.value.isInitialized) {
-                            await _controller.resumePreview();
-                          }
-                          return;
-                        }
-
-                        if (!context.mounted) return;
-
-                        // If the picture a picture was chosen, display it on the new screen
-                        await Navigator.of(context).pushNamed(
-                          '/scan_confirmation',
-                          arguments: _image!.path,
-                        );
-
-                        _image = null;
-
-                        if (_controller.value.isInitialized) {
-                          await _controller.resumePreview();
-                        }
-                      },
-                      child: GradientIcon(
-                        icon: Icons.upload,
-                        size: AppDesign.sIconSize,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

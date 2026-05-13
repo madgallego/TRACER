@@ -105,170 +105,176 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
   Widget build(BuildContext context) {
     Transaction transaction = Transaction();
 
-    return Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+    return Scaffold(
+      body: Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
-          child: AnimatedBuilder(
-            animation: Listenable.merge([
-              _initialAnimationController,
-              _finalAnimationController,
-              _imageAnimationController,
-            ]),
-            builder: (context, child) {
-              if (_initialAnimationController.isCompleted) {
-                _finalAnimationController.forward();
-              }
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                _initialAnimationController,
+                _finalAnimationController,
+                _imageAnimationController,
+              ]),
+              builder: (context, child) {
+                if (_initialAnimationController.isCompleted) {
+                  _finalAnimationController.forward();
+                }
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxWidth: AppDesign.camMaxWidth,
-                        maxHeight: AppDesign.camMaxHeight,
-                      ),
-                      padding: const EdgeInsets.all(AppDesign.camBorderThickness),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
-                        gradient: const LinearGradient(
-                          colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: AppDesign.camMaxWidth,
+                          maxHeight: AppDesign.camMaxHeight,
                         ),
-                        boxShadow: AppDesign.defaultBoxShadows,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
-                        child: Image.file(
-                          _image,
-                          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                            if (frame != null) {
-                              _imageAnimationController.forward();
+                        padding: const EdgeInsets.all(AppDesign.camBorderThickness),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(AppDesign.camOuterBorderRadius),
+                          gradient: const LinearGradient(
+                            colors: [AppDesign.primaryGradientStart, AppDesign.primaryGradientEnd],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: AppDesign.defaultBoxShadows,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppDesign.camInnerBorderRadius),
+                          child: Image.file(
+                            _image,
+                            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                              if (frame != null) {
+                                _imageAnimationController.forward();
 
-                              return Opacity(
-                                opacity: _imageFadeInAnimation.value,
-                                child: child,
-                              );
-                            } else {
-                              // Default to a 9:16 aspect ratio when picture isn't loaded yet
-                              return AspectRatio(
-                                aspectRatio: 9.0/16.0,
-                                child: Opacity(
+                                return Opacity(
                                   opacity: _imageFadeInAnimation.value,
                                   child: child,
-                                ),
-                              );
-                            }
-                          },
-                        )
+                                );
+                              } else {
+                                // Default to a 9:16 aspect ratio when picture isn't loaded yet
+                                return AspectRatio(
+                                  aspectRatio: 9.0/16.0,
+                                  child: Opacity(
+                                    opacity: _imageFadeInAnimation.value,
+                                    child: child,
+                                  ),
+                                );
+                              }
+                            },
+                          )
+                        ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(-_translationAnimation.value, 0),
-                          child: Visibility(
-                            visible: !_translationAnimation.isCompleted,
-                            child: SizedBox(
-                              width: AppDesign.camBtnWidth,
-                              height: AppDesign.camBtnHeight,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).popUntil(ModalRoute.withName('/'));
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: AppDesign.sIconSize,
-                                  color: AppDesign.appOffblack,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(
-                          width: _resizeAnimation.value,
-                          height: AppDesign.camBtnHeight + 5.0,
-                          child: GradientBorderButton(
-                            onPressed: () async {
-                              _initialAnimationController.forward();
-
-                              transaction = await scanForm(await File(widget.imagePath).readAsBytes());
-                              await FeedbackHelper.processCompleteFeedback();
-
-                              if (!context.mounted) return;
-
-                              await Navigator.of(context).pushReplacementNamed(
-                                '/verification',
-                                arguments: {'transaction': transaction},
-                              );
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Opacity(
-                                  opacity: _fadeOutAnimation.value,
-                                  child: Text('Next', style: AppDesign.buttonTextStyle),
-                                ),
-
-                                Opacity(
-                                  opacity: _fadeInAnimation.value,
-                                  child: Text('Processing...', style: AppDesign.buttonTextStyle),
-                                )
-                              ]
-                            ),
-                          ),
-                        ),
-
-                        Transform.translate(
-                          offset: Offset(_translationAnimation.value, 0),
-                          child: Visibility(
-                            visible: !_translationAnimation.isCompleted,
-                            child: SizedBox(
-                              width: AppDesign.camBtnWidth,
-                              height: AppDesign.camBtnHeight,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Icon(
-                                  Icons.replay,
-                                  size: AppDesign.sIconSize,
-                                  color: AppDesign.appOffblack,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  ),
-                ],
-              );
-            }
-          ),
-        )
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Transform.translate(
+                            offset: Offset(-_translationAnimation.value, 0),
+                            child: Visibility(
+                              visible: !_translationAnimation.isCompleted,
+                              child: SizedBox(
+                                width: AppDesign.camBtnWidth,
+                                height: AppDesign.camBtnHeight,
+                                child: GradientBorderButton(
+                                  borderColor: Colors.white,
+                                  onPressed: () async {
+                                    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                                  },
+                                  child: Icon(
+                                    Icons.close,
+                                    size: AppDesign.sIconSize,
+                                    color: AppDesign.appOffblack,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            width: _resizeAnimation.value,
+                            height: AppDesign.camBtnHeight + 5.0,
+                            child: GradientBorderButton(
+                              isInternetRequired: true,
+                              onPressed: () async {
+                                _initialAnimationController.forward();
+
+                                transaction = await scanForm(await File(widget.imagePath).readAsBytes());
+                                await FeedbackHelper.processCompleteFeedback();
+
+                                if (!context.mounted) return;
+
+                                await Navigator.of(context).pushReplacementNamed(
+                                  '/verification',
+                                  arguments: {'transaction': transaction},
+                                );
+                              },
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Opacity(
+                                    opacity: _fadeOutAnimation.value,
+                                    child: Text('Next', style: AppDesign.buttonTextStyle),
+                                  ),
+
+                                  Opacity(
+                                    opacity: _fadeInAnimation.value,
+                                    child: Text('Processing...', style: AppDesign.buttonTextStyle),
+                                  )
+                                ]
+                              ),
+                            ),
+                          ),
+
+                          Transform.translate(
+                            offset: Offset(_translationAnimation.value, 0),
+                            child: Visibility(
+                              visible: !_translationAnimation.isCompleted,
+                              child: SizedBox(
+                                width: AppDesign.camBtnWidth,
+                                height: AppDesign.camBtnHeight,
+                                child: GradientBorderButton(
+                                  isInternetRequired: true,
+                                  borderColor: Colors.white,
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Icon(
+                                    Icons.replay,
+                                    size: AppDesign.sIconSize,
+                                    color: AppDesign.appOffblack,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            ),
+          )
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tracer/utils/connectivity_state.dart';
+import 'package:tracer/utils/connectivity.dart';
 import 'dart:math' as math;
 
 import 'package:tracer/utils/constants.dart';
@@ -100,7 +100,7 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
     final double targetOffset = _isPressed ? 1.0 : 2.0;
 
     // If no color or gradient supplied, use default app gradient
-    final effectiveGradient = (widget.borderColor == null && widget.borderGradient == null)
+    final gradient = (widget.borderColor == null && widget.borderGradient == null)
       ? AppDesign.primaryGradient
       : widget.borderGradient;
 
@@ -112,6 +112,18 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
     final ColorFilter colorFilter = isBtnEnabled
       ? ColorFilter.mode(Colors.transparent, BlendMode.multiply)
       : ColorFilter.mode(Colors.grey, BlendMode.saturation);
+
+    final Color effectiveInnerColor = isBtnEnabled
+      ? widget.innerColor
+      : AppDesign.appLightGray;
+
+    final effectiveBorderGradient = isBtnEnabled
+      ? gradient
+      : null;
+
+    final effectiveBorderColor = isBtnEnabled
+      ? widget.borderColor
+      : AppDesign.appLightGray;
 
     return ChangeNotifierProvider(
       create: (context) => ProcessState(),
@@ -153,8 +165,8 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
 
                   child: Container(
                     decoration: BoxDecoration(
-                      color: widget.borderColor,
-                      gradient: effectiveGradient?.withTransform(
+                      color: effectiveBorderColor,
+                      gradient: effectiveBorderGradient?.withTransform(
                         GradientRotation(_animation.value)
                       ),
                       borderRadius: outerRadius,
@@ -169,7 +181,7 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
           // Ink well implements ripple effect on tap, as well as tap detection
           // Material allows ink well to paint this effect
           child: Material(
-            color: widget.innerColor,
+            color: effectiveInnerColor,
             borderRadius: _calculateInnerRadius(outerRadius),
             child: InkWell(
               onTap: isBtnEnabled ? () async {

@@ -29,16 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Stream subscription for auth state changes 
+  // Stream subscription for auth state changes
   late final StreamSubscription<AuthState> _authSubscription;
 
   @override
   void initState() {
     super.initState();
-    
+
     _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       final AuthChangeEvent event = data.event;
-      
+
       if (event == AuthChangeEvent.passwordRecovery) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
@@ -271,6 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: 2000.0,
                                   height: 50.0,
                                   child: GradientBorderButton(
+                                    isInternetRequired: true,
                                     onPressed: () async {
                                       await login();
                                     },
@@ -362,8 +363,8 @@ class _ForgotPasswordFormState extends State<_ForgotPasswordForm> {
       if (mounted) {
         final parentContext = context;
         _emailController.clear();
-        Navigator.pop(context); 
-        
+        Navigator.pop(context);
+
         Future.delayed(const Duration(milliseconds: 100), () {
           if (mounted) {
             ScaffoldMessenger.of(parentContext).showSnackBar(
@@ -381,7 +382,7 @@ class _ForgotPasswordFormState extends State<_ForgotPasswordForm> {
 
   void _showError(String message) {
     final parentContext = context;
-    Navigator.pop(context); 
+    Navigator.pop(context);
     Future.delayed(const Duration(milliseconds: 100), () {
       ErrorSnackbar.show(parentContext, message);
     });
@@ -414,7 +415,7 @@ class _ForgotPasswordFormState extends State<_ForgotPasswordForm> {
             FilteringTextInputFormatter.deny(RegExp(r'\s')),
           ],
         ),
-        
+
         const SizedBox(height: 20),
 
         GradientBorderButton(

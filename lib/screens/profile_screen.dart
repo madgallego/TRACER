@@ -213,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               spacing: mainColumnSpacing,
                               children: [
                                 GradientBorderButton(
+                                  isInternetRequired: true,
                                   onPressed: () async {
                                     AppBottomSheet.show(
                                       context,
@@ -233,6 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                                 GradientBorderButton(
+                                  isInternetRequired: true,
                                   onPressed: () async {
                                     logout();
                                   },
@@ -458,6 +460,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         ),
         const SizedBox(height: 20),
         GradientBorderButton(
+          isInternetRequired: true,
           onPressed: _isChangingPassword ? () async {} : _changePassword,
           child: _isChangingPassword
               ? const SizedBox(

@@ -83,6 +83,7 @@ abstract class AppDesign {
   static const Color appLightGray = Color(0xfff1f1f1);
   static const Color disabledGray = Color(0xffc4c4c4);
   static const Color dangerRed = Color(0xfff44336);
+  static const Color warningOrange = Color(0xffffcb59);
   // static const Color white = Color(0xffffffff); just use Colors.white
 
   // Gradient related
