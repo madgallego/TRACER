@@ -14,6 +14,7 @@ import 'package:tracer/screens/data_verification_screen.dart';
 import 'package:tracer/screens/records_screen.dart';
 import 'package:tracer/screens/profile_screen.dart';
 import 'package:tracer/screens/signup_screen.dart';
+import 'package:tracer/utils/connectivity_state.dart';
 import 'package:tracer/utils/constants.dart';
 
 Future<void> main() async {
@@ -24,8 +25,11 @@ Future<void> main() async {
   final dbService = await DbService.initialize();
 
   runApp(
-    Provider<DbService>.value(
-      value: dbService,
+    MultiProvider(
+      providers: [
+        Provider.value(value: dbService),
+        ChangeNotifierProvider(create: (_) => ConnectivityState()),
+      ],
 
       child: MaterialApp(
         theme: ThemeData(
