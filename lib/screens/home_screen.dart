@@ -128,12 +128,14 @@ class _HomeScreenState extends State<HomeScreen>
                                 Expanded(
                                   flex: 5,
                                   child: _HomeRoundedButton(
+                                    isInternetRequired: true,
+                                    borderColor: Colors.white,
                                     gradientIcon: GradientIcon(
                                       icon: Icons.folder_open,
                                       size: AppDesign.sIconSize,
                                     ),
-                                    title: "Records",
-                                    onTap: () {
+                                    label: "Records",
+                                    onPressed: () async {
                                       Navigator.of(context).pushNamed('/records');
                                     },
                                   ),
@@ -141,12 +143,14 @@ class _HomeScreenState extends State<HomeScreen>
                                 Expanded(
                                   flex: 5,
                                   child: _HomeRoundedButton(
+                                    isInternetRequired: true,
+                                    borderColor: Colors.white,
                                     gradientIcon: GradientIcon(
                                       icon: Icons.account_circle_rounded,
                                       size: AppDesign.sIconSize,
                                     ),
-                                    title: "Profile",
-                                    onTap: () async {
+                                    label: "Profile",
+                                    onPressed: () async {
                                       await Navigator.of(context).pushNamed('/profile');
                                     },
                                   ),
@@ -154,14 +158,42 @@ class _HomeScreenState extends State<HomeScreen>
                               ],
                             ),
 
-                            _HomeMainBigRoundedButton(title: "Scanner"),
-                            _HomeBigRoundedButton(text: "Manual Input"),
+                            _HomeRoundedButton(
+                              isInternetRequired: true,
+                              gradientIcon: GradientIcon(
+                                icon: Icons.camera_alt_outlined,
+                                size: AppDesign.mIconSize,
+                              ),
+                              label: 'Scanner',
+                              onPressed: () async {
+                                Navigator.of(context).pushNamed('/scan');
+                              },
+                            ),
+
+                            _HomeRoundedButton(
+                              isInternetRequired: true,
+                              borderColor: Colors.white,
+                              gradientIcon: GradientIcon(
+                                icon: Icons.keyboard_alt_outlined,
+                                size: AppDesign.mIconSize,
+                              ),
+                              label: 'Manual Input',
+                              onPressed: () async {
+                                Navigator.of(context).pushNamed(
+                                  '/verification',
+                                  arguments: {
+                                    "transaction": Transaction(),
+                                    "isFromHomeScreen": true,
+                                  },
+                                );
+                              },
+                            ),
 
                             const SizedBox(height: 25),
 
                             _LinkTile(
                               title: "User Manual",
-                              onTap: () async {
+                              onPressed: () async {
                                 await LinkHelper.openUrl('https://heyzine.com/flip-book/eb3a911ba9.html');
                               },
                             )
@@ -180,140 +212,95 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-class _HomeMainBigRoundedButton extends StatelessWidget {
-  final String title;
-
-  const _HomeMainBigRoundedButton({
-    super.key,
-    this.title = "",
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GradientBorderButton(
-      onPressed: () async {
-        Navigator.of(context).pushNamed('/scan');
-      },
-      child: Column(
-        children: [
-          GradientIcon(
-            icon: Icons.camera_alt_outlined,
-            size: AppDesign.mIconSize,
-          ),
-          Text(title, style: AppDesign.buttonTextStyle),
-        ]
-      ),
-    );
-  }
-}
-
-class _HomeBigRoundedButton extends StatelessWidget {
-  final String text;
-
-  const _HomeBigRoundedButton({
-    super.key,
-    this.text = "",
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _HomeRoundedButton(
-            gradientIcon: GradientIcon(
-              icon: Icons.keyboard_alt_outlined,
-              size: AppDesign.mIconSize,
-            ),
-            title: text,
-            onTap: () async {
-              Navigator.of(context).pushNamed(
-                '/verification',
-                arguments: {
-                  "transaction": Transaction(),
-                  "isFromHomeScreen": true,
-                },
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-//Button widgets
 class _HomeRoundedButton extends StatelessWidget{
+  final bool isInternetRequired;
+  final Color? borderColor;
+  final LinearGradient? borderGradient;
   final GradientIcon gradientIcon;
-  final String title;
-  final VoidCallback onTap;
+  final String label;
+  final Future<void> Function() onPressed;
 
   const _HomeRoundedButton({
+    this.isInternetRequired = false,
+    this.borderColor,
+    this.borderGradient,
     required this.gradientIcon,
-    required this.title,
-    required this.onTap,
+    required this.label,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context){
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(22),
-      shadowColor: Colors.black,
-      elevation: 1.0,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(22),
-        onTap: onTap,
-        child: SizedBox(
-          width: 145,
-          height: 90,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              gradientIcon,
-              const SizedBox(height: 8),
-              Text(title, style: AppDesign.buttonTextStyle),
-            ],
-          ),
-        ),
-      ),
+    return GradientBorderButton(
+      isInternetRequired: isInternetRequired,
+      borderGradient: borderGradient,
+      borderColor: borderColor,
+      borderRadius: BorderRadius.circular(22.0),
+      onPressed: onPressed,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8.0,
+        children: [
+          gradientIcon,
+          Text(label, style: AppDesign.buttonTextStyle),
+        ],
+      )
     );
+
+    // return Material(
+    //   color: Colors.white,
+    //   borderRadius: BorderRadius.circular(22),
+    //   shadowColor: Colors.black,
+    //   elevation: 1.0,
+    //   child: InkWell(
+    //     borderRadius: BorderRadius.circular(22),
+    //     onTap: onPressed,
+    //     child: SizedBox(
+    //       width: 145,
+    //       height: 90,
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: [
+    //           gradientIcon,
+    //           const SizedBox(height: 8),
+    //           Text(label, style: AppDesign.buttonTextStyle),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
 class _LinkTile extends StatelessWidget{
   final String title;
-  final VoidCallback onTap;
+  final Future<void> Function() onPressed;
 
   const _LinkTile({
     required this.title,
-    required this.onTap,
+    required this.onPressed,
 
   });
 
   @override
 
   Widget build(BuildContext context){
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 1.0,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-              children:[
-                Expanded(
-                  child: Text(title, style: AppDesign.buttonTextStyle),
-                ),
-                const Icon(Icons.open_in_new, size: 18),
-              ]
-          ),
+    return GradientBorderButton(
+      isInternetRequired: true,
+      onPressed: onPressed,
+      borderRadius: BorderRadius.circular(16.0),
+      borderColor: Colors.white,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children:[
+            Expanded(
+              child: Text(title, style: AppDesign.buttonTextStyle),
+            ),
+            Icon(Icons.open_in_new, size: AppDesign.xsIconSize),
+          ]
         ),
-      ),
+      )
     );
   }
 }

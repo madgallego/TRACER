@@ -103,6 +103,7 @@ abstract class AppDesign {
 
   static final BorderRadius defaultCircularBorderRadius = BorderRadius.circular(30.0);
 
+  static final double xsIconSize = 18.0;
   static final double sIconSize = 24.0;
   static final double mIconSize = 48.0;
   static final double lIconSize = 96.0;
