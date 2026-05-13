@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tracer/utils/connectivity_state.dart';
 import 'dart:math' as math;
 
 import 'package:tracer/utils/constants.dart';
@@ -13,7 +14,7 @@ class GradientBorderButton extends StatefulWidget {
   final Color? borderColor;
   final BorderRadius? borderRadius;
   final Color innerColor;
-  final bool disabled;
+  final bool isInternetRequired;
 
   const GradientBorderButton({
     super.key,
@@ -24,7 +25,7 @@ class GradientBorderButton extends StatefulWidget {
     this.borderColor,
     this.borderRadius,
     this.innerColor = Colors.white,
-    this.disabled = false,
+    this.isInternetRequired = false,
   }) : assert(
     borderColor == null || borderGradient == null,
     'Cannot provide both a color and a gradient'
@@ -103,6 +104,14 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
       ? AppDesign.primaryGradient
       : widget.borderGradient;
 
+    final bool isBtnEnabled = widget.isInternetRequired
+      ? context.watch<ConnectivityState>().isOnline
+      : true;
+
+    final Future<void> Function()? effectiveOnPressed = isBtnEnabled
+      ? widget.onPressed
+      : null;
+
     return ChangeNotifierProvider(
       create: (context) => ProcessState(),
       builder: (context, child) {
@@ -146,12 +155,13 @@ class _GradientBorderButtonState extends State<GradientBorderButton>
             child: InkWell(
               onTap: () async {
                 if (processState.isLoading) return;
+                if (effectiveOnPressed == null) return;
 
                 processState.setLoading(true);
                 _rotationController.repeat();
 
                 try {
-                  await widget.onPressed();
+                  await effectiveOnPressed();
                 } catch (e) {
                   debugPrint("Process failed: $e");
                 } finally {
