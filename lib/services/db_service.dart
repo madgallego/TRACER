@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/transaction.dart';
 import '../utils/env.dart';
@@ -38,7 +40,8 @@ class DbService {
       .from('transaction')
       .insert(insertJson)
       .select()
-      .single();
+      .single()
+      .timeout(Duration(seconds: 15));
 
       return Transaction.fromJson(response);
     } on PostgrestException catch (e) {
@@ -48,8 +51,13 @@ class DbService {
       else if (e.code == '23503') {
         throw NonExistentStudentException();
       }
+      else if (e.code == '504') {
+        throw ServerTimeoutException();
+      }
 
       throw Exception("Error Code: ${e.code}\nMessage: ${e.message}");
+    } on TimeoutException {
+      throw UploadTimeoutException();
     }
   }
 
@@ -99,9 +107,24 @@ class DuplicateReceiptException implements Exception {
     this.message = 'The receipt number of the transaction already exists on the database',
   ]);
 }
+
 class NonExistentStudentException implements Exception {
   final String message;
   const NonExistentStudentException([
     this.message = 'The student id does not belong to a valid student',
   ]);
+}
+
+class UploadTimeoutException implements Exception {
+ final String message;
+ const UploadTimeoutException ([
+  this.message = 'Upload request timed out',
+ ]);
+}
+
+class ServerTimeoutException implements Exception {
+ final String message;
+ const ServerTimeoutException ([
+  this.message = 'Server timed out while handling the request',
+ ]);
 }

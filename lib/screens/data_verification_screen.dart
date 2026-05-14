@@ -385,8 +385,11 @@ class DataVerificationScreenState extends State<DataVerificationScreen> {
                                               ErrorSnackbar.show(context, 'Receipt number already exists.\nAre you sure it is correct?');
                                             } on NonExistentStudentException {
                                               ErrorSnackbar.show(context, 'Student Number does not exist\nAre you sure it is correct?');
-                                            }
-                                            catch (e) {
+                                            } on UploadTimeoutException {
+                                              ErrorSnackbar.show(context, 'The upload request took too long\nTry a faster wi-fi connection');
+                                            } on ServerTimeoutException {
+                                              ErrorSnackbar.show(context, 'Server busy\nPlease try again later');
+                                            } catch (e) {
                                               ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');
                                               debugPrint(e.toString());
                                             }
