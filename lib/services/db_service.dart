@@ -45,7 +45,7 @@ class DbService {
       if (e.code == '23505') {
         throw DuplicateReceiptException();
       }
-      if (e.code == '23503') {
+      else if (e.code == '23503') {
         throw NonExistentStudentException();
       }
 
@@ -71,7 +71,7 @@ class DbService {
       final response = await _client
           .from('transaction')
           .select('''
-            *, 
+            *,
             students_for_functions(stud_fn, stud_mi, stud_ln, yearlevel, bloc),
             uploader:finance_officers(
               uploaderDetails:students_for_functions(stud_fn, stud_mi, stud_ln)
@@ -93,5 +93,15 @@ class DbService {
 
 
 // Custom exceptions
-class DuplicateReceiptException implements Exception {}
-class NonExistentStudentException implements Exception {}
+class DuplicateReceiptException implements Exception {
+  final String message;
+  const DuplicateReceiptException([
+    this.message = 'The receipt number of the transaction already exists on the database',
+  ]);
+}
+class NonExistentStudentException implements Exception {
+  final String message;
+  const NonExistentStudentException([
+    this.message = 'The student id does not belong to a valid student',
+  ]);
+}

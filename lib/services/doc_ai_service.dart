@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:tracer/models/transaction.dart';
@@ -16,7 +18,7 @@ Future<Transaction> scanForm(Uint8List imageBytes, {http.Client ? client}) async
       "X-Tracer-Key": Env.docAiKey,
     },
     body: jsonEncode({"imageBase64": base64Image}),
-  );
+  ).timeout(Duration(seconds: 15));
 
   try {
     if (response.statusCode == 200) {
@@ -39,10 +41,29 @@ Future<Transaction> scanForm(Uint8List imageBytes, {http.Client ? client}) async
     else {
       throw Exception('Server returned ${response.statusCode}: ${response.body}');
     }
+  } on TimeoutException {
+    throw ScanTimeoutException();
+  } on SocketException {
+    throw NoNetworkException();
   }
   finally {
     if (client == null) httpClient.close();
   }
 
   return transaction;
+}
+
+// Custom Exceptions
+class ScanTimeoutException implements Exception {
+  final String message;
+  const ScanTimeoutException([
+    this.message = 'Scan request timed out',
+  ]);
+}
+
+class NoNetworkException implements Exception {
+  final String message;
+  const NoNetworkException([
+    this.message = 'Scan request cannot be made as device is not connected to a network',
+  ]);
 }

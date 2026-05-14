@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tracer/models/transaction.dart';
 import 'package:tracer/services/doc_ai_service.dart';
 import 'package:tracer/utils/feedback_helper.dart';
+import 'package:tracer/widgets/error_snackbar.dart';
 
 import '../widgets/gradient_border_button.dart';
 import '../utils/constants.dart';
@@ -216,17 +217,29 @@ class ScanConfirmationScreenState extends State<ScanConfirmationScreen>
                               isInternetRequired: true,
                               onPressed: () async {
                                 _initialAnimationController.forward();
+                                try {
+                                  transaction = await scanForm(await File(widget.imagePath).readAsBytes());
+                                  await FeedbackHelper.processCompleteFeedback();
 
-                                transaction = await scanForm(await File(widget.imagePath).readAsBytes());
-                                await FeedbackHelper.processCompleteFeedback();
+                                  if (!context.mounted) return;
 
-                                if (!context.mounted) return;
-
-                                await Navigator.of(context).pushReplacementNamed(
-                                  '/verification',
-                                  arguments: {'transaction': transaction},
-                                );
+                                  await Navigator.of(context).pushReplacementNamed(
+                                    '/verification',
+                                    arguments: {'transaction': transaction},
+                                  );
+                                  if (!context.mounted) return;
+                                } on ScanTimeoutException {
+                                  ErrorSnackbar.show(context, 'The scan request took too long\nTry a faster wi-fi connection');
+                                } on NoNetworkException {
+                                  ErrorSnackbar.show(context, 'No internet detected');
+                                } catch (e) {
+                                  ErrorSnackbar.show(context, 'Unknown error,\nPlease try again later.');
+                                } finally {
+                                  _initialAnimationController.reset();
+                                  _finalAnimationController.reset();
+                                }
                               },
+
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
