@@ -245,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'TRACER v2.0.0',
+                                  'TRACER v2.1.0',
                                   style: AppDesign.bodyStyle,
                                 ),
                                 SizedBox(height: sectionSpacing-30.0)
